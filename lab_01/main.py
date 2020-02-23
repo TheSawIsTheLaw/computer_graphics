@@ -6,8 +6,17 @@ def printDebug():
 def makeJobWindow():
     jobWindow = Tk()
 
-    jobWindow.minsize(400, 400)
-    jobLabel = Label(jobWindow, text="На плоскости даны два...")
+    jobWindow.minsize(400, 200)
+    jobWindow.title("Формулировка задания")
+    jobLabel = Label(jobWindow,
+                     text="На плоскости даны два множества точек.\n"
+                          "Найти пару треугольников (каждый треугольник\n"
+                          "в качестве вершин имеет три различные точки\n"
+                          "одного и того же множества; треугольников стоятся\n"
+                          "на точках разных множеств) таких, что прямая, соединяющая\n"
+                          "точки пересечения высот, образует минимальный угол с осью\n"
+                          "абсцисс.",
+                     font=('consolas', 20))
     jobLabel.pack()
 
     jobWindow.mainloop()
@@ -26,9 +35,15 @@ def makeCascadeMenu(rootWindow):
 
 def makeMainWindow():
     rootWindow = Tk()
+    rootWindow.title("Рабораторная работа 1, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.minsize(1880, 1080)
 
     makeCascadeMenu(rootWindow)
+
+    boolVar = BooleanVar()
+    boolVar.set(0)
+    r1 = Radiobutton(text='Треугольник строится на точках одного множества', variable=boolVar, value=1).pack(side=LEFT)
+    r2 = Radiobutton(text='Треугольник строится на точках разных множеств', variable=boolVar, value=0).pack(side=LEFT)
 
     rootWindow.mainloop()
 
