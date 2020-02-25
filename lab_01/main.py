@@ -1,6 +1,11 @@
 from tkinter import *
 from re import *
 
+choiceVar = 0
+
+minX = 0
+maxY = 0
+
 def masst(x, y, xmin, ymax, k, xn, yn, kx, ky):
     kx = rd(xn + (x - xmin)*k) # Промасштабированный x
     ky = rd(yn + (ymax - y)*k) # Промасштабированный y
@@ -73,6 +78,7 @@ def makeCanvasStart(canvasWindow):
 
 def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
     canvasWindow.delete("all")
+    global maxY, minX
 
     if len(pointArrayF) + len(pointArrayS) == 0:
         makeCanvasStart(canvasWindow)
@@ -204,11 +210,80 @@ def changePoint(pointArray, entry, listBox, canvasWindow, secPointArray):
         deletePoint(pointArray, listBox, canvasWindow, secPointArray)
     print(pointArray)
 
-def makeVarZero(var):
-    var = 0
+def isAngle(x1, x2, x3, y1, y2, y3):
+    if (y2 - y1)*(x3 - x1) != (y3 - y1)*(x2 - x1):
+        return 1
+    return 0
 
-def makeVarOne(var):
-    var = 1
+def generateNoAnglesError():
+    errorWindow = Tk()
+    errorWindow.title("Ошибка!")
+    errorLabel = Label(errorWindow,
+                       text="Невозможно построить по заданным параметрам ни одного треугольника!",
+                       font=("consolas", 15))
+    errorLabel.pack()
+
+###################################################################
+def oneArrayAngle(dotsArrayF, dotsArrayS, canvasWindow):
+    if len(dotsArrayS) < 3 and len(dotsArrayF) < 3:
+        generateNoAnglesError()
+        return
+    foundF = 0
+    foundS = 0
+
+    global k, minX, maxY
+
+    for i in range(len(dotsArrayF) - 2):
+        for j in range(i + 1, len(dotsArrayF) - 1):
+            for z in range(i + 2, len(dotsArrayF)):
+                if isAngle(dotsArrayF[i][0], dotsArrayF[j][0], dotsArrayF[z][0], dotsArrayF[i][1], dotsArrayF[j][1],
+                           dotsArrayF[z][1]):
+                    foundF += 1 # Найдено х треугольников в первом
+                    canvasWindow.create_line(masstX(dotsArrayF[i][0], minX, k), masstY(dotsArrayF[i][1], maxY, k),
+                                             masstX(dotsArrayF[j][0], minX, k), masstY(dotsArrayF[j][1], maxY, k), fill="Red")
+                    canvasWindow.create_line(masstX(dotsArrayF[j][0], minX, k), masstY(dotsArrayF[j][1], maxY, k),
+                                             masstX(dotsArrayF[z][0], minX, k), masstY(dotsArrayF[z][1], maxY, k), fill="Red")
+                    canvasWindow.create_line(masstX(dotsArrayF[i][0], minX, k), masstY(dotsArrayF[i][1], maxY, k),
+                                             masstX(dotsArrayF[z][0], minX, k), masstY(dotsArrayF[z][1], maxY, k), fill="Red")
+
+    for i in range(len(dotsArrayS) - 2):
+        for j in range(i + 1, len(dotsArrayS) - 1):
+            for z in range(i + 2, len(dotsArrayS)):
+                if isAngle(dotsArrayS[i][0], dotsArrayS[j][0], dotsArrayS[z][0], dotsArrayS[i][1], dotsArrayS[j][1],
+                           dotsArrayS[z][1]):
+                    foundS += 1 # Найдено х треугольников во втором
+                    canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
+                                             masstX(dotsArrayS[j][0], minX, k), masstY(dotsArrayS[j][1], maxY, k), fill="Blue")
+                    canvasWindow.create_line(masstX(dotsArrayS[j][0], minX, k), masstY(dotsArrayS[j][1], maxY, k),
+                                             masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
+                    canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
+                                             masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
+
+    if not foundF and not foundS:
+        generateNoAnglesError()
+
+def twoArraysAngle(dotsArrayF, dotsArrayS, canvasWindow):
+    if len(dotsArrayS) + len(dotsArrayF) < 3:
+        generateNoAnglesError()
+        return
+    found = 0
+
+    if not found:
+        generateNoAnglesError()
+
+def findTheSmallestAngle(dotsArrayF, dotsArrayS, var, canvasWindow):
+    if var == 0:
+        oneArrayAngle(dotsArrayF, dotsArrayS, canvasWindow)
+    else:
+        twoArraysAngle(dotsArrayF, dotsArrayS, canvasWindow)
+
+def makeVarZero():
+    global choiceVar
+    choiceVar = 0
+
+def makeVarOne():
+    global choiceVar
+    choiceVar = 1
 
 def makeMainWindow():
     rootWindow = Tk()
@@ -220,14 +295,14 @@ def makeMainWindow():
     secondDotsArray = []
 
     boolVar = BooleanVar()
-    choiceVar = 0
+    global choiceVar
     boolVar.set(0)
     radioButtonF = Radiobutton(text='Треугольник строится на точках одного множества', font=("consolas", 12),
-                               variable=boolVar, value=0, command=lambda: makeVarZero(choiceVar)).grid(row=0,
+                               variable=boolVar, value=0, command=makeVarZero).grid(row=0,
                                                                                                        column=0,
                                                                                                        columnspan=3)
     radioButtonS = Radiobutton(text='Треугольник строится на точках разных множеств', font=("consolas", 12),
-                               variable=boolVar, value=1, command=lambda: makeVarOne(choiceVar)).grid(row=1,
+                               variable=boolVar, value=1, command=makeVarOne).grid(row=1,
                                                                                                       column=0,
                                                                                                       columnspan=3)
 
@@ -287,7 +362,7 @@ def makeMainWindow():
     changeButtonSecond.grid(row=15, column=0, columnspan=2)
 
     startButton = Button(rootWindow, text="Исполнить \nпредначертанное!", font=("consolas", 17), bg="yellow", fg="blue",
-                         command = )
+                         command=lambda: findTheSmallestAngle(firstDotsArray, secondDotsArray, choiceVar, canvasWindow))
     startButton.grid(row=0, column=5, rowspan=1)
 
     canvasWindow = Canvas(rootWindow, bg="white", width=1025, height=1025)
