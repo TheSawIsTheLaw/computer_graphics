@@ -1,8 +1,6 @@
 from tkinter import *
 from re import *
 
-choiceVar = 0
-
 minX = 0
 maxY = 0
 
@@ -21,7 +19,7 @@ def rd(x,y=0):
     m = int('1'+'0'*y) # multiplier - how many positions to the right
     q = x*m # shift to the right by multiplier
     c = int(q) # new number
-    i = int( (q-c)*10 ) # indicator number on the right
+    i = int((q-c)*10) # indicator number on the right
     if i >= 5:
         c += 1
     return c/m
@@ -38,26 +36,14 @@ def makeJobWindow():
                      text="На плоскости даны два множества точек.\n"
                           "Найти пару треугольников (каждый треугольник\n"
                           "в качестве вершин имеет три различные точки\n"
-                          "одного и того же множества; треугольников стоятся\n"
-                          "на точках разных множеств) таких, что прямая, соединяющая\n"
-                          "точки пересечения высот, образует минимальный угол с осью\n"
-                          "абсцисс.",
+                          "одного и того же множества; прямые, соединяющие тчоки пере-\n"
+                          "сечения двух треугольников строятся на точках разных множеств)\n"
+                          "таких, что прямая, соединяющая точки пересечения высот, образует\n"
+                          "минимальный угол с осью абсцисс.",
                      font=('consolas', 20))
     jobLabel.pack()
 
     jobWindow.mainloop()
-
-def makeCascadeMenu(rootWindow):
-    rootMenu = Menu(rootWindow)
-    rootWindow.config(menu=rootMenu)
-
-    jobMenu = Menu(rootMenu)
-    jobMenu.add_command(label='Формулировка', command=makeJobWindow)
-    moreMenu = Menu(rootMenu)
-    moreMenu.add_command(label='Сбросить всё', command=printDebug)
-
-    rootMenu.add_cascade(label='Задание', menu=jobMenu)
-    rootMenu.add_cascade(label='Дополнительные возможности', menu=moreMenu)
 
 def makeCanvasStart(canvasWindow):
     canvasWindow.delete("all")
@@ -66,15 +52,6 @@ def makeCanvasStart(canvasWindow):
     # Начальные Оси
     canvasWindow.create_line(500, 1000, 500, 0, width=3, arrow=LAST, arrowshape="10 20 10")
     canvasWindow.create_line(0, 500, 1000, 500, width=3, arrow=LAST, arrowshape="10 20 10")
-
-    for i in range(100, 1000, 100):
-        canvasWindow.create_line(495, i, 505, i, width=3)
-        if (500 - i):
-            canvasWindow.create_text(525, i - 10, text=str(500 - i), font=("consolas", 9))
-            canvasWindow.create_text(i + 15, 485, text=str(-500 + i), font=("consolas", 9))
-        canvasWindow.create_line(i, 495, i, 505, width=3)
-
-    canvasWindow.create_text(525, 485, text="0")
 
 def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
     canvasWindow.delete("all")
@@ -188,7 +165,7 @@ def generateEmptyError():
                        font=("consolas", 15))
     errorLabel.pack()
 
-def deletePoint(pointArray, listBox, canvasWindow, secPointArray):
+def deletePoint(pointArray, listBox, canvasWindow):
     if not listBox.curselection():
         generateEmptyError()
         return
@@ -224,7 +201,7 @@ def generateNoAnglesError():
     errorLabel.pack()
 
 ###################################################################
-def oneArrayAngle(dotsArrayF, dotsArrayS, canvasWindow):
+def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     if len(dotsArrayS) < 3 and len(dotsArrayF) < 3:
         generateNoAnglesError()
         return
@@ -262,49 +239,36 @@ def oneArrayAngle(dotsArrayF, dotsArrayS, canvasWindow):
     if not foundF and not foundS:
         generateNoAnglesError()
 
-def twoArraysAngle(dotsArrayF, dotsArrayS, canvasWindow):
-    if len(dotsArrayS) + len(dotsArrayF) < 3:
-        generateNoAnglesError()
-        return
-    found = 0
+def makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
+    fDots.clear()
+    sDots.clear()
+    fListBox.delete(0, END)
+    sListBox.delete(0, END)
+    makeCanvasStart(canvasWindow)
 
-    if not found:
-        generateNoAnglesError()
 
-def findTheSmallestAngle(dotsArrayF, dotsArrayS, var, canvasWindow):
-    if var == 0:
-        oneArrayAngle(dotsArrayF, dotsArrayS, canvasWindow)
-    else:
-        twoArraysAngle(dotsArrayF, dotsArrayS, canvasWindow)
+def makeCascadeMenu(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
+    rootMenu = Menu(rootWindow)
+    rootWindow.config(menu=rootMenu)
 
-def makeVarZero():
-    global choiceVar
-    choiceVar = 0
+    jobMenu = Menu(rootMenu)
+    jobMenu.add_command(label='Формулировка', command=makeJobWindow)
+    moreMenu = Menu(rootMenu)
+    moreMenu.add_command(label='Очистить всё', command=lambda: makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox))
 
-def makeVarOne():
-    global choiceVar
-    choiceVar = 1
+    rootMenu.add_cascade(label='Задание', menu=jobMenu)
+    rootMenu.add_cascade(label='Дополнительные возможности', menu=moreMenu)
 
 def makeMainWindow():
     rootWindow = Tk()
     rootWindow.title("Рабораторная работа 1, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.minsize(1800, 1000)
 
-    makeCascadeMenu(rootWindow)
     firstDotsArray = []
     secondDotsArray = []
 
-    boolVar = BooleanVar()
-    global choiceVar
-    boolVar.set(0)
-    radioButtonF = Radiobutton(text='Треугольник строится на точках одного множества', font=("consolas", 12),
-                               variable=boolVar, value=0, command=makeVarZero).grid(row=0,
-                                                                                                       column=0,
-                                                                                                       columnspan=3)
-    radioButtonS = Radiobutton(text='Треугольник строится на точках разных множеств', font=("consolas", 12),
-                               variable=boolVar, value=1, command=makeVarOne).grid(row=1,
-                                                                                                      column=0,
-                                                                                                      columnspan=3)
+    labLabel = Label(text="Лабораторная работа #1\nЯкуба Дмитрий\nИУ7-43Б", font=("consolas", 20))
+    labLabel.grid(row=0, column=0, rowspan=2, columnspan=3)
 
     listLableFirst = Label(rootWindow, text="Множество 1:", font=("consolas", 20), fg="white",
                            bg="black").grid(row=3,
@@ -313,7 +277,7 @@ def makeMainWindow():
 
     listBoxFirst = Listbox(rootWindow, height=15, width=30, selectmode=SINGLE)
     listBoxFirst.grid(row=4, column=2, columnspan=2, rowspan=5)
-    entryFirstLable = Label(rootWindow, text="Координаты вершины (x, y через пробел):")
+    entryFirstLable = Label(rootWindow, text="Координаты вершины \n(x, y через пробел):", font=("consolas", 14))
     entryFirstLable.grid(row=5, column=0)
     entryFirst = Entry(rootWindow)
     entryFirst.grid(row=5, column=1)
@@ -343,7 +307,7 @@ def makeMainWindow():
                                              columnspan=2)
     listBoxSecond = Listbox(rootWindow, height=15, width=30, selectmode=SINGLE)
     listBoxSecond.grid(row=11, column=2, columnspan=2, rowspan=5)
-    entrySecondLable = Label(rootWindow, text="Координаты вершины (x, y через пробел):")
+    entrySecondLable = Label(rootWindow, text="Координаты вершины \n(x, y через пробел):", font=("consolas", 14))
     entrySecondLable.grid(row=12, column=0)
     entrySecond = Entry(rootWindow)
     entrySecond.grid(row=12, column=1)
@@ -362,13 +326,15 @@ def makeMainWindow():
     changeButtonSecond.grid(row=15, column=0, columnspan=2)
 
     startButton = Button(rootWindow, text="Исполнить \nпредначертанное!", font=("consolas", 17), bg="yellow", fg="blue",
-                         command=lambda: findTheSmallestAngle(firstDotsArray, secondDotsArray, choiceVar, canvasWindow))
+                         command=lambda: executionPromotion(firstDotsArray, secondDotsArray, canvasWindow))
     startButton.grid(row=0, column=5, rowspan=1)
 
     canvasWindow = Canvas(rootWindow, bg="white", width=1025, height=1025)
     makeCanvasStart(canvasWindow)
+    makeCascadeMenu(rootWindow, canvasWindow, firstDotsArray, secondDotsArray, listBoxFirst, listBoxSecond)
 
     rootWindow.mainloop()
 
 makeMainWindow()
+
 
