@@ -11,10 +11,10 @@ def masst(x, y, xmin, ymax, k, xn, yn, kx, ky):
     kx = rd(xn + (x - xmin)*k) # Промасштабированный x
     ky = rd(yn + (ymax - y)*k) # Промасштабированный y
 
-def masstX(x, xmin, k, xn = 10):
+def masstX(x, xmin, k, xn = 30):
     return rd(xn + (x - xmin)*k) # Промасштабированный x
 
-def masstY(y, ymax, k, yn = 10):
+def masstY(y, ymax, k, yn = 30):
     return rd(yn + (ymax - y)*k) # Промасштабированный y
 
 def rd(x,y=0):
@@ -55,6 +55,24 @@ def makeCanvasStart(canvasWindow):
     # Начальные Оси
     canvasWindow.create_line(500, 1000, 500, 0, width=3, arrow=LAST, arrowshape="10 20 10")
     canvasWindow.create_line(0, 500, 1000, 500, width=3, arrow=LAST, arrowshape="10 20 10")
+
+def makeAnswerWindow(minAnglesArray, angle, crossFX, crossFY, crossSX, crossSY):
+    answerWindow = Tk()
+    answerWindow.title("Ответ")
+    answerLabel = Label(answerWindow, text="Треугольники, фигурирующие в ответе:\nТреугольник №1:\nВершина №1: x = "
+                        + str(minAnglesArray[0][0][0]) + "; y = " + str(minAnglesArray[0][0][1]) + ";\nВершина №2: x = "
+                        + str(minAnglesArray[0][1][0]) + "; y = " + str(minAnglesArray[0][1][1]) + ";\nВершина №3: x = "
+                        + str(minAnglesArray[0][2][0]) + "; y = " + str(minAnglesArray[0][2][1]) + ";\n\nТреугольник №2:\nВершина №1: x = "
+                        + str(minAnglesArray[1][0][0]) + "; y = " + str(minAnglesArray[1][0][1]) + ";\nВершина №2: x = "
+                        + str(minAnglesArray[1][1][0]) + "; y = " + str(minAnglesArray[1][1][1]) + ";\nВершина №3: x = "
+                        + str(minAnglesArray[1][2][0]) + "; y = " + str(minAnglesArray[1][2][1]) + ";\n\n"
+                        "Точки пересечения высот первого треугольника:\nx = " + str(round(crossFX, 2)) + "; y = " + str(round(crossFY, 2)) +
+                        "\nТочки пересечения высот второго треугольника:\nx = " + str(round(crossSX, 2)) + "; y = " + str(round(crossSY, 2)) +
+                        "\n\nУгол, между прямой, соединяющей данные тчоки пересечения с осью абсцисс образуют угол: " +
+                        str(round(angle, 2)) + " градусов;\nЧто является наименьшим возможным значением угла\nв заданных условиях.",
+                        font=("consolas", 14))
+    answerLabel.pack()
+    answerWindow.mainloop()
 
 def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
     canvasWindow.delete("all")
@@ -108,23 +126,33 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
     k = min(kx, ky)
     if len(pointArrayF) + len(pointArrayS) == 1:
         k = 1
-        minX = minX - 500
-        maxY = maxY + 500
+        minX = minX - 450
+        maxY = maxY + 450
+    canvasWindow.create_line(masstX(0, minX, k), 1040, masstX(0, minX, k), 0, width=3, arrow=LAST, arrowshape="10 20 10")
+    canvasWindow.create_line(0, masstY(0, maxY, k), 1040, masstY(0, maxY, k), width=3, arrow=LAST, arrowshape="10 20 10")
     #print(minX, maxY)
     for i in pointArrayF:
         x = masstX(i[0], minX, k)
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill="Blue")
-        canvasWindow.create_text(x + 10, y + 10, text=str(i[0])+" "+str(i[1]))
+        if y - 10 > 0:
+            canvasWindow.create_rectangle(x + 5, y + 10, x + 28, y - 25, fill="Yellow")
+            canvasWindow.create_text(x + 17, y - 10, text=str(round(i[0], 1))+"\n"+str(round(i[1], 1)))
+        else:
+            canvasWindow.create_rectangle(x + 5, y + 25, x + 28, y - 10, fill="Yellow")
+            canvasWindow.create_text(x + 17, y + 10, text=str(round(i[0], 1)) + "\n" + str(round(i[1], 1)))
 
     for i in pointArrayS:
         x = masstX(i[0], minX, k)
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill="Red")
-        canvasWindow.create_text(x + 10, y + 10, text=str(i[0])+" "+str(i[1]))
+        if y + 10 < 1000:
+            canvasWindow.create_rectangle(x + 5, y + 25, x + 28, y - 10, fill="Yellow")
+            canvasWindow.create_text(x + 17, y + 10, text=str(round(i[0], 1))+"\n"+str(round(i[1], 1)))
+        else:
+            canvasWindow.create_rectangle(x + 5, y + 10, x + 28, y - 25, fill="Yellow")
+            canvasWindow.create_text(x + 17, y - 10, text=str(round(i[0], 1)) + "\n" + str(round(i[1], 1)))
 
-    canvasWindow.create_line(masstX(0, minX, k), 1015, masstX(0, minX, k), 0, width=3, arrow=LAST, arrowshape="10 20 10")
-    canvasWindow.create_line(0, masstY(0, maxY, k), 1015, masstY(0, maxY, k), width=3, arrow=LAST, arrowshape="10 20 10")
 
 def generateInputErrorWindow():
     errorWindow = Tk()
@@ -297,14 +325,38 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     C2 = (-1) * A2 * minTriangles[0][0][0] - B2 * minTriangles[0][0][1]
     crossPointXF = (B1 * C2 - B2 * C1) / (A1 * B2 - A2 * B1)
     crossPointYF = (C1 * A2 - C2 * A1) / (A1 * B2 - A2 * B1)
+    XF = crossPointXF
+    YF = crossPointYF
     dotsArrayF.append([crossPointXF, crossPointYF])
-    #dotsArrayS.append([crossPointXF, crossPointYF]) #### ВЫЧИСЛЕНИЯ CROSSPOINTXS!!!!!!!!!
+    A11 = -(minTriangles[1][0][0] - minTriangles[1][1][0])
+    A22 = -(minTriangles[1][2][0] - minTriangles[1][1][0])
+    B11 = minTriangles[1][1][1] - minTriangles[1][0][1]
+    B22 = minTriangles[1][1][1] - minTriangles[1][2][1]
+    C11 = (-1) * A11 * minTriangles[1][2][0] - B11 * minTriangles[1][2][1]
+    C22 = (-1) * A22 * minTriangles[1][0][0] - B22 * minTriangles[1][0][1]
+    crossPointXS = (B11 * C22 - B22 * C11) / (A11 * B22 - A22 * B11)
+    crossPointYS = (C11 * A22 - C22 * A11) / (A11 * B22 - A22 * B11)
+    dotsArrayS.append([crossPointXS, crossPointYS])
+    XS = crossPointXS
+    YS = crossPointYS
     reRenderCanvas(canvasWindow, dotsArrayF, dotsArrayS)
+
+    canvasWindow.create_line(masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
+                             fill="Green", width=4)
+    canvasWindow.create_line(masstX(crossPointXF, minX, k) - 40, masstY(crossPointYF, maxY, k),
+                             masstX(crossPointXF, minX, k) + 40, masstY(crossPointYF, maxY, k),
+                             fill="Black", width=3, dash=(4, 2))
+    canvasWindow.create_line(masstX(crossPointXS, minX, k) - 40, masstY(crossPointYS, maxY, k),
+                             masstX(crossPointXS, minX, k) + 40, masstY(crossPointYS, maxY, k),
+                             fill="Black", width=3, dash=(4, 2))
+
+
     canvasWindow.create_line(masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
                              masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
-                             fill="Red", width=3)
+                             fill="Red", width=2)
     canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=2)
 
     A3 = minTriangles[0][0][1] - minTriangles[0][1][1]
     B3 = minTriangles[0][1][0] - minTriangles[0][0][0]
@@ -312,44 +364,59 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     crossPointXF = (B1 * C3 - B3 * C1) / (A1 * B3 - A3 * B1)
     crossPointYF = (C1 * A3 - C3 * A1) / (A1 * B3 - A3 * B1)
     canvasWindow.create_line(masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=2)
     A3 = minTriangles[0][1][1] - minTriangles[0][2][1]
     B3 = minTriangles[0][2][0] - minTriangles[0][1][0]
     C3 = (-1) * B3 * minTriangles[0][2][1] + (-1) * A3 * minTriangles[0][2][0]
     crossPointXF = (B2 * C3 - B3 * C2) / (A2 * B3 - A3 * B2)
     crossPointYF = (C2 * A3 - C3 * A2) / (A2 * B3 - A3 * B2)
     canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=2)
 
-    A1 = -(minTriangles[1][0][0] - minTriangles[1][1][0])
-    A2 = -(minTriangles[1][2][0] - minTriangles[1][1][0])
-    B1 = minTriangles[1][1][1] - minTriangles[1][0][1]
-    B2 = minTriangles[1][1][1] - minTriangles[1][2][1]
-    C1 = (-1) * A1 * minTriangles[1][2][0] - B1 * minTriangles[1][2][1]
-    C2 = (-1) * A2 * minTriangles[1][0][0] - B2 * minTriangles[1][0][1]
-    crossPointXF = (B1 * C2 - B2 * C1) / (A1 * B2 - A2 * B1)
-    crossPointYF = (C1 * A2 - C2 * A1) / (A1 * B2 - A2 * B1)
+
     canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
                              fill="Red", width=3)
     canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill="Red", width=2)
 
     A3 = minTriangles[1][0][1] - minTriangles[1][1][1]
     B3 = minTriangles[1][1][0] - minTriangles[1][0][0]
     C3 = (-1) * B3 * minTriangles[1][1][1] + (-1) * A3 * minTriangles[1][1][0]
-    crossPointXF = (B1 * C3 - B3 * C1) / (A1 * B3 - A3 * B1)
-    crossPointYF = (C1 * A3 - C3 * A1) / (A1 * B3 - A3 * B1)
+    crossPointXS = (B11 * C3 - B3 * C11) / (A11 * B3 - A3 * B11)
+    crossPointYS = (C11 * A3 - C3 * A11) / (A11 * B3 - A3 * B11)
     canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill="Red", width=2)
     A3 = minTriangles[1][1][1] - minTriangles[1][2][1]
     B3 = minTriangles[1][2][0] - minTriangles[1][1][0]
     C3 = (-1) * B3 * minTriangles[1][2][1] + (-1) * A3 * minTriangles[1][2][0]
-    crossPointXF = (B2 * C3 - B3 * C2) / (A2 * B3 - A3 * B2)
-    crossPointYF = (C2 * A3 - C3 * A2) / (A2 * B3 - A3 * B2)
+    crossPointXS = (B22 * C3 - B3 * C22) / (A22 * B3 - A3 * B22)
+    crossPointYS = (C22 * A3 - C3 * A22) / (A22 * B3 - A3 * B22)
     canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
-                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill="Red", width=2)
 
+    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
+                            masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k), fill="Blue",
+                             width=3)
+    canvasWindow.create_line(masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k),
+                             masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
+                             fill="Blue", width=3)
+    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
+                             masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
+                             fill="Blue", width=3)
+
+    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
+                             masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
+                             fill="Blue",
+                             width=3)
+    canvasWindow.create_line(masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
+                             masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             fill="Blue", width=3)
+    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
+                             masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             fill="Blue", width=3)
+
+    makeAnswerWindow(minTriangles, minAngle, XF, YF, XS, YS)
 
     dotsArrayS.pop()
     dotsArrayF.pop()
@@ -440,11 +507,11 @@ def makeMainWindow():
                                                             firstDotsArray))
     changeButtonSecond.grid(row=15, column=0, columnspan=2)
 
-    startButton = Button(rootWindow, text="Исполнить \nпредначертанное!", font=("consolas", 17), bg="yellow", fg="blue",
+    startButton = Button(rootWindow, text="Исполнить \nпредначертанное!", font=("consolas", 15), bg="yellow", fg="blue",
                          command=lambda: executionPromotion(firstDotsArray, secondDotsArray, canvasWindow))
     startButton.grid(row=0, column=5, rowspan=1)
 
-    canvasWindow = Canvas(rootWindow, bg="white", width=1025, height=1025)
+    canvasWindow = Canvas(rootWindow, bg="white", width=1060, height=1040)
     makeCanvasStart(canvasWindow)
     makeCascadeMenu(rootWindow, canvasWindow, firstDotsArray, secondDotsArray, listBoxFirst, listBoxSecond)
 
