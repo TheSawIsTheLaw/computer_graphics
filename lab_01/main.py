@@ -1,5 +1,8 @@
 from tkinter import *
 from re import *
+from math import atan
+
+Pi = 3.141592
 
 minX = 0
 maxY = 0
@@ -156,6 +159,7 @@ def addPoint(pointArray, entry, listBox, dotIndex, canvasWindow, secPointArray):
 
     reRenderCanvas(canvasWindow, pointArray, secPointArray)
     print(pointArray)
+    return 0
 
 def generateEmptyError():
     errorWindow = Tk()
@@ -165,7 +169,7 @@ def generateEmptyError():
                        font=("consolas", 15))
     errorLabel.pack()
 
-def deletePoint(pointArray, listBox, canvasWindow):
+def deletePoint(pointArray, listBox, canvasWindow, secPointArray):
     if not listBox.curselection():
         generateEmptyError()
         return
@@ -196,7 +200,7 @@ def generateNoAnglesError():
     errorWindow = Tk()
     errorWindow.title("Ошибка!")
     errorLabel = Label(errorWindow,
-                       text="Невозможно построить по заданным параметрам ни одного треугольника!",
+                       text="Заданные параметры не удовлетворяют условию задачи!",
                        font=("consolas", 15))
     errorLabel.pack()
 
@@ -205,39 +209,150 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     if len(dotsArrayS) < 3 and len(dotsArrayF) < 3:
         generateNoAnglesError()
         return
-    foundF = 0
-    foundS = 0
 
     global k, minX, maxY
+
+    trianglesF = []
+    trianglesS = []
 
     for i in range(len(dotsArrayF) - 2):
         for j in range(i + 1, len(dotsArrayF) - 1):
             for z in range(i + 2, len(dotsArrayF)):
                 if isAngle(dotsArrayF[i][0], dotsArrayF[j][0], dotsArrayF[z][0], dotsArrayF[i][1], dotsArrayF[j][1],
                            dotsArrayF[z][1]):
-                    foundF += 1 # Найдено х треугольников в первом
-                    canvasWindow.create_line(masstX(dotsArrayF[i][0], minX, k), masstY(dotsArrayF[i][1], maxY, k),
-                                             masstX(dotsArrayF[j][0], minX, k), masstY(dotsArrayF[j][1], maxY, k), fill="Red")
-                    canvasWindow.create_line(masstX(dotsArrayF[j][0], minX, k), masstY(dotsArrayF[j][1], maxY, k),
-                                             masstX(dotsArrayF[z][0], minX, k), masstY(dotsArrayF[z][1], maxY, k), fill="Red")
-                    canvasWindow.create_line(masstX(dotsArrayF[i][0], minX, k), masstY(dotsArrayF[i][1], maxY, k),
-                                             masstX(dotsArrayF[z][0], minX, k), masstY(dotsArrayF[z][1], maxY, k), fill="Red")
+                    trianglesF.append([dotsArrayF[i], dotsArrayF[j], dotsArrayF[z]])
+                    #canvasWindow.create_line(masstX(dotsArrayF[i][0], minX, k), masstY(dotsArrayF[i][1], maxY, k),
+                    #                         masstX(dotsArrayF[j][0], minX, k), masstY(dotsArrayF[j][1], maxY, k), fill="Red")
+                    #canvasWindow.create_line(masstX(dotsArrayF[j][0], minX, k), masstY(dotsArrayF[j][1], maxY, k),
+                    #                         masstX(dotsArrayF[z][0], minX, k), masstY(dotsArrayF[z][1], maxY, k), fill="Red")
+                    #canvasWindow.create_line(masstX(dotsArrayF[i][0], minX, k), masstY(dotsArrayF[i][1], maxY, k),
+                    #                         masstX(dotsArrayF[z][0], minX, k), masstY(dotsArrayF[z][1], maxY, k), fill="Red")
 
     for i in range(len(dotsArrayS) - 2):
         for j in range(i + 1, len(dotsArrayS) - 1):
             for z in range(i + 2, len(dotsArrayS)):
                 if isAngle(dotsArrayS[i][0], dotsArrayS[j][0], dotsArrayS[z][0], dotsArrayS[i][1], dotsArrayS[j][1],
                            dotsArrayS[z][1]):
-                    foundS += 1 # Найдено х треугольников во втором
-                    canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
-                                             masstX(dotsArrayS[j][0], minX, k), masstY(dotsArrayS[j][1], maxY, k), fill="Blue")
-                    canvasWindow.create_line(masstX(dotsArrayS[j][0], minX, k), masstY(dotsArrayS[j][1], maxY, k),
-                                             masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
-                    canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
-                                             masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
+                    trianglesS.append([dotsArrayS[i], dotsArrayS[j], dotsArrayS[z]])
+                    #canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
+                    #                         masstX(dotsArrayS[j][0], minX, k), masstY(dotsArrayS[j][1], maxY, k), fill="Blue")
+                    #canvasWindow.create_line(masstX(dotsArrayS[j][0], minX, k), masstY(dotsArrayS[j][1], maxY, k),
+                    #                         masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
+                    #canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
+                    #                         masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
 
-    if not foundF and not foundS:
+    if not len(trianglesF) or not len(trianglesS):
         generateNoAnglesError()
+
+    print("Найденные треугольники:")
+    print(trianglesF)
+    print(trianglesS)
+
+    minAngle = 90
+    minTriangles = [[], []]
+    for i in trianglesF:
+        print("Текущий рассматриваемый треугольник первого множества:")
+        print(i)
+        A1 = -(i[1][0] - i[0][0])
+        A2 = -(i[2][0] - i[1][0])
+        B1 = i[0][1] - i[1][1]
+        B2 = i[1][1] - i[2][1]
+        C1 = (-1) * A1 * i[2][0] - B1 * i[2][1]
+        C2 = (-1) * A2 * i[0][0] - B2 * i[0][1]
+        crossPointXF = (B1 * C2 - B2 * C1)/(A1 * B2 - A2 * B1)
+        crossPointYF = (C1 * A2 - C2 * A1)/(A1 * B2 - A2 * B1)
+
+        for j in trianglesS:
+            A11 = -(j[1][0] - j[0][0])
+            A22 = -(j[2][0] - j[1][0])
+            B11 = j[0][1] - j[1][1]
+            B22 = j[1][1] - j[2][1]
+            C11 = (-1) * A11 * j[2][0] - B11 * j[2][1]
+            C22 = (-1) * A22 * j[0][0] - B22 * j[0][1]
+            crossPointXS = (B11 * C22 - B22 * C11) / (A11 * B22 - A22 * B11)
+            crossPointYS = (C11 * A22 - C22 * A11) / (A11 * B22 - A22 * B11)
+
+            crossingA = crossPointYF - crossPointYS
+            crossingB = crossPointXS - crossPointXF
+            try:
+                angle = abs(atan(crossingA/crossingB) * 180 / Pi)
+            except ZeroDivisionError:
+                pass
+            else:
+                if angle > 90:
+                    angle = 180 - 90
+                if angle <= minAngle:
+                    minAngle = angle
+                    minTriangles[0] = i
+                    minTriangles[1] = j
+
+    print("Два треугольника, прямая, соединяющая точку пересечения высот которых, минимальна:")
+    print(minTriangles)
+
+    A1 = -(minTriangles[0][0][0] - minTriangles[0][1][0])
+    A2 = -(minTriangles[0][2][0] - minTriangles[0][1][0])
+    B1 = minTriangles[0][1][1] - minTriangles[0][0][1]
+    B2 = minTriangles[0][1][1] - minTriangles[0][2][1]
+    C1 = (-1) * A1 * minTriangles[0][2][0] - B1 * minTriangles[0][2][1]
+    C2 = (-1) * A2 * minTriangles[0][0][0] - B2 * minTriangles[0][0][1]
+    crossPointXF = (B1 * C2 - B2 * C1) / (A1 * B2 - A2 * B1)
+    crossPointYF = (C1 * A2 - C2 * A1) / (A1 * B2 - A2 * B1)
+    dotsArrayF.append([crossPointXF, crossPointYF])
+    #dotsArrayS.append([crossPointXF, crossPointYF]) #### ВЫЧИСЛЕНИЯ CROSSPOINTXS!!!!!!!!!
+    reRenderCanvas(canvasWindow, dotsArrayF, dotsArrayS)
+    canvasWindow.create_line(masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
+                             fill="Red", width=3)
+    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+
+    A3 = minTriangles[0][0][1] - minTriangles[0][1][1]
+    B3 = minTriangles[0][1][0] - minTriangles[0][0][0]
+    C3 = (-1) * B3 * minTriangles[0][1][1] + (-1) * A3 * minTriangles[0][1][0]
+    crossPointXF = (B1 * C3 - B3 * C1) / (A1 * B3 - A3 * B1)
+    crossPointYF = (C1 * A3 - C3 * A1) / (A1 * B3 - A3 * B1)
+    canvasWindow.create_line(masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+    A3 = minTriangles[0][1][1] - minTriangles[0][2][1]
+    B3 = minTriangles[0][2][0] - minTriangles[0][1][0]
+    C3 = (-1) * B3 * minTriangles[0][2][1] + (-1) * A3 * minTriangles[0][2][0]
+    crossPointXF = (B2 * C3 - B3 * C2) / (A2 * B3 - A3 * B2)
+    crossPointYF = (C2 * A3 - C3 * A2) / (A2 * B3 - A3 * B2)
+    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+
+    A1 = -(minTriangles[1][0][0] - minTriangles[1][1][0])
+    A2 = -(minTriangles[1][2][0] - minTriangles[1][1][0])
+    B1 = minTriangles[1][1][1] - minTriangles[1][0][1]
+    B2 = minTriangles[1][1][1] - minTriangles[1][2][1]
+    C1 = (-1) * A1 * minTriangles[1][2][0] - B1 * minTriangles[1][2][1]
+    C2 = (-1) * A2 * minTriangles[1][0][0] - B2 * minTriangles[1][0][1]
+    crossPointXF = (B1 * C2 - B2 * C1) / (A1 * B2 - A2 * B1)
+    crossPointYF = (C1 * A2 - C2 * A1) / (A1 * B2 - A2 * B1)
+    canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
+                             fill="Red", width=3)
+    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+
+    A3 = minTriangles[1][0][1] - minTriangles[1][1][1]
+    B3 = minTriangles[1][1][0] - minTriangles[1][0][0]
+    C3 = (-1) * B3 * minTriangles[1][1][1] + (-1) * A3 * minTriangles[1][1][0]
+    crossPointXF = (B1 * C3 - B3 * C1) / (A1 * B3 - A3 * B1)
+    crossPointYF = (C1 * A3 - C3 * A1) / (A1 * B3 - A3 * B1)
+    canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+    A3 = minTriangles[1][1][1] - minTriangles[1][2][1]
+    B3 = minTriangles[1][2][0] - minTriangles[1][1][0]
+    C3 = (-1) * B3 * minTriangles[1][2][1] + (-1) * A3 * minTriangles[1][2][0]
+    crossPointXF = (B2 * C3 - B3 * C2) / (A2 * B3 - A3 * B2)
+    crossPointYF = (C2 * A3 - C3 * A2) / (A2 * B3 - A3 * B2)
+    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
+                             masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=3)
+
+
+    dotsArrayS.pop()
+    dotsArrayF.pop()
 
 def makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
     fDots.clear()
