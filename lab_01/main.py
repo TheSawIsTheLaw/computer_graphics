@@ -11,13 +11,23 @@ maxY = 0
 def masstX(x, xmin, k, xn = 30):
     """
        Масштабирование точки X
+
+       k - коэффициент масштабирования
+       xn - абсцисса начальной точки вывода
+       xmin - минимальное значение x в МСК
+       def rd - функция округления
     """
     return rd(xn + (x - xmin) * k)  # Промасштабированный x
 
 
 def masstY(y, ymax, k, yn = 30):
     """
-       Массштабирование точки Y
+       Масштабирование точки Y
+
+       k - коэффициент масштабирования
+       yn - абсцисса начальной точки вывода
+       ymax - максимальное значение y в МСК
+       def rd - функция округления
     """
     return rd(yn + (ymax - y) * k)  # Промасштабированный y
 
@@ -87,18 +97,24 @@ def makeAnswerWindow(minAnglesArray, angle, crossFX, crossFY, crossSX, crossSY):
     answerWindow = Tk()
     answerWindow.title("Ответ")
     answerLabel = Label(answerWindow, text = "Треугольники, фигурирующие в ответе:\nТреугольник №1:\nВершина №1: x = "
-                                             + "{:g}".format(minAnglesArray[0][0][0]) + "; y = " + "{:g}".format(minAnglesArray[0][0][1]) + ";\nВершина №2: x = "
-                                             + "{:g}".format(minAnglesArray[0][1][0]) + "; y = " + "{:g}".format(minAnglesArray[0][1][1]) + ";\nВершина №3: x = "
+                                             + "{:g}".format(minAnglesArray[0][0][0]) + "; y = " + "{:g}".format(
+        minAnglesArray[0][0][1]) + ";\nВершина №2: x = "
+                                             + "{:g}".format(minAnglesArray[0][1][0]) + "; y = " + "{:g}".format(
+        minAnglesArray[0][1][1]) + ";\nВершина №3: x = "
                                              + "{:g}".format(minAnglesArray[0][2][0]) + "; y = " + "{:g}".format(minAnglesArray[0][2][1]) + ";\n\nТреугольник "
                                                                                                                                             "№2:\nВершина №1: "
                                                                                                                                             "x = "
-                                             + "{:g}".format(minAnglesArray[1][0][0]) + "; y = " + "{:g}".format(minAnglesArray[1][0][1]) + ";\nВершина №2: x = "
-                                             + "{:g}".format(minAnglesArray[1][1][0]) + "; y = " + "{:g}".format(minAnglesArray[1][1][1]) + ";\nВершина №3: x = "
+                                             + "{:g}".format(minAnglesArray[1][0][0]) + "; y = " + "{:g}".format(
+        minAnglesArray[1][0][1]) + ";\nВершина №2: x = "
+                                             + "{:g}".format(minAnglesArray[1][1][0]) + "; y = " + "{:g}".format(
+        minAnglesArray[1][1][1]) + ";\nВершина №3: x = "
                                              + "{:g}".format(minAnglesArray[1][2][0]) + "; y = " + "{:g}".format(minAnglesArray[1][2][1]) + ";\n\n"
-                                                                                                                        "Точки пересечения высот первого "
-                                                                                                                        "треугольника:\nx = " + "{:g}".format(crossFX) + "; y = " + "{:g}".format(crossFY) +
-                                             "\nТочки пересечения высот второго треугольника:\nx = " + "{:g}".format(crossSX) + "; y = " + "{:g}".format(crossSY) +
-                                             "\n\nУгол, между прямой, соединяющей данные точки пересечения\nс осью абсцисс образуют угол: " +
+                                                                                                                                            "Точка пересечения высот первого "
+                                                                                                                                            "треугольника:\nx = " + "{:g}".format(
+        crossFX) + "; y = " + "{:g}".format(crossFY) +
+                                             "\nТочка пересечения высот второго треугольника:\nx = " + "{:g}".format(crossSX) + "; y = " + "{:g}".format(
+        crossSY) +
+                                             "\n\nУгол между прямой, соединяющей данные точки пересечения,\nи осью абсцисс равен: " +
                                              "{:g}".format(angle) + "°;\nЧто является наименьшим возможным значением угла\nв заданных условиях.",
                         font = ("consolas", 14))
     answerLabel.pack()
@@ -129,6 +145,7 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         maxY = pointArrayF[0][1]
         minY = pointArrayF[0][1]
 
+# Находим максимальные и минимальные значения по осям x и y
     for i in pointArrayS:
         if i[0] > maxX:
             maxX = i[0]
@@ -148,6 +165,7 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         if i[1] < minY:
             minY = i[1]
 
+# Глобальная переменная коэффициента масштабирования
     global k
     try:
         kx = 1000 / (maxX - minX)
@@ -157,7 +175,9 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         ky = 1000 / (maxY - minY)
     except ZeroDivisionError:
         ky = float("inf")
+# Берём минимальное, чтобы не наблюдать овалы вместо окружностей
     k = min(kx, ky)
+# Параметры для вывода самой первой введённой точки
     if len(pointArrayF) + len(pointArrayS) == 1:
         k = 1
         minX = minX - 450
@@ -168,6 +188,7 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
     canvasWindow.create_text(1040, masstY(0, maxY, k) - 20, text = "X")
     # print(minX, maxY)
     for i in pointArrayF:
+        # Получаем промасштабированные координаты
         x = masstX(i[0], minX, k)
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill = "Blue")
@@ -177,6 +198,7 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
             canvasWindow.create_text(x + 20, y + 15, text = "{:+g}\n{:+g}".format(rd(i[0], 1), rd(i[1], 1)))
 
     for i in pointArrayS:
+        # Получаем промасштабированные координаты
         x = masstX(i[0], minX, k)
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill = "Red")
@@ -284,6 +306,8 @@ def changePoint(pointArray, entry, listBox, canvasWindow, secPointArray, type):
 def isAngle(x1, x2, x3, y1, y2, y3):
     """
        Функция определения, образуют ли три переданные точки треугольник
+
+       Используется приравнивание формулы площади треугольника к нулю
     """
     if (y2 - y1) * (x3 - x1) != (y3 - y1) * (x2 - x1):
         return 1
@@ -336,14 +360,14 @@ def generateNotEnoughDotsError(type):
 
 def generateEqualTrianglesError():
     """
-           Окно ошибки: заданы два треугольника на одинаковых точках.
+           Окно ошибки: единственная прямая вырождается в точку.
     """
     errorWindow = Tk()
     errorWindow.title("Ошибка!")
     errorLabel = Label(errorWindow,
-                    text = "Заданы два треугольника на одинаковых вершинах, решение получено быть не может, \n"
-                           "так как соединяющий точки пересечения высот треугольников отрезок вырождается в точку.",
-                    font = ("consolas", 15))
+                       text = "Заданы два треугольника точки пересечения которых совпадают. Решение получено быть не может, \n"
+                              "так как соединяющий точки пересечения высот треугольников отрезок вырождается в точку.",
+                       font = ("consolas", 15))
     errorLabel.pack()
 
 
@@ -352,20 +376,26 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
         Функция, выполняющая задачу, поставленную во главу лабораторной работы
     """
     if len(dotsArrayF) < 3 and len(dotsArrayS) < 3:
+        # Не хватает точек в двух массивах
         generateNotEnoughDotsError(0)
         return
     elif len(dotsArrayS) < 3:
+        # Не хватает точек во втором
         generateNotEnoughDotsError(2)
         return
     elif len(dotsArrayF) < 3:
+        # Не хватает точек в во первом
         generateNotEnoughDotsError(1)
         return
 
     global k, minX, maxY
 
-    trianglesF = []
-    trianglesS = []
+    trianglesF = []  # Все треугольники по точкам первого множества
+    trianglesS = []  # Все треугольники по точкам первого множества
 
+    '''
+        Поиск всех треугольников
+    '''
     for i in range(len(dotsArrayF) - 2):
         for j in range(i + 1, len(dotsArrayF) - 1):
             for z in range(i + 2, len(dotsArrayF)):
@@ -392,6 +422,7 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
                     # canvasWindow.create_line(masstX(dotsArrayS[i][0], minX, k), masstY(dotsArrayS[i][1], maxY, k),
                     #                         masstX(dotsArrayS[z][0], minX, k), masstY(dotsArrayS[z][1], maxY, k), fill="Blue")
 
+    # Треугольники не были найдены в одном или двух массивах
     if not len(trianglesF) and not len(trianglesS):
         generateNoAnglesError(0)
         return
@@ -417,6 +448,7 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
         B2 = i[1][1] - i[2][1]
         C1 = (-1) * A1 * i[2][0] - B1 * i[2][1]
         C2 = (-1) * A2 * i[0][0] - B2 * i[0][1]
+        # Точки пересечения высот
         crossPointXF = (B1 * C2 - B2 * C1) / (A1 * B2 - A2 * B1)
         crossPointYF = (C1 * A2 - C2 * A1) / (A1 * B2 - A2 * B1)
 
@@ -427,18 +459,22 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
             B22 = j[1][1] - j[2][1]
             C11 = (-1) * A11 * j[2][0] - B11 * j[2][1]
             C22 = (-1) * A22 * j[0][0] - B22 * j[0][1]
+            # Точки пересечения высот
             crossPointXS = (B11 * C22 - B22 * C11) / (A11 * B22 - A22 * B11)
             crossPointYS = (C11 * A22 - C22 * A11) / (A11 * B22 - A22 * B11)
 
+            # Определяем тангенс угла между прямой и осью абсцисс
             crossingA = crossPointYF - crossPointYS
             crossingB = crossPointXS - crossPointXF
             try:
                 angle = abs(atan(crossingA / crossingB) * 180 / Pi)
             except ZeroDivisionError:
+                # Первая мнимальная прямая имеет наклон в 90 градусов
                 if minAngle == 90 and crossingA != crossingB:
                     minTriangles[0] = i
                     minTriangles[1] = j
             else:
+                # Берётся случай рассмотрения только острого угла наклона
                 if angle > 90:
                     angle = 180 - 90
                 if angle <= minAngle:
@@ -477,9 +513,11 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     YS = crossPointYS
     reRenderCanvas(canvasWindow, dotsArrayF, dotsArrayS)
 
+    # Соединения двух точек пересечения высот в треугольниках
     canvasWindow.create_line(masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
                              masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
                              fill = "Green", width = 6)
+    # Дублёры оси Х на концах этого отрезка
     canvasWindow.create_line(masstX(crossPointXF, minX, k) - 80, masstY(crossPointYF, maxY, k),
                              masstX(crossPointXF, minX, k) + 80, masstY(crossPointYF, maxY, k),
                              fill = "Black", width = 6)
@@ -487,12 +525,14 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
                              masstX(crossPointXS, minX, k) + 80, masstY(crossPointYS, maxY, k),
                              fill = "Black", width = 6)
 
+    # Высоты треугольника из второго множества
     canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
                              masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
                              fill = "#4284D3", width = 3)
     canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
                              masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill = "#4284D3", width = 2)
 
+    # Треугольник первого множества
     canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
                              masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k), fill = "Blue",
                              width = 3)
@@ -503,12 +543,14 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
                              masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
                              fill = "Blue", width = 3)
 
+    # Высоты треугольника первого множества
     canvasWindow.create_line(masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
                              masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
                              fill = "Purple", width = 2)
     canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
                              masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill = "Purple", width = 2)
 
+    # Дочерчиваем высоты до сторон треугольника (даже продолжений сторон треугольника)
     A3 = minTriangles[0][0][1] - minTriangles[0][1][1]
     B3 = minTriangles[0][1][0] - minTriangles[0][0][0]
     C3 = (-1) * B3 * minTriangles[0][1][1] + (-1) * A3 * minTriangles[0][1][0]
@@ -523,6 +565,8 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     crossPointYF = (C2 * A3 - C3 * A2) / (A2 * B3 - A3 * B2)
     canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
                              masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill = "Purple", width = 2)
+
+    # Треугольник второго множества
     canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
                              masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
                              fill = "Red",
@@ -534,6 +578,7 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
                              masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
                              fill = "Red", width = 3)
 
+    # Дочерчиваем высоты треугольника из второго множества
     A3 = minTriangles[1][0][1] - minTriangles[1][1][1]
     B3 = minTriangles[1][1][0] - minTriangles[1][0][0]
     C3 = (-1) * B3 * minTriangles[1][1][1] + (-1) * A3 * minTriangles[1][1][0]
@@ -555,7 +600,6 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     print(dotsArrayS)
 
     makeAnswerWindow(minTriangles, minAngle, XF, YF, XS, YS)
-
 
 
 def makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
@@ -594,15 +638,15 @@ def makeReference():
     "Обозначения на графической плоскости"
     "\n---------------------------------------------------------------------------------------------------------------\n"
     "Точки разных множест на плоскости изображены разными цветами:\n"
-    "СИНИМ цветом отображаются точки первого множества\n"
+    "СИНИМ цветом обозначаются точки первого множества\n"
     "КРАСНЫМ цветом обозначаются точки второго множества\n"
     "\n---------------------------------------------------------------------------------------------------------------\n"
     "СИНИМИ и КРАСНЫМИ отрезками показаны соотвественно треугольники из первого множества и из второго множества.\n"
     "\n---------------------------------------------------------------------------------------------------------------\n"
-    "СЕРЕНЕВЫМИ И СВЕТЛО-СИНИМИ (цвета морской волны) отрезками соотвественно показаны высоты в треугольнике множества 1 и множества 2\n"
+    "СЕРЕНЕВЫМИ И СВЕТЛО-СИНИМИ (цвета морской волны) отрезками соотвественно показаны высоты в\nтреугольнике множества 1 и множества 2\n"
     "\n---------------------------------------------------------------------------------------------------------------\n"
-    "ЗЕЛЁНЫЙ отрезок - прямая, соединяющая точки пересечения высот треугольников. ЧЁРНЫЕ прямые, параллельные оси\nабсцисс,\n"
-    "показывают образуемый с осью угол\n"
+    "ЗЕЛЁНЫЙ отрезок - прямая, соединяющая точки пересечения высот треугольников. ЧЁРНЫЕ прямые, параллельные оси\nабсцисс, "
+    "показывают образуемый с осью X угол (острый)\n"
     "\n---------------------------------------------------------------------------------------------------------------\n"
     "Лабораторная работа 1, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = ("consolas", 16))
     referenceLabel.pack()
