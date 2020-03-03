@@ -89,7 +89,9 @@ def makeAnswerWindow(minAnglesArray, angle, crossFX, crossFY, crossSX, crossSY):
     answerLabel = Label(answerWindow, text = "Треугольники, фигурирующие в ответе:\nТреугольник №1:\nВершина №1: x = "
                                              + "{:g}".format(minAnglesArray[0][0][0]) + "; y = " + "{:g}".format(minAnglesArray[0][0][1]) + ";\nВершина №2: x = "
                                              + "{:g}".format(minAnglesArray[0][1][0]) + "; y = " + "{:g}".format(minAnglesArray[0][1][1]) + ";\nВершина №3: x = "
-                                             + "{:g}".format(minAnglesArray[0][2][0]) + "; y = " + "{:g}".format(minAnglesArray[0][2][1]) + ";\n\nТреугольник №2:\nВершина №1: x = "
+                                             + "{:g}".format(minAnglesArray[0][2][0]) + "; y = " + "{:g}".format(minAnglesArray[0][2][1]) + ";\n\nТреугольник "
+                                                                                                                                            "№2:\nВершина №1: "
+                                                                                                                                            "x = "
                                              + "{:g}".format(minAnglesArray[1][0][0]) + "; y = " + "{:g}".format(minAnglesArray[1][0][1]) + ";\nВершина №2: x = "
                                              + "{:g}".format(minAnglesArray[1][1][0]) + "; y = " + "{:g}".format(minAnglesArray[1][1][1]) + ";\nВершина №3: x = "
                                              + "{:g}".format(minAnglesArray[1][2][0]) + "; y = " + "{:g}".format(minAnglesArray[1][2][1]) + ";\n\n"
@@ -332,6 +334,19 @@ def generateNotEnoughDotsError(type):
     errorLabel.pack()
 
 
+def generateEqualTrianglesError():
+    """
+           Окно ошибки: заданы два треугольника на одинаковых точках.
+    """
+    errorWindow = Tk()
+    errorWindow.title("Ошибка!")
+    errorLabel = Label(errorWindow,
+                    text = "Заданы два треугольника на одинаковых вершинах, решение получено быть не может, \n"
+                           "так как соединяющий точки пересечения высот треугольников отрезок вырождается в точку.",
+                    font = ("consolas", 15))
+    errorLabel.pack()
+
+
 def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     """
         Функция, выполняющая задачу, поставленную во главу лабораторной работы
@@ -420,7 +435,7 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
             try:
                 angle = abs(atan(crossingA / crossingB) * 180 / Pi)
             except ZeroDivisionError:
-                if minAngle == 90:
+                if minAngle == 90 and crossingA != crossingB:
                     minTriangles[0] = i
                     minTriangles[1] = j
             else:
@@ -433,6 +448,10 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
 
     print("Два треугольника, прямая, соединяющая точку пересечения высот которых, минимальна:")
     print(minTriangles)
+
+    if minTriangles == [[], []]:
+        generateEqualTrianglesError()
+        return
 
     A1 = -(minTriangles[0][0][0] - minTriangles[0][1][0])
     A2 = -(minTriangles[0][2][0] - minTriangles[0][1][0])
