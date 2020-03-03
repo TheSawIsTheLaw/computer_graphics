@@ -7,18 +7,23 @@ Pi = 3.141592
 minX = 0
 maxY = 0
 
-def masst(x, y, xmin, ymax, k, xn, yn, kx, ky):
-    kx = rd(xn + (x - xmin)*k) # Промасштабированный x
-    ky = rd(yn + (ymax - y)*k) # Промасштабированный y
-
+'''
+    Масштабирование точки X
+'''
 def masstX(x, xmin, k, xn = 30):
     return rd(xn + (x - xmin)*k) # Промасштабированный x
 
+'''
+    Массштабирование точки Y
+'''
 def masstY(y, ymax, k, yn = 30):
     return rd(yn + (ymax - y)*k) # Промасштабированный y
 
+'''
+    Проверенная функция математического округления, проверенная временем
+    feat. Voznica
+'''
 def rd(x,y=0):
-    ''' A classical mathematical rounding by Voznica '''
     m = int('1'+'0'*y) # multiplier - how many positions to the right
     q = x*m # shift to the right by multiplier
     c = int(q) # new number
@@ -27,9 +32,15 @@ def rd(x,y=0):
         c += 1
     return c/m
 
+'''
+    Отладочная команда
+'''
 def printDebug(var):
     print(var)
 
+'''
+    Каскадное меню->"Справка"->"Формулировка задания"
+'''
 def makeJobWindow():
     jobWindow = Tk()
 
@@ -39,23 +50,31 @@ def makeJobWindow():
                      text="На плоскости даны два множества точек.\n"
                           "Найти пару треугольников (каждый треугольник\n"
                           "в качестве вершин имеет три различные точки\n"
-                          "одного и того же множества; прямые, соединяющие тчоки пере-\n"
+                          "одного и того же множества; прямые, соединяющие точки пере-\n"
                           "сечения двух треугольников строятся на точках разных множеств)\n"
-                          "таких, что прямая, соединяющая точки пересечения высот, образует\n"
-                          "минимальный угол с осью абсцисс.",
+                          "таких, что прямая, соединяющая точки пересечения высот,\n"
+                          "образует минимальный угол с осью абсцисс.",
                      font=('consolas', 20))
     jobLabel.pack()
 
     jobWindow.mainloop()
 
+'''
+    Создание начального окна Canvas
+'''
 def makeCanvasStart(canvasWindow):
     canvasWindow.delete("all")
     canvasWindow.grid(row=0, column=4, rowspan=16)
 
     # Начальные Оси
-    canvasWindow.create_line(500, 1000, 500, 0, width=3, arrow=LAST, arrowshape="10 20 10")
+    canvasWindow.create_line(500, 1050, 500, 0, width=3, arrow=LAST, arrowshape="10 20 10")
+    canvasWindow.create_text(520, 10, text="Y")
     canvasWindow.create_line(0, 500, 1000, 500, width=3, arrow=LAST, arrowshape="10 20 10")
+    canvasWindow.create_text(1000, 480, text="X")
 
+'''
+    Генерация окна полного ответа
+'''
 def makeAnswerWindow(minAnglesArray, angle, crossFX, crossFY, crossSX, crossSY):
     answerWindow = Tk()
     answerWindow.title("Ответ")
@@ -74,6 +93,9 @@ def makeAnswerWindow(minAnglesArray, angle, crossFX, crossFY, crossSX, crossSY):
     answerLabel.pack()
     answerWindow.mainloop()
 
+'''
+    Функция обновления окна Canvas по текущим состояниям массивов точек
+'''
 def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
     canvasWindow.delete("all")
     global maxY, minX
@@ -129,17 +151,17 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         minX = minX - 450
         maxY = maxY + 450
     canvasWindow.create_line(masstX(0, minX, k), 1040, masstX(0, minX, k), 0, width=3, arrow=LAST, arrowshape="10 20 10")
+    canvasWindow.create_text(masstX(0, minX, k) + 20, 10, text="Y")
     canvasWindow.create_line(0, masstY(0, maxY, k), 1040, masstY(0, maxY, k), width=3, arrow=LAST, arrowshape="10 20 10")
+    canvasWindow.create_text(1040, masstY(0, maxY, k) - 20, text="X")
     #print(minX, maxY)
     for i in pointArrayF:
         x = masstX(i[0], minX, k)
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill="Blue")
         if y - 10 > 0:
-            canvasWindow.create_rectangle(x + 5, y + 10, x + 28, y - 25, fill="Yellow")
             canvasWindow.create_text(x + 17, y - 10, text=str(round(i[0], 1))+"\n"+str(round(i[1], 1)))
         else:
-            canvasWindow.create_rectangle(x + 5, y + 25, x + 28, y - 10, fill="Yellow")
             canvasWindow.create_text(x + 17, y + 10, text=str(round(i[0], 1)) + "\n" + str(round(i[1], 1)))
 
     for i in pointArrayS:
@@ -147,13 +169,14 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill="Red")
         if y + 10 < 1000:
-            canvasWindow.create_rectangle(x + 5, y + 25, x + 28, y - 10, fill="Yellow")
             canvasWindow.create_text(x + 17, y + 10, text=str(round(i[0], 1))+"\n"+str(round(i[1], 1)))
         else:
-            canvasWindow.create_rectangle(x + 5, y + 10, x + 28, y - 25, fill="Yellow")
             canvasWindow.create_text(x + 17, y - 10, text=str(round(i[0], 1)) + "\n" + str(round(i[1], 1)))
 
 
+''' 
+    Ошибка ввода точки
+'''
 def generateInputErrorWindow():
     errorWindow = Tk()
     errorWindow.title("Ошибка!")
@@ -161,6 +184,9 @@ def generateInputErrorWindow():
                                          ":\n'x y'\nПовторите попытку, пожалуйста.", font=("consolas", 15))
     errorLabel.pack()
 
+'''
+    Ошибка повтора точки
+'''
 def generateInputRepeatErrorWindow():
     errorWindow = Tk()
     errorWindow.title("Ошибка!")
@@ -169,6 +195,9 @@ def generateInputRepeatErrorWindow():
                        font=("consolas", 15))
     errorLabel.pack()
 
+'''
+    Функция добавления точки в ListBox и массив точек с непосредственным обновлением окна Canvas
+'''
 def addPoint(pointArray, entry, listBox, dotIndex, canvasWindow, secPointArray):
     inputString = entry.get()
     inputString = findall(r"[-+]?\d*\.?\d+|[-+]?\d*\.?\d+", inputString)
@@ -189,6 +218,9 @@ def addPoint(pointArray, entry, listBox, dotIndex, canvasWindow, secPointArray):
     print(pointArray)
     return 0
 
+'''
+    Ошибка кнопок работы с таблицей (удаление, изменение точки) - не выбрано ни одно значения в таблице
+'''
 def generateEmptyError():
     errorWindow = Tk()
     errorWindow.title("Ошибка!")
@@ -197,6 +229,9 @@ def generateEmptyError():
                        font=("consolas", 15))
     errorLabel.pack()
 
+'''
+    Функция кнопки "Удалить выбранную вершину"
+'''
 def deletePoint(pointArray, listBox, canvasWindow, secPointArray):
     if not listBox.curselection():
         generateEmptyError()
@@ -209,6 +244,9 @@ def deletePoint(pointArray, listBox, canvasWindow, secPointArray):
     print(pointArray)
     reRenderCanvas(canvasWindow, pointArray, secPointArray)
 
+'''
+    Функция кнопки "Изменить выбранную вершину"
+'''
 def changePoint(pointArray, entry, listBox, canvasWindow, secPointArray):
     if not listBox.curselection():
         generateEmptyError()
@@ -219,11 +257,17 @@ def changePoint(pointArray, entry, listBox, canvasWindow, secPointArray):
         deletePoint(pointArray, listBox, canvasWindow, secPointArray)
     print(pointArray)
 
+'''
+    Функция определения, образуют ли три переданные точки треугольник
+'''
 def isAngle(x1, x2, x3, y1, y2, y3):
     if (y2 - y1)*(x3 - x1) != (y3 - y1)*(x2 - x1):
         return 1
     return 0
 
+'''
+    Окно ошибки: отсутствуют точки, образующие треугольник.
+'''
 def generateNoAnglesError():
     errorWindow = Tk()
     errorWindow.title("Ошибка!")
@@ -232,7 +276,9 @@ def generateNoAnglesError():
                        font=("consolas", 15))
     errorLabel.pack()
 
-###################################################################
+'''
+    Функция, выполняющая задачу, поставленную во главу лабораторной работы
+'''
 def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     if len(dotsArrayS) < 3 and len(dotsArrayF) < 3:
         generateNoAnglesError()
@@ -343,14 +389,29 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
 
     canvasWindow.create_line(masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
                              masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
-                             fill="Green", width=4)
-    canvasWindow.create_line(masstX(crossPointXF, minX, k) - 40, masstY(crossPointYF, maxY, k),
-                             masstX(crossPointXF, minX, k) + 40, masstY(crossPointYF, maxY, k),
-                             fill="Black", width=3, dash=(4, 2))
-    canvasWindow.create_line(masstX(crossPointXS, minX, k) - 40, masstY(crossPointYS, maxY, k),
-                             masstX(crossPointXS, minX, k) + 40, masstY(crossPointYS, maxY, k),
-                             fill="Black", width=3, dash=(4, 2))
+                             fill="Green", width=6)
+    canvasWindow.create_line(masstX(crossPointXF, minX, k) - 80, masstY(crossPointYF, maxY, k),
+                             masstX(crossPointXF, minX, k) + 80, masstY(crossPointYF, maxY, k),
+                             fill="Black", width=6)
+    canvasWindow.create_line(masstX(crossPointXS, minX, k) - 80, masstY(crossPointYS, maxY, k),
+                             masstX(crossPointXS, minX, k) + 80, masstY(crossPointYS, maxY, k),
+                             fill="Black", width=6)
 
+    canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
+                             fill="Red", width=3)
+    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
+                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill="Red", width=2)
+
+    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
+                            masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k), fill="Blue",
+                             width=3)
+    canvasWindow.create_line(masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k),
+                             masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
+                             fill="Blue", width=3)
+    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
+                             masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
+                             fill="Blue", width=3)
 
     canvasWindow.create_line(masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
                              masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k),
@@ -372,13 +433,16 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     crossPointYF = (C2 * A3 - C3 * A2) / (A2 * B3 - A3 * B2)
     canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
                              masstX(crossPointXF, minX, k), masstY(crossPointYF, maxY, k), fill="Red", width=2)
-
-
-    canvasWindow.create_line(masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
-                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k),
-                             fill="Red", width=3)
     canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
-                             masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill="Red", width=2)
+                             masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
+                             fill="Blue",
+                             width=3)
+    canvasWindow.create_line(masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
+                             masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             fill="Blue", width=3)
+    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
+                             masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
+                             fill="Blue", width=3)
 
     A3 = minTriangles[1][0][1] - minTriangles[1][1][1]
     B3 = minTriangles[1][1][0] - minTriangles[1][0][0]
@@ -395,32 +459,14 @@ def executionPromotion(dotsArrayF, dotsArrayS, canvasWindow):
     canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
                              masstX(crossPointXS, minX, k), masstY(crossPointYS, maxY, k), fill="Red", width=2)
 
-    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
-                            masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k), fill="Blue",
-                             width=3)
-    canvasWindow.create_line(masstX(minTriangles[0][1][0], minX, k), masstY(minTriangles[0][1][1], maxY, k),
-                             masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
-                             fill="Blue", width=3)
-    canvasWindow.create_line(masstX(minTriangles[0][0][0], minX, k), masstY(minTriangles[0][0][1], maxY, k),
-                             masstX(minTriangles[0][2][0], minX, k), masstY(minTriangles[0][2][1], maxY, k),
-                             fill="Blue", width=3)
-
-    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
-                             masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
-                             fill="Blue",
-                             width=3)
-    canvasWindow.create_line(masstX(minTriangles[1][1][0], minX, k), masstY(minTriangles[1][1][1], maxY, k),
-                             masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
-                             fill="Blue", width=3)
-    canvasWindow.create_line(masstX(minTriangles[1][0][0], minX, k), masstY(minTriangles[1][0][1], maxY, k),
-                             masstX(minTriangles[1][2][0], minX, k), masstY(minTriangles[1][2][1], maxY, k),
-                             fill="Blue", width=3)
-
     makeAnswerWindow(minTriangles, minAngle, XF, YF, XS, YS)
 
     dotsArrayS.pop()
     dotsArrayF.pop()
 
+'''
+    Функция удаления всех заданных данных и очистки поял вывода
+'''
 def makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
     fDots.clear()
     sDots.clear()
@@ -428,19 +474,63 @@ def makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
     sListBox.delete(0, END)
     makeCanvasStart(canvasWindow)
 
+'''
+    Каскадное меню->"Справка"->"Справка"
+'''
+def makeReference():
+    referenceWindow = Tk()
+    referenceWindow.title("Справка")
+    referenceLabel = Label(referenceWindow, text=
+    "Показания к работе с ПО"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "Для добавления точки в одно из множеств требуется ввести координаты точки\n"
+    " (значения типа float в формате 'x y') в поле 'Координаты точки' и нажать кнопку 'Добавить'"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "Для удаления определённой точки из множества - выберите требуемую точку в списке (справа от поля 'Добавить')\n и "
+    "нажмите кнопку 'Удалить выбранную в списке точку'"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "Чтобы изменить выбранную в списке точку, требуется в поле 'Координаты точки' ввести точку, на которую\n"
+    "Вы желаете заменить выбранную, а после - нажать на кнопку 'Заменить выбранную в списке точку'"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "Для того, чтобы выполнить задание (см. вкладку 'Справка'-'Формулировка задания'), следует нажать на кнопку\n"
+    "'Исполнить предначертанное!'"
+    "\n\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\ \n"
+    "\n\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\ \n"
+    "Обозначения на графической плоскости"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "Точки разных множест на плоскости изображены разными цветами\n"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "СИНИМИ отрезками изображены треугольники, которые фигурируют в ответе\n"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "КРАСНЫМИ отрезками изображены по две высоты в данных треугольниках. Точка пересечения высот так же отображена\n"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "ЗЕЛЁНЫЙ отрезок - прямая, соединяющая точки пересечения высот треугольников. ЧЁРНЫЕ прямые, параллельные оси\nабсцисс, показывают образуемый с осью угол\n"
+    "\n---------------------------------------------------------------------------------------------------------------\n"
+    "Лабораторная работа 1, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font=("consolas", 16))
+    referenceLabel.pack()
+    referenceWindow.mainloop()
 
+'''
+    Функция создания каскадного меню
+'''
 def makeCascadeMenu(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
     rootMenu = Menu(rootWindow)
     rootWindow.config(menu=rootMenu)
 
     jobMenu = Menu(rootMenu)
-    jobMenu.add_command(label='Формулировка', command=makeJobWindow)
+    jobMenu.add_command(label='Формулировка задания', command=makeJobWindow)
+    jobMenu.add_command(label='Справка', command=makeReference)
+
     moreMenu = Menu(rootMenu)
     moreMenu.add_command(label='Очистить всё', command=lambda: makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox))
 
-    rootMenu.add_cascade(label='Задание', menu=jobMenu)
+
+    rootMenu.add_cascade(label='Справка', menu=jobMenu)
     rootMenu.add_cascade(label='Дополнительные возможности', menu=moreMenu)
 
+'''
+    Функция Создания главного окна
+'''
 def makeMainWindow():
     rootWindow = Tk()
     rootWindow.title("Рабораторная работа 1, Якуба Дмитрий, ИУ7-43Б")
