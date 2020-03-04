@@ -193,9 +193,9 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill = "Blue")
         if y - 10 > 0:
-            canvasWindow.create_text(x + 20, y - 15, text = "{:+g}\n{:+g}".format(rd(i[0], 1), rd(i[1], 1)))
+            canvasWindow.create_text(x + 20, y - 15, text = "({:+g};\n{:+g})".format(rd(i[0], 1), rd(i[1], 1)))
         else:
-            canvasWindow.create_text(x + 20, y + 15, text = "{:+g}\n{:+g}".format(rd(i[0], 1), rd(i[1], 1)))
+            canvasWindow.create_text(x + 20, y + 15, text = "({:+g};\n{:+g})".format(rd(i[0], 1), rd(i[1], 1)))
 
     for i in pointArrayS:
         # Получаем промасштабированные координаты
@@ -203,9 +203,9 @@ def reRenderCanvas(canvasWindow, pointArrayF, pointArrayS):
         y = masstY(i[1], maxY, k)
         canvasWindow.create_oval(x - 3, y - 3, x + 3, y + 3, fill = "Red")
         if y + 10 < 1000:
-            canvasWindow.create_text(x + 20, y + 15, text = "{:+g}\n{:+g}".format(rd(i[0], 1), rd(i[1], 1)))
+            canvasWindow.create_text(x + 20, y + 15, text = "({:+g};\n{:+g})".format(rd(i[0], 1), rd(i[1], 1)))
         else:
-            canvasWindow.create_text(x + 20, y - 15, text = "{:+g}\n{:+g}".format(rd(i[0], 1), rd(i[1], 1)))
+            canvasWindow.create_text(x + 20, y - 15, text = "({:+g};\n{:+g})".format(rd(i[0], 1), rd(i[1], 1)))
 
 
 def generateInputErrorWindow():
