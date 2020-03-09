@@ -1,5 +1,19 @@
 from tkinter import *
 from re import *
+from math import cos, pi, sin, radians
+
+fontSettingLabels = ("Source code pro", 20)
+fontSettingLower = ("Source code pro", 16)
+
+dotsArrayEll = []
+dotsArrayHead = []
+dotsArrayMouth = []
+dotsArrayLeftLeg = []
+dotsArrayRightLeg = []
+dotsArrayTale = []
+
+def startArrays():
+    print()
 
 def makeReference():
     """
@@ -10,37 +24,22 @@ def makeReference():
     referenceLabel = Label(referenceWindow, text =
     "Показания к работе с ПО"
     "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Для добавления точки в одно из множеств требуется ввести координаты точки\n"
-    " (значения типа float в формате 'x y') в поле 'Координаты точки' и нажать кнопку 'Добавить'"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Для удаления определённой точки из множества - выберите требуемую точку в списке (справа от поля 'Добавить')\n и "
-    "нажмите кнопку 'Удалить выбранную в списке точку'"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Чтобы изменить выбранную в списке точку, требуется в поле 'Координаты точки' ввести точку, на которую\n"
-    "Вы желаете заменить выбранную, а после - нажать на кнопку 'Заменить выбранную в списке точку'"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Для того, чтобы выполнить задание (см. вкладку 'Справка'-'Формулировка задания'), следует нажать на кнопку\n"
-    "'Исполнить предначертанное!'"
-    "\n\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\ \n"
-    "\n\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\ \n"
-    "Обозначения на графической плоскости"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Точки разных множест на плоскости изображены разными цветами:\n"
-    "СИНИМ цветом обозначаются точки первого множества\n"
-    "КРАСНЫМ цветом обозначаются точки второго множества\n"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "СИНИМИ и КРАСНЫМИ отрезками показаны соотвественно треугольники из первого множества и из второго множества.\n"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "СЕРЕНЕВЫМИ И СВЕТЛО-СИНИМИ (цвета морской волны) отрезками соотвественно показаны высоты в\nтреугольнике множества 1 и множества 2\n"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "ЗЕЛЁНЫЙ отрезок - прямая, соединяющая точки пересечения высот треугольников. ЧЁРНЫЕ прямые, параллельные оси\nабсцисс, "
-    "показывают образуемый с осью X угол (острый)\n"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Лабораторная работа 1, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = ("consolas", 16))
+    "Пау...\n"
+    "Лабораторная работа 2, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = fontSettingLabels)
     referenceLabel.pack()
     referenceWindow.mainloop()
 
-def makeCascadeMenu(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
+def makeJobWindow():
+    jobWindow = Tk()
+
+    Label(jobWindow, font = fontSettingLabels, text = "Преобразование изображения\n\nПо заданному исходному изображению реализовать три функции преобразования данного изображения:\n\n"
+                                                     "1. Перенос по заданным смещениям целого типа\n\n"
+                                                     "2. Масштабирование по двум заданным коэффициентам и двум координатам центра масштабирования\n\n"
+                                                     "3. Поворот на заданный угол и координатам центра поворота").grid()
+
+    jobWindow.mainloop()
+
+def makeCascadeMenu(rootWindow):
     """
         Функция создания каскадного меню
     """
@@ -51,11 +50,7 @@ def makeCascadeMenu(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox):
     jobMenu.add_command(label = 'Формулировка задания', command = makeJobWindow)
     jobMenu.add_command(label = 'Справка', command = makeReference)
 
-    moreMenu = Menu(rootMenu)
-    moreMenu.add_command(label = 'Очистить всё', command = lambda: makeClearAll(rootWindow, canvasWindow, fDots, sDots, fListBox, sListBox))
-
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
-    rootMenu.add_cascade(label = 'Дополнительные возможности', menu = moreMenu)
 
 
 def makeMainWindow():
@@ -64,9 +59,7 @@ def makeMainWindow():
     """
     rootWindow = Tk()
     rootWindow.title("Рабораторная работа 2, Якуба Дмитрий, ИУ7-43Б")
-    rootWindow.minsize(1800, 1000)
-    fontSettingLabels = ("Source code pro", 20)
-    fontSettingLower = ("Source code pro", 16)
+    rootWindow.minsize(1800, 920)
 
     Label(rootWindow, text = "Перенос", font = fontSettingLabels).grid(row = 0, column = 0, rowspan = 1, columnspan = 2)
     transferEntryX = Entry(rootWindow, font = fontSettingLower)
@@ -75,7 +68,7 @@ def makeMainWindow():
     transferEntryY.grid(row = 2, column = 1)
     Label(rootWindow, text = "dx:", font = fontSettingLower).grid(row = 1, column = 0, rowspan = 1)
     Label(rootWindow, text = "dy:", font = fontSettingLower).grid(row = 2, column = 0, rowspan = 1)
-    Button(rootWindow, text = "Выполнить преобразование\n'перенос'", font = ("consolas", 14), command=lambda: print("lul")).grid(row = 3, column = 0, columnspan = 2)
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'перенос'", command=lambda: print("lul")).grid(row = 3, column = 0, columnspan = 2)
     Label(font = fontSettingLower, text = "--------------------------------------------------------------------------------------------------------------").grid(row = 4, columnspan = 2)
 
     Label(rootWindow, text = "Масштабирование", font = fontSettingLabels).grid(row = 5, column = 0, rowspan = 1, columnspan = 2)
@@ -94,11 +87,35 @@ def makeMainWindow():
     Label(rootWindow, font = fontSettingLower, text = "Координата центра массштабирования по оси X:").grid(row = 8, column = 0)
     Label(rootWindow, font = fontSettingLower, text = "Координата центра массштабирования по оси Y:").grid(row = 9, column = 0)
 
-    Button(rootWindow, text = "Выполнить преобразование\n'массштабирование'", font = ("consolas", 14), command = lambda: print("lul")).grid(row = 10, column = 0,
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'масштабирование'", command = lambda: print("lul")).grid(row = 10, column = 0,
                                                                                                                                    columnspan = 2)
+    Label(font = fontSettingLower,
+          text = "--------------------------------------------------------------------------------------------------------------").grid(row = 11, columnspan = 2)
 
-    canvasWindow = Canvas(rootWindow, bg = "black", width = 1060, height = 1040)
-    canvasWindow.grid(row = 0, column = 4, rowspan = 16)
+    Label(rootWindow, font = fontSettingLower, text = "Поворот").grid(row = 12, columnspan = 2)
+    angleRotation = Entry(rootWindow, font = fontSettingLower)
+    centerRotationX = Entry(rootWindow, font = fontSettingLower)
+    centerRotationY = Entry(rootWindow, font = fontSettingLower)
+
+    angleRotation.grid(row = 13, column = 1)
+    centerRotationX.grid(row = 14, column = 1)
+    centerRotationY.grid(row = 15, column = 1)
+
+    Label(rootWindow, font = fontSettingLower, text = "Угол поворота:").grid(row = 13, column = 0)
+    Label(rootWindow, font = fontSettingLower, text = "Центр поворота по оси X:").grid(row = 14, column = 0)
+    Label(rootWindow, font = fontSettingLower, text = "Центр поворота по оси Y:").grid(row = 15, column = 0)
+
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'поворот'", command = lambda: print("lul")).grid(row = 16, columnspan = 2)
+
+    Label(font = fontSettingLower,
+          text = "--------------------------------------------------------------------------------------------------------------").grid(row = 17,
+                                                                                                                                        columnspan = 2)
+    Button(rootWindow, font = fontSettingLower, text = "Вернуться на шаг назад", command = lambda: print("lul")).grid(row = 18, columnspan = 2)
+
+    canvasWindow = Canvas(rootWindow, bg = "black", width = 1075, height = 1055)
+    canvasWindow.grid(row = 0, column = 3, rowspan = 20)
+
+    makeCascadeMenu(rootWindow)
 
     rootWindow.mainloop()
 
