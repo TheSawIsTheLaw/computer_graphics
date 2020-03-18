@@ -26,9 +26,6 @@ def fillEll(canvasWindow):
         i[0] += 550
         i[1] += 550
 
-    for i in range(len(dotsArrayEll) - 1):
-        canvasWindow.create_line(dotsArrayEll[i][0], dotsArrayEll[i][1], dotsArrayEll[i + 1][0], dotsArrayEll[i + 1][1], fill = "blue", width = 3)
-
 
 def fillHead(canvasWindow):
     global dotsArrayHead
@@ -42,9 +39,6 @@ def fillHead(canvasWindow):
         i[0] += 400
         i[1] += 398
 
-    for i in range(len(dotsArrayHead) - 1):
-        canvasWindow.create_line(dotsArrayHead[i][0], dotsArrayHead[i][1], dotsArrayHead[i + 1][0], dotsArrayHead[i + 1][1], fill = "blue", width = 3)
-
 
 def fillMouth(canvasWindow):
     global dotsArrayMouth
@@ -56,22 +50,15 @@ def fillMouth(canvasWindow):
         i[0] += 370
         i[1] += 398
 
-    for i in range(len(dotsArrayMouth) - 1):
-        canvasWindow.create_line(dotsArrayMouth[i][0], dotsArrayMouth[i][1], dotsArrayMouth[i + 1][0], dotsArrayMouth[i + 1][1], fill = "blue", width = 3)
-    canvasWindow.create_line(dotsArrayMouth[0][0], dotsArrayMouth[0][1], dotsArrayMouth[2][0], dotsArrayMouth[2][1], fill = "blue", width = 3)
 
 def fillLeftLeg(canvasWindow):
     dotsArrayLeftLeg.append([500, 686])
     dotsArrayLeftLeg.append([450, 786])
 
-    canvasWindow.create_line(dotsArrayLeftLeg[0][0], dotsArrayLeftLeg[0][1], dotsArrayLeftLeg[1][0], dotsArrayLeftLeg[1][1], fill = "blue", width = 3)
-
 
 def fillRightLeg(canvasWindow):
     dotsArrayRightLeg.append([600, 686])
     dotsArrayRightLeg.append([650, 786])
-
-    canvasWindow.create_line(dotsArrayRightLeg[0][0], dotsArrayRightLeg[0][1], dotsArrayRightLeg[1][0], dotsArrayRightLeg[1][1], fill = "blue", width = 3)
 
 
 def fillTale(canvasWindow):
@@ -79,19 +66,44 @@ def fillTale(canvasWindow):
     dotsArrayTale.append([810, 490])
     dotsArrayTale.append([690, 480])
 
-    for i in range(len(dotsArrayTale) - 1):
-        canvasWindow.create_line(dotsArrayTale[i][0], dotsArrayTale[i][1], dotsArrayTale[i + 1][0], dotsArrayTale[i + 1][1], fill = "blue", width = 3)
-    canvasWindow.create_line(dotsArrayTale[0][0], dotsArrayTale[0][1], dotsArrayTale[2][0], dotsArrayTale[2][1], fill = "blue", width = 3)
-
 
 def fillWing(canvasWindow):
     dotsArrayWing.append([550, 550])
     dotsArrayWing.append([650, 550])
     dotsArrayWing.append([720, 700])
 
+
+def printAll(canvasWindow):
+    canvasWindow.delete(ALL)
+
+    for i in range(len(dotsArrayEll) - 1):
+        canvasWindow.create_line(dotsArrayEll[i][0], dotsArrayEll[i][1], dotsArrayEll[i + 1][0], dotsArrayEll[i + 1][1], fill = "blue", width = 3)
+
+    for i in range(len(dotsArrayHead) - 1):
+        canvasWindow.create_line(dotsArrayHead[i][0], dotsArrayHead[i][1], dotsArrayHead[i + 1][0], dotsArrayHead[i + 1][1], fill = "blue", width = 3)
+
+    for i in range(len(dotsArrayMouth) - 1):
+        canvasWindow.create_line(dotsArrayMouth[i][0], dotsArrayMouth[i][1], dotsArrayMouth[i + 1][0], dotsArrayMouth[i + 1][1], fill = "blue", width = 3)
+    canvasWindow.create_line(dotsArrayMouth[0][0], dotsArrayMouth[0][1], dotsArrayMouth[2][0], dotsArrayMouth[2][1], fill = "blue", width = 3)
+
+    canvasWindow.create_line(dotsArrayLeftLeg[0][0], dotsArrayLeftLeg[0][1], dotsArrayLeftLeg[1][0], dotsArrayLeftLeg[1][1], fill = "blue", width = 3)
+
+    canvasWindow.create_line(dotsArrayRightLeg[0][0], dotsArrayRightLeg[0][1], dotsArrayRightLeg[1][0], dotsArrayRightLeg[1][1], fill = "blue", width = 3)
+
+    for i in range(len(dotsArrayTale) - 1):
+        canvasWindow.create_line(dotsArrayTale[i][0], dotsArrayTale[i][1], dotsArrayTale[i + 1][0], dotsArrayTale[i + 1][1], fill = "blue", width = 3)
+    canvasWindow.create_line(dotsArrayTale[0][0], dotsArrayTale[0][1], dotsArrayTale[2][0], dotsArrayTale[2][1], fill = "blue", width = 3)
+
     for i in range(len(dotsArrayWing) - 1):
         canvasWindow.create_line(dotsArrayWing[i][0], dotsArrayWing[i][1], dotsArrayWing[i + 1][0], dotsArrayWing[i + 1][1], fill = "blue", width = 3)
     canvasWindow.create_line(dotsArrayWing[0][0], dotsArrayWing[0][1], dotsArrayWing[2][0], dotsArrayWing[2][1], fill = "blue", width = 3)
+
+    printOXY(canvasWindow)
+
+
+def printOXY(canvasWindow):
+    canvasWindow.create_line(535, 0, 535, 1055)
+    canvasWindow.create_line(0, 525, 1075, 525)
 
 
 def startArrays(canvasWindow):
@@ -103,8 +115,60 @@ def startArrays(canvasWindow):
     fillTale(canvasWindow)
     fillWing(canvasWindow)
 
-    #printAll()
+    printAll(canvasWindow)
+    printOXY(canvasWindow)
 
+
+def makeErrorBadXTransfer():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение смещения по оси X")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задана координата смещения по оси X:\n"
+                                                               "Значение должно быть единственным и целочисленным.").grid()
+
+    error.mainloop()
+
+
+def makeErrorBadYTransfer():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение смещения по оси Y")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задана координата смещения по оси Y:\n"
+                                                  "Значение должно быть единственным и целочисленным.").grid()
+
+    error.mainloop()
+
+
+def transferArray(array, transferX, transferY):
+    for i in array:
+        i[0] += transferX
+        i[1] += transferY
+
+
+def transferImage(canvasWindow, entryX, entryY):
+    try:
+        xTransfer = entryX.get()
+        xTransfer = int(xTransfer)
+    except Exception:
+        makeErrorBadXTransfer()
+        return
+
+    try:
+        yTransfer = entryY.get()
+        yTransfer = int(yTransfer)
+    except Exception:
+        makeErrorBadYTransfer()
+        return
+
+    transferArray(dotsArrayTale, xTransfer, yTransfer)
+    transferArray(dotsArrayLeftLeg, xTransfer, yTransfer)
+    transferArray(dotsArrayMouth, xTransfer, yTransfer)
+    transferArray(dotsArrayHead, xTransfer, yTransfer)
+    transferArray(dotsArrayEll, xTransfer, yTransfer)
+    transferArray(dotsArrayRightLeg, xTransfer, yTransfer)
+    transferArray(dotsArrayWing, xTransfer, yTransfer)
+
+    printAll(canvasWindow)
 
 def makeReference():
     """
@@ -162,7 +226,9 @@ def makeMainWindow():
     transferEntryY.grid(row = 2, column = 1)
     Label(rootWindow, text = "dx:", font = fontSettingLower).grid(row = 1, column = 0, rowspan = 1)
     Label(rootWindow, text = "dy:", font = fontSettingLower).grid(row = 2, column = 0, rowspan = 1)
-    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'перенос'", command = lambda: print("lul")).grid(row = 3, column = 0,
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'перенос'", command = lambda: transferImage(canvasWindow, transferEntryX,
+                                                                                                                              transferEntryY)).grid(row = 3,
+                                                                                                                                                    column = 0,
                                                                                                                                    columnspan = 2)
     Label(font = fontSettingLower,
           text = "--------------------------------------------------------------------------------------------------------------").grid(row = 4, columnspan = 2)
@@ -202,8 +268,8 @@ def makeMainWindow():
     Label(rootWindow, font = fontSettingLower, text = "Центр поворота по оси X:").grid(row = 14, column = 0)
     Label(rootWindow, font = fontSettingLower, text = "Центр поворота по оси Y:").grid(row = 15, column = 0)
 
-    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'поворот'", command = lambda: startArrays(canvasWindow)).grid(row = 16,
-                                                                                                                                                columnspan = 2)
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'поворот'", command = lambda: print()).grid(row = 16,
+                                                                                                                              columnspan = 2)
 
     Label(font = fontSettingLower,
           text = "--------------------------------------------------------------------------------------------------------------").grid(row = 17,
@@ -214,6 +280,8 @@ def makeMainWindow():
     canvasWindow.grid(row = 0, column = 3, rowspan = 20)
 
     makeCascadeMenu(rootWindow)
+
+    startArrays(canvasWindow)
 
     rootWindow.mainloop()
 
