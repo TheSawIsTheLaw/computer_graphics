@@ -13,6 +13,40 @@ dotsArrayRightLeg = []
 dotsArrayTale = []
 dotsArrayWing = []
 
+dotsArrayEllPrev = []
+dotsArrayHeadPrev = []
+dotsArrayMouthPrev = []
+dotsArrayLeftLegPrev = []
+dotsArrayRightLegPrev = []
+dotsArrayTalePrev = []
+dotsArrayWingPrev = []
+
+
+def copy(toius, froomius):
+    toius.clear()
+    for i in froomius:
+        toius.append([i[0], i[1]])
+
+
+def copyAllToPrev():
+    copy(dotsArrayTalePrev, dotsArrayTale)
+    copy(dotsArrayLeftLegPrev, dotsArrayLeftLeg)
+    copy(dotsArrayMouthPrev, dotsArrayMouth)
+    copy(dotsArrayHeadPrev, dotsArrayHead)
+    copy(dotsArrayEllPrev, dotsArrayEll)
+    copy(dotsArrayRightLegPrev, dotsArrayRightLeg)
+    copy(dotsArrayWingPrev, dotsArrayWing)
+
+
+def copyAllFromPrev():
+    copy(dotsArrayTale, dotsArrayTalePrev)
+    copy(dotsArrayLeftLeg, dotsArrayLeftLegPrev)
+    copy(dotsArrayMouth, dotsArrayMouthPrev)
+    copy(dotsArrayHead, dotsArrayHeadPrev)
+    copy(dotsArrayEll, dotsArrayEllPrev)
+    copy(dotsArrayRightLeg, dotsArrayRightLegPrev)
+    copy(dotsArrayWing, dotsArrayWingPrev)
+
 
 def fillEll(canvasWindow):
     global dotsArrayEll
@@ -115,6 +149,8 @@ def startArrays(canvasWindow):
     fillTale(canvasWindow)
     fillWing(canvasWindow)
 
+    copyAllToPrev()
+
     printAll(canvasWindow)
     printOXY(canvasWindow)
 
@@ -160,6 +196,8 @@ def transferImage(canvasWindow, entryX, entryY):
         makeErrorBadYTransfer()
         return
 
+    copyAllToPrev()
+
     transferArray(dotsArrayTale, xTransfer, yTransfer)
     transferArray(dotsArrayLeftLeg, xTransfer, yTransfer)
     transferArray(dotsArrayMouth, xTransfer, yTransfer)
@@ -167,6 +205,89 @@ def transferImage(canvasWindow, entryX, entryY):
     transferArray(dotsArrayEll, xTransfer, yTransfer)
     transferArray(dotsArrayRightLeg, xTransfer, yTransfer)
     transferArray(dotsArrayWing, xTransfer, yTransfer)
+
+    printAll(canvasWindow)
+
+
+def makeErrorBadAngle():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение угла поворота")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан угол поворота:\n"
+                                                  "Значение должно быть единственным и в форме значения с плавающей точкой.").grid()
+
+    error.mainloop()
+
+
+def makeErrorBadXTurn():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение центра поворота по оси X")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан центр поворота по оси X:\n"
+                                                  "Значение должно быть единственным и целочисленным.").grid()
+
+    error.mainloop()
+
+
+def makeErrorBadYTurn():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение центра поворота по оси Y")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан центр поворота по оси Y:\n"
+                                                  "Значение должно быть единственным и целочисленным.").grid()
+
+    error.mainloop()
+
+
+def turnArray(array, centerX, centerY, cosAngle, sinAngle):
+    for i in array:
+        i[0] = centerX + (i[0] - centerX)*cosAngle + (i[1] - centerY)*sinAngle
+        i[1] = centerY + (i[1] - centerY)*cosAngle + (i[0] - centerX)*sinAngle
+
+
+def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
+    try:
+        angle = angleEnt.get()
+        angle = float(angle)
+    except Exception:
+        makeErrorBadAngle()
+        return
+
+    try:
+        centerX = centerXEnt.get()
+        centerX = int(centerX)
+    except Exception:
+        makeErrorBadXTurn()
+        return
+
+    try:
+        centerY = centerYEnt.get()
+        centerY = int(centerY)
+    except Exception:
+        makeErrorBadYTurn()
+        return
+
+    angle = radians(angle)
+    cosAngle = cos(angle)
+    sinAngle = cos(angle)
+
+    global dotsArrayWingPrev
+    global dotsArrayRightLegPrev
+    global dotsArrayLeftLegPrev
+    global dotsArrayEllPrev
+    global dotsArrayMouthPrev
+    global dotsArrayTalePrev
+    global dotsArrayHeadPrev
+
+    copyAllToPrev()
+
+    turnArray(dotsArrayWing, centerX, centerY, cosAngle, sinAngle)
+    turnArray(dotsArrayRightLeg, centerX, centerY, cosAngle, sinAngle)
+    turnArray(dotsArrayEll, centerX, centerY, cosAngle, sinAngle)
+    turnArray(dotsArrayHead, centerX, centerY, cosAngle, sinAngle)
+    turnArray(dotsArrayMouth, centerX, centerY, cosAngle, sinAngle)
+    turnArray(dotsArrayLeftLeg, centerX, centerY, cosAngle, sinAngle)
+    turnArray(dotsArrayTale, centerX, centerY, cosAngle, sinAngle)
 
     printAll(canvasWindow)
 
@@ -209,6 +330,12 @@ def makeCascadeMenu(rootWindow):
     jobMenu.add_command(label = 'Справка', command = makeReference)
 
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
+
+
+def flockGoBack(canvasWindow):
+    copyAllFromPrev()
+
+    printAll(canvasWindow)
 
 
 def makeMainWindow():
@@ -255,7 +382,7 @@ def makeMainWindow():
           text = "--------------------------------------------------------------------------------------------------------------").grid(row = 11,
                                                                                                                                         columnspan = 2)
 
-    Label(rootWindow, font = fontSettingLower, text = "Поворот").grid(row = 12, columnspan = 2)
+    Label(rootWindow, font = fontSettingLabels, text = "Поворот").grid(row = 12, columnspan = 2)
     angleRotation = Entry(rootWindow, font = fontSettingLower)
     centerRotationX = Entry(rootWindow, font = fontSettingLower)
     centerRotationY = Entry(rootWindow, font = fontSettingLower)
@@ -268,13 +395,15 @@ def makeMainWindow():
     Label(rootWindow, font = fontSettingLower, text = "Центр поворота по оси X:").grid(row = 14, column = 0)
     Label(rootWindow, font = fontSettingLower, text = "Центр поворота по оси Y:").grid(row = 15, column = 0)
 
-    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'поворот'", command = lambda: print()).grid(row = 16,
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'поворот'", command = lambda: turnImage(canvasWindow, angleRotation,
+                                                                                                                          centerRotationX,
+                                                                                                                          centerRotationY)).grid(row = 16,
                                                                                                                               columnspan = 2)
 
     Label(font = fontSettingLower,
           text = "--------------------------------------------------------------------------------------------------------------").grid(row = 17,
                                                                                                                                         columnspan = 2)
-    Button(rootWindow, font = fontSettingLower, text = "Вернуться на шаг назад", command = lambda: print("lul")).grid(row = 18, columnspan = 2)
+    Button(rootWindow, font = fontSettingLower, text = "Вернуться на шаг назад", command = lambda: flockGoBack(canvasWindow)).grid(row = 18, columnspan = 2)
 
     canvasWindow = Canvas(rootWindow, bg = "yellow", width = 1075, height = 1055)
     canvasWindow.grid(row = 0, column = 3, rowspan = 20)
