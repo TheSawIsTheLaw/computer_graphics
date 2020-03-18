@@ -1,9 +1,12 @@
 from tkinter import *
 from re import *
 from math import *
+from fractions import *
 
 fontSettingLabels = ("Source code pro", 20)
 fontSettingLower = ("Source code pro", 16)
+
+frac = 0
 
 dotsArrayEll = []
 dotsArrayHead = []
@@ -241,8 +244,9 @@ def makeErrorBadYTurn():
 
 def turnArray(array, centerX, centerY, cosAngle, sinAngle):
     for i in array:
+        rememberX = i[0]
         i[0] = centerX + (i[0] - centerX)*cosAngle + (i[1] - centerY)*sinAngle
-        i[1] = centerY + (i[1] - centerY)*cosAngle + (i[0] - centerX)*sinAngle
+        i[1] = centerY + (i[1] - centerY)*cosAngle - (rememberX - centerX)*sinAngle
 
 
 def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
@@ -269,7 +273,7 @@ def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
 
     angle = radians(angle)
     cosAngle = cos(angle)
-    sinAngle = cos(angle)
+    sinAngle = sin(angle)
 
     global dotsArrayWingPrev
     global dotsArrayRightLegPrev
@@ -290,6 +294,10 @@ def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
     turnArray(dotsArrayTale, centerX, centerY, cosAngle, sinAngle)
 
     printAll(canvasWindow)
+    ### DEBUG ###
+    canvasWindow.create_line(centerX, 0, centerX, 1055)
+    canvasWindow.create_line(0, centerY, 1075, centerY)
+    ### DEBUG ###
 
 def makeReference():
     """
