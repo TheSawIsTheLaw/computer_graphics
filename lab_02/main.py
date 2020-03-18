@@ -275,14 +275,6 @@ def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
     cosAngle = cos(angle)
     sinAngle = sin(angle)
 
-    global dotsArrayWingPrev
-    global dotsArrayRightLegPrev
-    global dotsArrayLeftLegPrev
-    global dotsArrayEllPrev
-    global dotsArrayMouthPrev
-    global dotsArrayTalePrev
-    global dotsArrayHeadPrev
-
     copyAllToPrev()
 
     turnArray(dotsArrayWing, centerX, centerY, cosAngle, sinAngle)
@@ -294,10 +286,102 @@ def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
     turnArray(dotsArrayTale, centerX, centerY, cosAngle, sinAngle)
 
     printAll(canvasWindow)
-    ### DEBUG ###
+    ### DEBUG/?RELEASE? ###
     canvasWindow.create_line(centerX, 0, centerX, 1055)
     canvasWindow.create_line(0, centerY, 1075, centerY)
-    ### DEBUG ###
+    ### DEBUG/?RELEASE? ###
+
+
+def makeErrorBadCoefXScale():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение коэффициента масштабирования по оси X:")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан коэффициент масштабирования по оси X:\n"
+                                                  "Значение должно быть единственным и является значение с плавающей точкой.").grid()
+
+    error.mainloop()
+
+
+def makeErrorBadCoefYScale():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение коэффициента масштабирования по оси Y:")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан коэффициент масштабирования по оси Y:\n"
+                                                  "Значение должно быть единственным и является значение с плавающей точкой.").grid()
+
+    error.mainloop()
+
+
+def makeErrorBadCenterXScale():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение центра масштабирования по оси X:")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан центр масштабирования по оси X:\n"
+                                                  "Значение должно быть единственным и целочисленным.").grid()
+
+    error.mainloop()
+
+
+def makeErrorBadCenterYScale():
+    error = Tk()
+    error.title("Ошибка! Неверно задано значение центра масштабирования по оси Y:")
+
+    Label(error, font = fontSettingLabels, text = "Неверно задан центр масштабирования по оси Y:\n"
+                                                  "Значение должно быть единственным и целочисленным.").grid()
+
+    error.mainloop()
+
+
+def scaleArray(array, coefX, coefY, centerX, centerY):
+    for i in array:
+        i[0] = i[0] * coefX + (1 - coefX)*centerX
+        i[1] = i[1] * coefY + (1 - coefY)*centerY
+
+
+def scaleImage(canvasWindow, coefXEnt, coefYEnt, centerXEnt, centerYEnt):
+    try:
+        coefX = coefXEnt.get()
+        coefX = float(coefX)
+    except Exception:
+        makeErrorBadCoefXScale()
+        return
+
+    try:
+        coefY = coefYEnt.get()
+        coefY = float(coefY)
+    except Exception:
+        makeErrorBadCoefYScale()
+        return
+
+    try:
+        centerX = centerXEnt.get()
+        centerX = int(centerX)
+    except Exception:
+        makeErrorBadCenterXScale()
+        return
+
+    try:
+        centerY = centerYEnt.get()
+        centerY = int(centerY)
+    except Exception:
+        makeErrorBadCenterYScale()
+        return
+
+    copyAllToPrev()
+
+    scaleArray(dotsArrayWing, coefX, coefY, centerX, centerY)
+    scaleArray(dotsArrayRightLeg, coefX, coefY, centerX, centerY)
+    scaleArray(dotsArrayEll, coefX, coefY, centerX, centerY)
+    scaleArray(dotsArrayHead, coefX, coefY, centerX, centerY)
+    scaleArray(dotsArrayMouth, coefX, coefY, centerX, centerY)
+    scaleArray(dotsArrayLeftLeg, coefX, coefY, centerX, centerY)
+    scaleArray(dotsArrayTale, coefX, coefY, centerX, centerY)
+
+    printAll(canvasWindow)
+    ### DEBUG/?RELEASE? ###
+    canvasWindow.create_line(centerX, 0, centerX, 1055)
+    canvasWindow.create_line(0, centerY, 1075, centerY)
+    ### DEBUG/?RELEASE? ###
 
 def makeReference():
     """
@@ -384,7 +468,7 @@ def makeMainWindow():
     Label(rootWindow, font = fontSettingLower, text = "Координата центра массштабирования по оси X:").grid(row = 8, column = 0)
     Label(rootWindow, font = fontSettingLower, text = "Координата центра массштабирования по оси Y:").grid(row = 9, column = 0)
 
-    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'масштабирование'", command = lambda: print("lul")).grid(row = 10, column = 0,
+    Button(rootWindow, font = fontSettingLower, text = "Выполнить преобразование\n'масштабирование'", command = lambda: scaleImage(canvasWindow, masstXCoef, masstYCoef, centerX, centerY)).grid(row = 10, column = 0,
                                                                                                                                            columnspan = 2)
     Label(font = fontSettingLower,
           text = "--------------------------------------------------------------------------------------------------------------").grid(row = 11,
