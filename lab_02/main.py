@@ -1,7 +1,5 @@
 from tkinter import *
-from re import *
 from math import *
-from fractions import *
 
 fontSettingLabels = ("Source code pro", 20)
 fontSettingLower = ("Source code pro", 16)
@@ -286,10 +284,8 @@ def turnImage(canvasWindow, angleEnt, centerXEnt, centerYEnt):
     turnArray(dotsArrayTale, centerX, centerY, cosAngle, sinAngle)
 
     printAll(canvasWindow)
-    ### DEBUG/?RELEASE? ###
-    canvasWindow.create_line(centerX, 0, centerX, 1055)
-    canvasWindow.create_line(0, centerY, 1075, centerY)
-    ### DEBUG/?RELEASE? ###
+    canvasWindow.create_line(centerX, 0, centerX, 1055, fill="red")
+    canvasWindow.create_line(0, centerY, 1075, centerY, fill="red")
 
 
 def makeErrorBadCoefXScale():
@@ -378,10 +374,8 @@ def scaleImage(canvasWindow, coefXEnt, coefYEnt, centerXEnt, centerYEnt):
     scaleArray(dotsArrayTale, coefX, coefY, centerX, centerY)
 
     printAll(canvasWindow)
-    ### DEBUG/?RELEASE? ###
-    canvasWindow.create_line(centerX, 0, centerX, 1055)
-    canvasWindow.create_line(0, centerY, 1075, centerY)
-    ### DEBUG/?RELEASE? ###
+    canvasWindow.create_line(centerX, 0, centerX, 1055, fill="red")
+    canvasWindow.create_line(0, centerY, 1075, centerY, fill="red")
 
 def makeReference():
     """
@@ -391,8 +385,10 @@ def makeReference():
     referenceWindow.title("Справка")
     referenceLabel = Label(referenceWindow, text =
     "Показания к работе с ПО"
-    "\n---------------------------------------------------------------------------------------------------------------\n"
-    "Пау...\n"
+    "\n-------------------------------------------------------------------------------------------------------------\n"
+    "Для того, чтобы выполнить над рисунком одно из преобразований - \nвведите в поля преобразования требуемые данные\n"
+    "и нажмите соответственную кнопку 'выполнить преобразование ...',\n где ... - название преобразования"
+    "\n-------------------------------------------------------------------------------------------------------------\n"
     "Лабораторная работа 2, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = fontSettingLabels)
     referenceLabel.pack()
     referenceWindow.mainloop()
@@ -400,6 +396,7 @@ def makeReference():
 
 def makeJobWindow():
     jobWindow = Tk()
+    jobWindow.title("Формулировка задания")
 
     Label(jobWindow, font = fontSettingLabels,
           text = "Преобразование изображения\n\nПо заданному исходному изображению реализовать три функции преобразования данного изображения:\n\n"
