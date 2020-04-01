@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import colorchooser
 from math import *
 from tkinter import ttk
 
@@ -72,10 +73,19 @@ def makeMainWindow():
     Button(rootWindow, text = "Построить отрезок", font = fontSettingLower, command = print()).grid(row = 5, columnspan = 5)
 
     Label(rootWindow, text = "Угол поворота при построении каждого отрезка (в градусах): ", font = fontSettingLower).grid(row = 6, columnspan = 4)
-    Entry(rootWindow, font = fontSettingLower).grid(row = 6, column = 4)
+    angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 6, column = 4)
 
-    canvasWindow = Canvas(rootWindow, bg = "white", width = 1075, height = 1055)
+    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = print()).grid(row = 7, column = 0)
+    canvasFirstColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasFirstColor.grid(row = 7, column = 1)
+
+    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = print()).grid(row = 7, column = 2)
+    canvasFirstColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasFirstColor.grid(row = 7, column = 3)
+
+    canvasWindow = Canvas(rootWindow, bg = "white", width = 1075, height = 1017, borderwidth = 5, relief = RIDGE)
     canvasWindow.grid(row = 0, column = 6, rowspan = 20)
+
 
     ''' QUICKLY
         Button(rootWindow, text = "", font = fontSettingLower, command = print()).grid(row = , column = , columnspan =, rowspan = )
@@ -83,6 +93,7 @@ def makeMainWindow():
         Label(rootWindow, text = "", font = fontSettingLower).grid(row = , column = , columnspan =, rowspan = )
     '''
     # EXAMPLE FOR PIXEL WORK
+    # Хеххехехеххехехеххех colorchooser.askcolor()
     # img = PhotoImage(width = 1075, height = 1055)
     # canvasWindow.create_image((1075, 1055
     # ), image=img, state = "normal")
