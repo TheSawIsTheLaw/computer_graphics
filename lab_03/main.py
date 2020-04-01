@@ -72,7 +72,7 @@ def makeMainWindow():
 
     Button(rootWindow, text = "Построить отрезок", font = fontSettingLower, command = print()).grid(row = 5, columnspan = 5)
 
-    Label(rootWindow, text = "Угол поворота при построении каждого отрезка (в градусах): ", font = fontSettingLower).grid(row = 6, columnspan = 4)
+    Label(rootWindow, text = "Угловой шаг при построении отрезков (в градусах): ", font = fontSettingLower).grid(row = 6, columnspan = 4)
     angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 6, column = 4)
 
     Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = print()).grid(row = 7, column = 0)
@@ -82,6 +82,13 @@ def makeMainWindow():
     Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = print()).grid(row = 7, column = 2)
     canvasFirstColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
     canvasFirstColor.grid(row = 7, column = 3)
+
+    Label(rootWindow, text = "Длина каждого из отрезков (в пикселах):", font = fontSettingLower).grid(row = 8)
+    lenghEntry = Entry(rootWindow, font = fontSettingLower).grid(row = 8, column =1)
+
+    Button(rootWindow, text = "Очистить поле вывода рисунка", font = fontSettingLower, command = print(), width = 50).grid(row = 9, columnspan = 5)
+    Button(rootWindow, text = "Исследование визуальных характеристик отрезков, построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
+    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 11,columnspan = 5)
 
     canvasWindow = Canvas(rootWindow, bg = "white", width = 1075, height = 1017, borderwidth = 5, relief = RIDGE)
     canvasWindow.grid(row = 0, column = 6, rowspan = 20)
