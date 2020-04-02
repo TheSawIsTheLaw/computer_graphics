@@ -6,6 +6,7 @@ from tkinter import ttk
 fontSettingLabels = ("Source code pro", 20)
 fontSettingLower = ("Source code pro", 16)
 
+method = 0
 
 def makeReference():
     """
@@ -54,44 +55,52 @@ def makeMainWindow():
     rootWindow.geometry("1850x1080+60+0")
 
     # Выбор метода построения
-    Label(rootWindow, text = "Метод построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1)
-    listBox = ttk.Combobox(rootWindow, width = 60)
-    listBox.grid(row = 0, column = 1, columnspan = 4)
+    Label(rootWindow, text = "Алгорит построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1, sticky = E)
+    listBox = ttk.Combobox(rootWindow, width = 70, textvariable = method, state = 'readonly', values =
+    ('Алгоритм цифрового дифференциального анализатора',
+     'Алгоритм Брезенхема с целыми коэффициентами',
+     'Алгоритм Брезенхема с действительными коэффициентами',
+     'Алгоритм Брезенхема построения отрезка с устранением ступенчаточти',
+     'Алгоритм Ву',
+     'Алгоритм Tkinter Canvas'))
+    listBox.grid(row = 0, column = 1, columnspan = 4, sticky = W)
+    listBox.current(0)
 
-    Label(rootWindow, text = "Начальная точка отрезка", font = fontSettingLower).grid(row = 1, columnspan = 5)
-    Label(rootWindow, text = "Координата X:", font = fontSettingLower).grid(row = 2)
-    Label(rootWindow, text = "Координата Y:", font = fontSettingLower).grid(row = 2, column = 2)
-    entryXFirst = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 2, column = 1)
-    entryYFirst = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 2, column = 3)
+    Label(rootWindow, text = "Начальная точка отрезка", font = fontSettingLabels).grid(row = 1, columnspan = 6, sticky = W)
+    Label(rootWindow, text = "Координата X:", font = fontSettingLower).grid(row = 2, column = 0, sticky = E)
+    entryXFirst = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 2, column = 1, sticky = W)
+    Label(rootWindow, text = "Координата Y:", font = fontSettingLower).grid(row = 2, column = 2, sticky = E)
+    entryYFirst = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 2, column = 3, sticky = W)
 
-    Label(rootWindow, text = "Конечная точка отрезка", font = fontSettingLower).grid(row = 3, columnspan = 5)
-    Label(rootWindow, text = "Координата X:", font = fontSettingLower).grid(row = 4)
-    Label(rootWindow, text = "Координата Y:", font = fontSettingLower).grid(row = 4, column = 2)
-    entryXSecond = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 4, column = 1)
-    entryYSecond = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 4, column = 3)
+    Label(rootWindow, text = "Конечная точка отрезка", font = fontSettingLabels).grid(row = 3, columnspan = 6, sticky = W)
+    Label(rootWindow, text = "Координата X:", font = fontSettingLower).grid(row = 4, column = 0, sticky = E)
+    Label(rootWindow, text = "Координата Y:", font = fontSettingLower).grid(row = 4, column = 2, sticky = E)
+    entryXSecond = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 4, column = 1, sticky = W)
+    entryYSecond = Entry(rootWindow, font = fontSettingLower, width = 5).grid(row = 4, column = 3, sticky = W)
 
     Button(rootWindow, text = "Построить отрезок", font = fontSettingLower, command = print()).grid(row = 5, columnspan = 5)
 
-    Label(rootWindow, text = "Угловой шаг при построении отрезков (в градусах): ", font = fontSettingLower).grid(row = 6, columnspan = 4)
-    angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 6, column = 4)
+    Label(rootWindow, text = "──────────────────────────────────────────────────────────────────", font = fontSettingLower, width = 72).grid(row = 6, columnspan = 6, sticky = NW)
+    Label(rootWindow, text = "Угловой шаг при построении отрезков (в градусах): ", font = fontSettingLower).grid(row = 7, columnspan = 3)
+    angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 7, column = 2)
 
-    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = print()).grid(row = 7, column = 0)
+    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = print()).grid(row = 8, column = 0, sticky = E)
     canvasFirstColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasFirstColor.grid(row = 7, column = 1)
+    canvasFirstColor.grid(row = 8, column = 1, sticky = W)
 
-    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = print()).grid(row = 7, column = 2)
+    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = print()).grid(row = 8, column = 2, sticky = E)
     canvasFirstColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasFirstColor.grid(row = 7, column = 3)
+    canvasFirstColor.grid(row = 8, column = 3, sticky = W)
 
-    Label(rootWindow, text = "Длина каждого из отрезков (в пикселах):", font = fontSettingLower).grid(row = 8)
-    lenghEntry = Entry(rootWindow, font = fontSettingLower).grid(row = 8, column =1)
+    Label(rootWindow, text = "Длина каждого из отрезков (в пикселах):", font = fontSettingLower).grid(row = 9)
+    lenghEntry = Entry(rootWindow, font = fontSettingLower).grid(row = 9, column = 1)
 
-    Button(rootWindow, text = "Очистить поле вывода рисунка", font = fontSettingLower, command = print(), width = 50).grid(row = 9, columnspan = 5)
-    Button(rootWindow, text = "Исследование визуальных характеристик отрезков, построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
-    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 11,columnspan = 5)
+    Button(rootWindow, text = "Очистить поле вывода рисунка", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
+    Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 11, columnspan = 5)
+    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 12, columnspan = 5)
 
-    canvasWindow = Canvas(rootWindow, bg = "white", width = 1075, height = 1017, borderwidth = 5, relief = RIDGE)
-    canvasWindow.grid(row = 0, column = 6, rowspan = 20)
+    canvasWindow = Canvas(rootWindow, bg = "white", width = 960, height = 1017, borderwidth = 5, relief = RIDGE)
+    canvasWindow.grid(row = 0, column = 7, rowspan = 13)
 
 
     ''' QUICKLY
