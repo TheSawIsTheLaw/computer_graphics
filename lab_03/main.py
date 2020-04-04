@@ -8,6 +8,10 @@ fontSettingLower = ("Source code pro", 16)
 
 method = 0
 
+curColorLines = "black"
+curColorBackground = "white"
+
+
 def makeReference():
     """
         Каскадное меню->"Справка"->"Справка"
@@ -31,6 +35,16 @@ def makeJobWindow():
 
     jobWindow.mainloop()
 
+
+def chooseBackgroundColor(canvasBackgroundColor, rootWindow, row, column):
+    curColorBackground = colorchooser.askcolor()[1]
+    canvasBackgroundColor = Canvas(rootWindow, bg = curColorBackground, borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasBackgroundColor.grid(row = row, column = column, sticky = W)
+
+def chooseLinesColor(canvasWindow, rootWindow, row, column):
+    curColorLines = colorchooser.askcolor()[1]
+    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasLinesColor.grid(row = row, column = column, sticky = W)
 
 def makeCascadeMenu(rootWindow):
     """
@@ -84,20 +98,19 @@ def makeMainWindow():
     Label(rootWindow, text = "Угловой шаг при построении отрезков (в градусах): ", font = fontSettingLower).grid(row = 7, columnspan = 3)
     angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 7, column = 2)
 
-    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = print()).grid(row = 8, column = 0, sticky = E)
-    canvasFirstColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasFirstColor.grid(row = 8, column = 1, sticky = W)
+    canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasLinesColor.grid(row = 8, column = 1, sticky = W)
+    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = lambda: chooseLinesColor(canvasLinesColor, rootWindow, 8, 1)).grid(row = 8, column = 0, sticky = E)
 
-    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = print()).grid(row = 8, column = 2, sticky = E)
-    canvasFirstColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasFirstColor.grid(row = 8, column = 3, sticky = W)
+    canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasBackgroundColor.grid(row = 8, column = 3, sticky = W)
+    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3)).grid(row = 8, column = 2, sticky = E)
 
     Label(rootWindow, text = "Длина каждого из отрезков (в пикселах):", font = fontSettingLower).grid(row = 9)
     lenghEntry = Entry(rootWindow, font = fontSettingLower).grid(row = 9, column = 1)
 
-    Button(rootWindow, text = "Очистить поле вывода рисунка", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
-    Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 11, columnspan = 5)
-    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 12, columnspan = 5)
+    Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
+    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 11, columnspan = 5)
 
     canvasWindow = Canvas(rootWindow, bg = "white", width = 960, height = 1017, borderwidth = 5, relief = RIDGE)
     canvasWindow.grid(row = 0, column = 7, rowspan = 13)
