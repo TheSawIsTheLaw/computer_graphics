@@ -118,7 +118,7 @@ def makeMainWindow():
     canvasBackgroundColor.grid(row = 8, column = 3, sticky = W)
     Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3)).grid(row = 8, column = 2, sticky = E)
 
-    Label(rootWindow, text = "Длина каждого из отрезков (в пикселах):", font = fontSettingLower).grid(row = 9)
+    Label(rootWindow, text = "Длина каждого из отрезков:", font = fontSettingLower).grid(row = 9)
     lenghEntry = Entry(rootWindow, font = fontSettingLower).grid(row = 9, column = 1)
 
     Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
