@@ -57,7 +57,11 @@ def makeCascadeMenu(rootWindow):
     jobMenu.add_command(label = 'Формулировка задания', command = makeJobWindow)
     jobMenu.add_command(label = 'Справка', command = makeReference)
 
+    plusCommands = Menu(rootMenu)
+    plusCommands.add_command(label = 'Очистить плоскость рисования', command = print())
+
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
+    rootMenu.add_cascade(label = "Доп. возможности", menu = plusCommands)
 
 
 def makeMainWindow():
