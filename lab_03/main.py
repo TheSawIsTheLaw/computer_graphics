@@ -3,8 +3,8 @@ from tkinter import colorchooser
 from math import *
 from tkinter import ttk
 
-fontSettingLabels = ("Source code pro", 20)
-fontSettingLower = ("Source code pro", 16)
+fontSettingLabels = ("Consolas", 20)
+fontSettingLower = ("Consolas", 16)
 
 method = 0
 
@@ -31,7 +31,15 @@ def makeJobWindow():
     jobWindow.title("Формулировка задания")
 
     Label(jobWindow, font = fontSettingLabels,
-          text = "Сделоть лабу...").grid()
+          text = "Работа: реализация и исследование алгоритмов построения отрезков.\n\n"
+                 "Реализовать и исследовать следующие алгоритмы построения отрезков:\n"
+                 "Алгоритм цифрового дифференциального анализатора\n"
+                 "Алгоритм Брезенхема с целыми коэффициентами\n"
+                 "Алгоритм Брезенхема с действительными коэффициентами\n"
+                 "Алгоритм Брезенхема построения отрезка с устранением ступенчаточти\n"
+                 "Алгоритм Ву\n"
+                 "Алгоритм Tkinter Canvas\n"
+                 "Предоставить сравнение визуальных характеристик построенных отрезков \nи исследование временных характеристик").grid()
 
     jobWindow.mainloop()
 
@@ -73,7 +81,7 @@ def makeMainWindow():
     rootWindow.geometry("1850x1080+60+0")
 
     # Выбор метода построения
-    Label(rootWindow, text = "Алгорит построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1, sticky = E)
+    Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1, sticky = E)
     listBox = ttk.Combobox(rootWindow, width = 70, textvariable = method, state = 'readonly', values =
     ('Алгоритм цифрового дифференциального анализатора',
      'Алгоритм Брезенхема с целыми коэффициентами',
@@ -98,7 +106,7 @@ def makeMainWindow():
 
     Button(rootWindow, text = "Построить отрезок", font = fontSettingLower, command = print()).grid(row = 5, columnspan = 5)
 
-    Label(rootWindow, text = "──────────────────────────────────────────────────────────────────", font = fontSettingLower, width = 72).grid(row = 6, columnspan = 6, sticky = NW)
+    Label(rootWindow, text = "────────────────────────────────────────────────────────────────────────────────", font = fontSettingLower, width = 79).grid(row = 6, columnspan = 6, sticky = NW)
     Label(rootWindow, text = "Угловой шаг при построении отрезков (в градусах): ", font = fontSettingLower).grid(row = 7, columnspan = 3)
     angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 7, column = 2)
 
@@ -116,7 +124,7 @@ def makeMainWindow():
     Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = print(), width = 50).grid(row = 10, columnspan = 5)
     Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 11, columnspan = 5)
 
-    canvasWindow = Canvas(rootWindow, bg = "white", width = 960, height = 1017, borderwidth = 5, relief = RIDGE)
+    canvasWindow = Canvas(rootWindow, bg = "white", width = 880, height = 1017, borderwidth = 5, relief = RIDGE)
     canvasWindow.grid(row = 0, column = 7, rowspan = 13)
 
 
