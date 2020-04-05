@@ -110,7 +110,7 @@ def makeErrorFirstEntryX():
     errWindow = Tk()
     errWindow.title("Ошибка!")
 
-    Label(errWindow, text = "Значение начала отрезка по Х\n координате должно являтся\n"
+    Label(errWindow, font = fontSettingLower, text = "Значение начала отрезка по Х\n координате должно являтся\n"
                             "единственным целочисленным значением").grid()
 
     errWindow.mainloop()
@@ -120,7 +120,7 @@ def makeErrorSecondEntryX():
     errWindow = Tk()
     errWindow.title("Ошибка!")
 
-    Label(errWindow, text = "Значение конца отрезка по Х\n координате должно являтся\n"
+    Label(errWindow, font = fontSettingLower, text = "Значение конца отрезка по Х\n координате должно являтся\n"
                             "единственным целочисленным значением").grid()
 
     errWindow.mainloop()
@@ -130,7 +130,7 @@ def makeErrorFirstEntryY():
     errWindow = Tk()
     errWindow.title("Ошибка!")
 
-    Label(errWindow, text = "Значение начала отрезка по Y\n координате должно являтся\n"
+    Label(errWindow, font = fontSettingLower, text = "Значение начала отрезка по Y\n координате должно являтся\n"
                             "единственным целочисленным значением").grid()
 
     errWindow.mainloop()
@@ -140,7 +140,7 @@ def makeErrorSecondEntryY():
     errWindow = Tk()
     errWindow.title("Ошибка!")
 
-    Label(errWindow, text = "Значение конца отрезка по Y\n координате должно являтся\n"
+    Label(errWindow, font = fontSettingLower, text = "Значение конца отрезка по Y\n координате должно являтся\n"
                             "единственным целочисленным значением").grid()
 
     errWindow.mainloop()
@@ -306,7 +306,7 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
 
     if flag:
         for i in range(deltaX):
-            color = makeWuIntentity(curCol, backColor, acc)
+            color = makeIntentity(curCol, backColor, acc)
             image.put(color, (curX, curY))
 
             if acc >= correction:
@@ -316,7 +316,7 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
             acc += tngModule
     else:
         for i in range(deltaX):
-            color = makeWuIntentity(curCol, backColor, - acc)
+            color = makeIntentity(curCol, backColor, - acc)
             image.put(color, (curX, curY))
 
             if acc >= correction:
@@ -394,10 +394,79 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
         curY += deltaY
         i += 1
 
+def makeErrorDegree():
+    errWindow = Tk()
+    errWindow.title("Ошибка!")
 
-def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWindow):
-    curAlg = combo.get()
+    Label(errWindow, font = fontSettingLower, text = "Величина угла шага\n должно являться числом \n"
+                            "с плавающей точкой").grid()
 
+    errWindow.mainloop()
+
+def makeErrorLength():
+    errWindow = Tk()
+    errWindow.title("Ошибка!")
+
+    Label(errWindow, font = fontSettingLower, text = "Длина отрезка задаётся положительным целочисленным значением").grid()
+
+    errWindow.mainloop()
+
+def makeErrorCenterX():
+    errWindow = Tk()
+    errWindow.title("Ошибка!")
+
+    Label(errWindow, font = fontSettingLower, text = "Координата центра по оси x\n должна являться целочисленной величиной").grid()
+
+    errWindow.mainloop()
+
+
+def makeErrorCenterY():
+    errWindow = Tk()
+    errWindow.title("Ошибка!")
+
+    Label(errWindow, font = fontSettingLower, text = "Координата центра по оси y\n должна являться целочисленной величиной").grid()
+
+    errWindow.mainloop()
+
+
+def bunchResearch(image, degreeEntry, lengthEntry, centerEntryX, centerEntryY, combo, canvasWindow):
+    try:
+        degreesStep = float(degreeEntry.get())
+    except Exception:
+        makeErrorDegree()
+        return
+
+    try:
+        length = int(lengthEntry.get())
+        if length <= 0:
+            makeErrorLength()
+            return
+    except Exception:
+        makeErrorLength()
+        return
+
+    try:
+        centerX = int(centerEntryX.get())
+    except Exception:
+        makeErrorCenterX()
+        return
+
+    try:
+        centerY = int(centerEntryY.get())
+    except Exception:
+        makeErrorCenterY()
+        return
+    degrees = 0
+    curX = centerX
+    curY = centerY - length
+    while abs(degrees) < 360:
+        printRasterLine(image, centerX, curX, centerY, curY, combo, canvasWindow)
+        degrees += degreesStep
+        curX = niceRound(centerX - length * sin(radians(degrees)))
+        curY = niceRound(centerY - length * cos(radians(degrees)))
+
+
+def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWindow):
     try:
         xStart = entryXS.get()
         xStart = int(xStart)
@@ -422,6 +491,12 @@ def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWind
     except Exception:
         makeErrorSecondEntryY()
         return
+
+    printRasterLine(image, xStart, xEnd, yStart, yEnd, combo, canvasWindow)
+
+
+def printRasterLine(image, xStart, xEnd, yStart, yEnd, combo, canvasWindow):
+    curAlg = combo.get()
 
     if curAlg[0] == "1":
         DDAline(image, xStart, xEnd, yStart, yEnd)
@@ -480,12 +555,13 @@ def makeMainWindow():
     entryYSecond.grid(row = 4, column = 3, sticky = W)
 
     Button(rootWindow, text = "Построить отрезок", font = fontSettingLower,
-           command = lambda: printRasterLine(img, entryXFirst, entryXSecond, entryYFirst, entryYSecond, listBox, canvasWindow)).grid(row = 5, columnspan = 5)
+           command = lambda: printRasterWRAP(img, entryXFirst, entryXSecond, entryYFirst, entryYSecond, listBox, canvasWindow)).grid(row = 5, columnspan = 5)
 
     Label(rootWindow, text = "────────────────────────────────────────────────────────────────────────────────", font = fontSettingLower, width = 79).grid(
         row = 6, columnspan = 6, sticky = NW)
     Label(rootWindow, text = "Угловой шаг при построении отрезков (в градусах): ", font = fontSettingLower).grid(row = 7, columnspan = 2)
-    angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13).grid(row = 7, column = 2)
+    angleEntry = Entry(rootWindow, font = fontSettingLower, width = 13)
+    angleEntry.grid(row = 7, column = 2)
 
     canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
     canvasLinesColor.grid(row = 8, column = 1, sticky = W)
@@ -499,11 +575,20 @@ def makeMainWindow():
            command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3, canvasWindow)).grid(row = 8, column = 2, sticky = E)
 
     Label(rootWindow, text = "Длина каждого из отрезков:", font = fontSettingLower).grid(row = 9)
-    lenghEntry = Entry(rootWindow, font = fontSettingLower).grid(row = 9, column = 1)
+    lenghEntry = Entry(rootWindow, font = fontSettingLower)
+    lenghEntry.grid(row = 9, column = 1)
 
-    Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = print(),
-           width = 50).grid(row = 10, columnspan = 5)
-    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 11, columnspan = 5)
+    Label(rootWindow, text = "Координата точки начала\n исходящих 'лучей'", font = fontSettingLower).grid(row = 10)
+    Label(rootWindow, text = "x:", font = fontSettingLower).grid(row = 10, column = 1, sticky = E)
+    centerEntryX = Entry(rootWindow, font = fontSettingLower, width = 5)
+    centerEntryX.grid(row = 10, column = 2)
+    Label(rootWindow, text = "y:", font = fontSettingLower).grid(row = 10, column = 3, sticky = E)
+    centerEntryY = Entry(rootWindow, font = fontSettingLower, width = 5)
+    centerEntryY.grid(row = 10, column = 4)
+
+    Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = lambda: bunchResearch(img, angleEntry, lenghEntry, centerEntryX, centerEntryY, listBox, canvasWindow),
+           width = 50).grid(row = 11, columnspan = 5)
+    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 12, columnspan = 5)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
