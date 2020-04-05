@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import colorchooser
 from math import *
+from numpy import sign
 from tkinter import ttk
 
 fontSettingLabels = ("Consolas", 20)
@@ -129,6 +130,52 @@ def makeErrorSecondEntryY():
     errWindow.mainloop()
 
 
+def realBresenham(image, xStart, xEnd, yStart, yEnd):
+    if xStart == xEnd and yStart == yEnd:
+        image.put(curColorLines, (xStart, yStart))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    tngModule = deltaY / deltaX
+
+    mistake = tngModule - 0.5
+    curX = xStart
+    curY = yStart
+
+    if flag:
+        for i in range(deltaX):
+            image.put(curColorLines, (curX, curY))
+
+            if mistake >= 0:
+                curX += stepX
+                mistake -= 1
+            curY += stepY
+            mistake += tngModule
+    else:
+        for i in range(deltaX):
+            image.put(curColorLines, (curX, curY))
+
+            if mistake >= 0:
+                curY += stepY
+                mistake -= 1
+            curX += stepX
+            mistake += tngModule
+
+
 def DDAline(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
         image.put(curColorLines, (xStart, yStart))
@@ -145,8 +192,7 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    i = 1
-    while i < deltaX + length:
+    for i in range(length):
         image.put(curColorLines, (niceRound(curX), niceRound(curY)))
         curX += deltaX
         curY += deltaY
@@ -183,6 +229,8 @@ def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo):
 
     if curAlg[0] == "1":
         DDAline(image, xStart, xEnd, yStart, yEnd)
+    if curAlg[0] == "2":
+        realBresenham(image, xStart, xEnd, yStart, yEnd)
 
 
 def makeMainWindow():
@@ -202,8 +250,8 @@ def makeMainWindow():
     Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1, sticky = E)
     listBox = ttk.Combobox(rootWindow, width = 70, textvariable = method, state = 'readonly', values =
     ('1. Алгоритм цифрового дифференциального анализатора',
-     '2. Алгоритм Брезенхема с целыми коэффициентами',
-     '3. Алгоритм Брезенхема с действительными коэффициентами',
+     '2. Алгоритм Брезенхема с действительными коэффициентами',
+     '3. Алгоритм Брезенхема с целыми коэффициентами',
      '4. Алгоритм Брезенхема построения отрезка с устранением ступенчаточти',
      '5. Алгоритм Ву',
      '6. Алгоритм Tkinter Canvas'))
