@@ -176,7 +176,7 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
 
             if mistake >= 0:
                 curX += stepX
-                mistake -= deltaX + deltaX
+                mistake -= (deltaX + deltaX)
             curY += stepY
             mistake += deltaY + deltaY
     else:
@@ -185,9 +185,9 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
 
             if mistake >= 0:
                 curY += stepY
-                mistake -= deltaY + deltaY
+                mistake -= (deltaX + deltaX)
             curX += stepX
-            mistake += deltaX + deltaX
+            mistake += deltaY + deltaY
 
 
 def WuAlg(image, xStart, xEnd, yStart, yEnd):
@@ -245,6 +245,10 @@ def WuAlg(image, xStart, xEnd, yStart, yEnd):
                 mistake -= 1
             curX += stepX
             mistake += tngModule
+
+
+def tkinterAlg(canvasWindow, xStart, xEnd, yStart, yEnd):
+    canvasWindow.create_line(xStart, yStart, xEnd, yEnd, width = 1, fill = curColorLines)
 
 
 def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -364,14 +368,14 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    for i in range(length):
+    for i in range(length + 1):
         image.put(curColorLines, (niceRound(curX), niceRound(curY)))
         curX += deltaX
         curY += deltaY
         i += 1
 
 
-def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo):
+def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWindow):
     curAlg = combo.get()
 
     try:
@@ -409,6 +413,8 @@ def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo):
         stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd)
     elif curAlg[0] == "5":
         WuAlg(image, xStart, xEnd, yStart, yEnd)
+    else:
+        tkinterAlg(canvasWindow, xStart, xEnd, yStart, yEnd)
 
 
 def makeMainWindow():
@@ -454,7 +460,7 @@ def makeMainWindow():
     entryYSecond.grid(row = 4, column = 3, sticky = W)
 
     Button(rootWindow, text = "Построить отрезок", font = fontSettingLower,
-           command = lambda: printRasterLine(img, entryXFirst, entryXSecond, entryYFirst, entryYSecond, listBox)).grid(row = 5, columnspan = 5)
+           command = lambda: printRasterLine(img, entryXFirst, entryXSecond, entryYFirst, entryYSecond, listBox, canvasWindow)).grid(row = 5, columnspan = 5)
 
     Label(rootWindow, text = "────────────────────────────────────────────────────────────────────────────────", font = fontSettingLower, width = 79).grid(
         row = 6, columnspan = 6, sticky = NW)
