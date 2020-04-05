@@ -190,6 +190,63 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
             mistake += deltaX + deltaX
 
 
+def WuAlg(image, xStart, xEnd, yStart, yEnd):
+    if xStart == xEnd and yStart == yEnd:
+        image.put(curColorLines, (xStart, yStart))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    tngModule = deltaY / deltaX
+
+    mistake = -1
+    curX = xStart
+    curY = yStart
+
+    curCol = list(colors.to_rgb(curColorLines))
+    backColor = list(colors.to_rgb(curColorBackground))
+    for k in range(3):
+        curCol[k] *= 255
+        backColor[k] *= 255
+
+    if flag:
+        for i in range(deltaX):
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (1 + mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (1 + mistake)),
+                        niceRound(curCol[2] + (backColor[2] - curCol[2]) * (1 + mistake))), (curX, curY))
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (- mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (- mistake)),
+                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * (- mistake))), (curX, curY + stepY))
+            if mistake >= 0:
+                curX += stepX
+                mistake -= 1
+            curY += stepY
+            mistake += tngModule
+    else:
+        for i in range(deltaX):
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (1 + mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (1 + mistake)),
+                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * (1 + mistake))), (curX, curY))
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (- mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (- mistake)),
+                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * (- mistake))), (curX, curY + stepY))
+
+            if mistake >= 0:
+                curY += stepY
+                mistake -= 1
+            curX += stepX
+            mistake += tngModule
+
+
 def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
         image.put(curColorLines, (xStart, yStart))
@@ -225,23 +282,24 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
 
     if flag:
         for i in range(deltaX):
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake), niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake),
+                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
 
-            mistake += tngModule
             if mistake >= correction:
                 curX += stepX
                 mistake -= correction + tngModule
             curY += stepY
+            mistake += tngModule
     else:
         for i in range(deltaX):
             image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake),
-                                  niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
+                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
 
-            mistake += tngModule
             if mistake >= correction:
                 curY += stepY
                 mistake -= correction + tngModule
             curX += stepX
+            mistake += tngModule
 
 
 def realBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -349,6 +407,8 @@ def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo):
         digitBresenham(image, xStart, xEnd, yStart, yEnd)
     elif curAlg[0] == "4":
         stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd)
+    elif curAlg[0] == "5":
+        WuAlg(image, xStart, xEnd, yStart, yEnd)
 
 
 def makeMainWindow():
@@ -373,7 +433,7 @@ def makeMainWindow():
      '3. Алгоритм Брезенхема с целыми коэффициентами',
      '4. Алгоритм Брезенхема построения отрезка с устранением ступенчаточти',
      '5. Алгоритм Ву',
-     '6. Алгоритм Tkinter Canvas'))
+     '6. Алгоритм Tkinter canvas.create_line'))
     listBox.grid(row = 0, column = 1, columnspan = 4, sticky = W)
     listBox.current(0)
 
