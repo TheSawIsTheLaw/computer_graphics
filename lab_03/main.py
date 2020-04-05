@@ -12,6 +12,8 @@ method = 0
 curColorLines = "black"
 curColorBackground = "white"
 
+img = 0
+
 
 def niceRound(number):
     ret = int(number)
@@ -72,7 +74,15 @@ def chooseLinesColor(canvasWindow, rootWindow, row, column):
     canvasLinesColor.grid(row = row, column = column, sticky = W)
 
 
-def makeCascadeMenu(rootWindow):
+def clearImage(canvasWindow):
+    canvasWindow.delete("all")
+    global img
+    img = PhotoImage(width = 880, height = 1017)
+    canvasWindow.create_image((440, 508), image = img, state = "normal")
+    canvasWindow.grid(row = 0, column = 7, rowspan = 13)
+
+
+def makeCascadeMenu(rootWindow, canvasWindow):
     """
         Функция создания каскадного меню
     """
@@ -84,7 +94,7 @@ def makeCascadeMenu(rootWindow):
     jobMenu.add_command(label = 'Справка', command = makeReference)
 
     plusCommands = Menu(rootMenu)
-    plusCommands.add_command(label = 'Очистить плоскость рисования', command = print())
+    plusCommands.add_command(label = 'Очистить плоскость рисования', command = lambda: clearImage(canvasWindow))
 
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
     rootMenu.add_cascade(label = "Доп. возможности", menu = plusCommands)
@@ -128,6 +138,50 @@ def makeErrorSecondEntryY():
                             "единственным целочисленным значением").grid()
 
     errWindow.mainloop()
+
+def digitBresenham(image, xStart, xEnd, yStart, yEnd):
+    if xStart == xEnd and yStart == yEnd:
+        image.put(curColorLines, (xStart, yStart))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    mistake = deltaY + deltaY - deltaX
+    curX = xStart
+    curY = yStart
+
+    if flag:
+        for i in range(deltaX):
+            image.put(curColorLines, (curX, curY))
+
+            if mistake >= 0:
+                curX += stepX
+                mistake -= deltaX + deltaX
+            curY += stepY
+            mistake += deltaY + deltaY
+    else:
+        for i in range(deltaX):
+            image.put(curColorLines, (curX, curY))
+
+            if mistake >= 0:
+                curY += stepY
+                mistake -= deltaY + deltaY
+            curX += stepX
+            mistake += deltaX + deltaX
+
 
 
 def realBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -231,6 +285,8 @@ def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo):
         DDAline(image, xStart, xEnd, yStart, yEnd)
     if curAlg[0] == "2":
         realBresenham(image, xStart, xEnd, yStart, yEnd)
+    if curAlg[0] == "3":
+        digitBresenham(image, xStart, xEnd, yStart, yEnd)
 
 
 def makeMainWindow():
@@ -242,6 +298,7 @@ def makeMainWindow():
     rootWindow.geometry("1850x1080+60+0")
 
     canvasWindow = Canvas(rootWindow, bg = "white", width = 880, height = 1016, borderwidth = 5, relief = RIDGE)
+    global img
     img = PhotoImage(width = 880, height = 1017)
     canvasWindow.create_image((440, 508), image = img, state = "normal")
     canvasWindow.grid(row = 0, column = 7, rowspan = 13)
@@ -300,17 +357,7 @@ def makeMainWindow():
            width = 50).grid(row = 10, columnspan = 5)
     Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 11, columnspan = 5)
 
-    ''' QUICKLY
-        Button(rootWindow, text = "", font = fontSettingLower, command = print()).grid(row = , column = , columnspan =, rowspan = )
-        Entry(rootWindow, font = fontSettingLower).grid(row = , column = , columnspan =, rowspan = )
-        Label(rootWindow, text = "", font = fontSettingLower).grid(row = , column = , columnspan =, rowspan = )
-    '''
-    # EXAMPLE FOR PIXEL WORK
-    # Хеххехехеххехехеххех colorchooser.askcolor()
-    # for i in range(100):
-    #     img.put("black", (500 + i, 500 - i))
-
-    makeCascadeMenu(rootWindow)
+    makeCascadeMenu(rootWindow, canvasWindow)
 
     rootWindow.mainloop()
 
