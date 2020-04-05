@@ -3,16 +3,22 @@ from tkinter import colorchooser
 from math import *
 from numpy import sign
 from tkinter import ttk
+from matplotlib import colors
+from colormap import rgb2hex
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
 
 method = 0
 
-curColorLines = "black"
-curColorBackground = "white"
+curColorLines = "#000000"
+curColorBackground = "#ffffff"
 
 img = 0
+
+
+def RGBtoHEX(rgb):
+    return '#%02x%02x%02x' % rgb
 
 
 def niceRound(number):
@@ -139,6 +145,7 @@ def makeErrorSecondEntryY():
 
     errWindow.mainloop()
 
+
 def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
         image.put(curColorLines, (xStart, yStart))
@@ -182,6 +189,59 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
             curX += stepX
             mistake += deltaX + deltaX
 
+
+def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
+    if xStart == xEnd and yStart == yEnd:
+        image.put(curColorLines, (xStart, yStart))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    tngModule = deltaY / deltaX
+
+    mistake = 1 / 2
+    correction = 1 - tngModule
+    curX = xStart
+    curY = yStart
+
+    curCol = list(colors.to_rgb(curColorLines))
+    backColor = list(colors.to_rgb(curColorBackground))
+    for k in range(3):
+        curCol[k] *= 255
+        backColor[k] *= 255
+
+    if flag:
+        for i in range(deltaX):
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake), niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
+
+            mistake += tngModule
+            if mistake >= correction:
+                curX += stepX
+                mistake -= correction + tngModule
+            curY += stepY
+    else:
+        for i in range(deltaX):
+            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake),
+                                  niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
+
+            mistake += tngModule
+            if mistake >= correction:
+                curY += stepY
+                mistake -= correction + tngModule
+            curX += stepX
 
 
 def realBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -283,10 +343,12 @@ def printRasterLine(image, entryXS, entryXE, entryYS, entryYE, combo):
 
     if curAlg[0] == "1":
         DDAline(image, xStart, xEnd, yStart, yEnd)
-    if curAlg[0] == "2":
+    elif curAlg[0] == "2":
         realBresenham(image, xStart, xEnd, yStart, yEnd)
-    if curAlg[0] == "3":
+    elif curAlg[0] == "3":
         digitBresenham(image, xStart, xEnd, yStart, yEnd)
+    elif curAlg[0] == "4":
+        stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd)
 
 
 def makeMainWindow():
