@@ -146,6 +146,25 @@ def makeErrorSecondEntryY():
     errWindow.mainloop()
 
 
+def makeIntentity(curCol, backColor, acc):
+    R = niceRound(curCol[0] + (backColor[0] - curCol[0]) * acc)
+    if R > 255:
+        R = 255
+    elif R < 0:
+        R = 0
+    G = niceRound(curCol[1] + (backColor[1] - curCol[1]) * acc)
+    if G > 255:
+        G = 255
+    elif G < 0:
+        G = 0
+    B = niceRound(curCol[2] + (backColor[2] - curCol[2]) * acc)
+    if B > 255:
+        B = 255
+    elif B < 0:
+        B = 0
+    return rgb2hex(R, G, B)
+
+
 def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
         image.put(curColorLines, (xStart, yStart))
@@ -166,7 +185,7 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     else:
         flag = False
 
-    mistake = deltaY + deltaY - deltaX
+    acc = deltaY + deltaY - deltaX
     curX = xStart
     curY = yStart
 
@@ -174,20 +193,20 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
         for i in range(deltaX):
             image.put(curColorLines, (curX, curY))
 
-            if mistake >= 0:
+            if acc >= 0:
                 curX += stepX
-                mistake -= (deltaX + deltaX)
+                acc -= (deltaX + deltaX)
             curY += stepY
-            mistake += deltaY + deltaY
+            acc += deltaY + deltaY
     else:
         for i in range(deltaX):
             image.put(curColorLines, (curX, curY))
 
-            if mistake >= 0:
+            if acc >= 0:
                 curY += stepY
-                mistake -= (deltaX + deltaX)
+                acc -= (deltaX + deltaX)
             curX += stepX
-            mistake += deltaY + deltaY
+            acc += deltaY + deltaY
 
 
 def WuAlg(image, xStart, xEnd, yStart, yEnd):
@@ -212,7 +231,7 @@ def WuAlg(image, xStart, xEnd, yStart, yEnd):
 
     tngModule = deltaY / deltaX
 
-    mistake = -1
+    acc = -1
     curX = xStart
     curY = yStart
 
@@ -224,27 +243,28 @@ def WuAlg(image, xStart, xEnd, yStart, yEnd):
 
     if flag:
         for i in range(deltaX):
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (1 + mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (1 + mistake)),
-                        niceRound(curCol[2] + (backColor[2] - curCol[2]) * (1 + mistake))), (curX, curY))
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (- mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (- mistake)),
-                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * (- mistake))), (curX, curY + stepY))
-            if mistake >= 0:
+            color = makeIntentity(curCol, backColor, 1 + acc)
+            image.put(color, (curX, curY))
+
+            color = makeIntentity(curCol, backColor, - acc)
+            image.put(color, (curX, curY + stepY))
+            if acc >= 0:
                 curX += stepX
-                mistake -= 1
+                acc -= 1
             curY += stepY
-            mistake += tngModule
+            acc += tngModule
     else:
         for i in range(deltaX):
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (1 + mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (1 + mistake)),
-                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * (1 + mistake))), (curX, curY))
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * (- mistake)), niceRound(curCol[1] + (backColor[1] - curCol[1]) * (- mistake)),
-                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * (- mistake))), (curX, curY + stepY))
+            color = makeIntentity(curCol, backColor, 1 + acc)
+            image.put(color, (curX, curY))
+            color = makeIntentity(curCol, backColor, - acc)
+            image.put(color, (curX, curY + stepY))
 
-            if mistake >= 0:
+            if acc >= 0:
                 curY += stepY
-                mistake -= 1
+                acc -= 1
             curX += stepX
-            mistake += tngModule
+            acc += tngModule
 
 
 def tkinterAlg(canvasWindow, xStart, xEnd, yStart, yEnd):
@@ -273,7 +293,7 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
 
     tngModule = deltaY / deltaX
 
-    mistake = 1 / 2
+    acc = 1 / 2
     correction = 1 - tngModule
     curX = xStart
     curY = yStart
@@ -286,24 +306,24 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
 
     if flag:
         for i in range(deltaX):
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake),
-                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
+            color = makeWuIntentity(curCol, backColor, acc)
+            image.put(color, (curX, curY))
 
-            if mistake >= correction:
+            if acc >= correction:
                 curX += stepX
-                mistake -= correction + tngModule
+                acc -= correction + tngModule
             curY += stepY
-            mistake += tngModule
+            acc += tngModule
     else:
         for i in range(deltaX):
-            image.put(rgb2hex(niceRound(curCol[0] + (backColor[0] - curCol[0]) * mistake), niceRound(curCol[1] + (backColor[1] - curCol[1]) * mistake),
-                              niceRound(curCol[2] + (backColor[2] - curCol[2]) * mistake)), (curX, curY))
+            color = makeWuIntentity(curCol, backColor, - acc)
+            image.put(color, (curX, curY))
 
-            if mistake >= correction:
+            if acc >= correction:
                 curY += stepY
-                mistake -= correction + tngModule
+                acc -= correction + tngModule
             curX += stepX
-            mistake += tngModule
+            acc += tngModule
 
 
 def realBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -328,7 +348,7 @@ def realBresenham(image, xStart, xEnd, yStart, yEnd):
 
     tngModule = deltaY / deltaX
 
-    mistake = tngModule - 0.5
+    acc = tngModule - 0.5
     curX = xStart
     curY = yStart
 
@@ -336,20 +356,20 @@ def realBresenham(image, xStart, xEnd, yStart, yEnd):
         for i in range(deltaX):
             image.put(curColorLines, (curX, curY))
 
-            if mistake >= 0:
+            if acc >= 0:
                 curX += stepX
-                mistake -= 1
+                acc -= 1
             curY += stepY
-            mistake += tngModule
+            acc += tngModule
     else:
         for i in range(deltaX):
             image.put(curColorLines, (curX, curY))
 
-            if mistake >= 0:
+            if acc >= 0:
                 curY += stepY
-                mistake -= 1
+                acc -= 1
             curX += stepX
-            mistake += tngModule
+            acc += tngModule
 
 
 def DDAline(image, xStart, xEnd, yStart, yEnd):
@@ -368,7 +388,7 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    for i in range(length + 1):
+    for i in range(length):
         image.put(curColorLines, (niceRound(curX), niceRound(curY)))
         curX += deltaX
         curY += deltaY
