@@ -3,8 +3,10 @@ from tkinter import colorchooser
 from math import *
 from numpy import sign
 from tkinter import ttk
+import matplotlib.pyplot as plt
 from matplotlib import colors
 from colormap import rgb2hex
+from datetime import datetime
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
@@ -377,13 +379,19 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
         image.put(curColorLines, (xStart, yStart))
         return
 
-    if abs(xStart - xEnd) > abs(yStart - yEnd):
-        length = abs(xStart - xEnd)
-    else:
-        length = abs(yStart - yEnd)
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
 
-    deltaX = (xEnd - xStart) / length
-    deltaY = (yEnd - yStart) / length
+    trX = abs(deltaX)
+    trY = abs(deltaY)
+
+    if trX > trY:
+        length = trX
+    else:
+        length = trY
+
+    deltaX = deltaX / length
+    deltaY = deltaY / length
 
     curX = xStart
     curY = yStart
@@ -392,7 +400,6 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
         image.put(curColorLines, (niceRound(curX), niceRound(curY)))
         curX += deltaX
         curY += deltaY
-        i += 1
 
 def makeErrorDegree():
     errWindow = Tk()
@@ -459,11 +466,13 @@ def bunchResearch(image, degreeEntry, lengthEntry, centerEntryX, centerEntryY, c
     degrees = 0
     curX = centerX
     curY = centerY - length
+    constantX = centerX - length
+    constantY = centerY - length
     while abs(degrees) < 360:
         printRasterLine(image, centerX, curX, centerY, curY, combo, canvasWindow)
         degrees += degreesStep
-        curX = niceRound(centerX - length * sin(radians(degrees)))
-        curY = niceRound(centerY - length * cos(radians(degrees)))
+        curX = niceRound(constantX * sin(radians(degrees)))
+        curY = niceRound(constantY * cos(radians(degrees)))
 
 
 def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWindow):
@@ -493,6 +502,115 @@ def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWind
         return
 
     printRasterLine(image, xStart, xEnd, yStart, yEnd, combo, canvasWindow)
+
+
+def timeResearch(image, canvasWindow):
+    masTime = []
+    curTime = 0
+    for i in range(50):
+        degrees = 0
+        curX = 500
+        curY = 400
+        while abs(degrees) < 360:
+            start = datetime.now()
+            DDAline(image, 500, curX, 500, curY)
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 100 * sin(radians(degrees)))
+            curY = niceRound(500 - 100 * cos(radians(degrees)))
+    curTime /= 50
+    masTime.append(curTime)
+    curTime = 0
+
+    for i in range(50):
+        degrees = 0
+        curX = 500
+        curY = 400
+        while abs(degrees) < 360:
+            start = datetime.now()
+            realBresenham(image, 500, curX, 500, curY)
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 100 * sin(radians(degrees)))
+            curY = niceRound(500 - 100 * cos(radians(degrees)))
+    curTime /= 50
+    masTime.append(curTime)
+    curTime = 0
+
+    for i in range(50):
+        degrees = 0
+        curX = 500
+        curY = 400
+        while abs(degrees) < 360:
+            start = datetime.now()
+            digitBresenham(image, 500, curX, 500, curY)
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 100 * sin(radians(degrees)))
+            curY = niceRound(500 - 100 * cos(radians(degrees)))
+    curTime /= 50
+    masTime.append(curTime)
+    curTime = 0
+
+    for i in range(50):
+        degrees = 0
+        curX = 500
+        curY = 400
+        while abs(degrees) < 360:
+            start = datetime.now()
+            stepRemovalBresenham(image, 500, curX, 500, curY)
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 100 * sin(radians(degrees)))
+            curY = niceRound(500 - 100 * cos(radians(degrees)))
+    curTime /= 50
+    masTime.append(curTime)
+    curTime = 0
+
+    for i in range(50):
+        degrees = 0
+        curX = 500
+        curY = 400
+        while abs(degrees) < 360:
+            start = datetime.now()
+            WuAlg(image, 500, curX, 500, curY)
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 100 * sin(radians(degrees)))
+            curY = niceRound(500 - 100 * cos(radians(degrees)))
+    curTime /= 50
+    masTime.append(curTime)
+    curTime = 0
+
+    for i in range(50):
+        clearImage(canvasWindow)
+        degrees = 0
+        curX = 500
+        curY = 400
+        while abs(degrees) < 360:
+            start = datetime.now()
+            tkinterAlg(canvasWindow, curX, curY, 500, 500)
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 100 * sin(radians(degrees)))
+            curY = niceRound(500 - 100 * cos(radians(degrees)))
+    curTime /= 50
+    masTime.append(curTime)
+
+    plt.figure(figsize = (15, 10))
+    masNames = ["ЦДА", "Брезенхем \n(действительные коэф.)",
+                "Брезенхем \n(целые коэф.)", "Брезенхем \n(с устранением ступенчатости)",
+                "Ву", "canvas\ncreate_line"]
+
+    plt.bar(masNames, masTime, align = "center")
+    plt.title("Временные характеристики алгоритмов")
+    plt.show()
 
 
 def printRasterLine(image, xStart, xEnd, yStart, yEnd, combo, canvasWindow):
@@ -588,7 +706,7 @@ def makeMainWindow():
 
     Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = lambda: bunchResearch(img, angleEntry, lenghEntry, centerEntryX, centerEntryY, listBox, canvasWindow),
            width = 50).grid(row = 11, columnspan = 5)
-    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = print(), width = 50).grid(row = 12, columnspan = 5)
+    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = lambda: timeResearch(img, canvasWindow), width = 50).grid(row = 12, columnspan = 5)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
