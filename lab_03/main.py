@@ -507,100 +507,106 @@ def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWind
 def timeResearch(image, canvasWindow):
     masTime = []
     curTime = 0
-    for i in range(50):
+    for i in range(100):
+        clearImage(canvasWindow)
         degrees = 0
         curX = 500
-        curY = 400
+        curY = 200
         while abs(degrees) < 360:
             start = datetime.now()
             DDAline(image, 500, curX, 500, curY)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
-            curX = niceRound(500 - 100 * sin(radians(degrees)))
-            curY = niceRound(500 - 100 * cos(radians(degrees)))
-    curTime /= 50
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 - 300 * cos(radians(degrees)))
+    curTime /= 100
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(50):
+    for i in range(100):
+        clearImage(canvasWindow)
         degrees = 0
         curX = 500
-        curY = 400
+        curY = 200
         while abs(degrees) < 360:
             start = datetime.now()
             realBresenham(image, 500, curX, 500, curY)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
-            curX = niceRound(500 - 100 * sin(radians(degrees)))
-            curY = niceRound(500 - 100 * cos(radians(degrees)))
-    curTime /= 50
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 - 300 * cos(radians(degrees)))
+    curTime /= 100
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(50):
+    for i in range(100):
+        clearImage(canvasWindow)
         degrees = 0
         curX = 500
-        curY = 400
+        curY = 200
         while abs(degrees) < 360:
             start = datetime.now()
             digitBresenham(image, 500, curX, 500, curY)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
-            curX = niceRound(500 - 100 * sin(radians(degrees)))
-            curY = niceRound(500 - 100 * cos(radians(degrees)))
-    curTime /= 50
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 - 300 * cos(radians(degrees)))
+    curTime /= 100
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(50):
+    for i in range(100):
+        clearImage(canvasWindow)
         degrees = 0
         curX = 500
-        curY = 400
+        curY = 200
         while abs(degrees) < 360:
             start = datetime.now()
             stepRemovalBresenham(image, 500, curX, 500, curY)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
-            curX = niceRound(500 - 100 * sin(radians(degrees)))
-            curY = niceRound(500 - 100 * cos(radians(degrees)))
-    curTime /= 50
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 - 300 * cos(radians(degrees)))
+    curTime /= 100
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(50):
+    for i in range(100):
+        clearImage(canvasWindow)
         degrees = 0
         curX = 500
-        curY = 400
+        curY = 200
         while abs(degrees) < 360:
             start = datetime.now()
             WuAlg(image, 500, curX, 500, curY)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
-            curX = niceRound(500 - 100 * sin(radians(degrees)))
-            curY = niceRound(500 - 100 * cos(radians(degrees)))
-    curTime /= 50
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 - 300 * cos(radians(degrees)))
+    curTime /= 100
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(50):
-        clearImage(canvasWindow)
+    i = 0
+    for i in range(100):
         degrees = 0
+        clearImage(canvasWindow)
         curX = 500
-        curY = 400
+        curY = 200
         while abs(degrees) < 360:
             start = datetime.now()
-            tkinterAlg(canvasWindow, curX, curY, 500, 500)
+            tkinterAlg(canvasWindow, curX, 500, curY, 500)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
-            curX = niceRound(500 - 100 * sin(radians(degrees)))
-            curY = niceRound(500 - 100 * cos(radians(degrees)))
-    curTime /= 50
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 - 300 * cos(radians(degrees)))
+    curTime /= 100
     masTime.append(curTime)
 
     plt.figure(figsize = (15, 10))
