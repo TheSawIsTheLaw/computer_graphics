@@ -19,6 +19,13 @@ curColorBackground = "#ffffff"
 img = 0
 
 
+def setItentity(color):
+    q = 0
+    for i in range(10):
+        q *= q
+    return "#000000"
+
+
 def RGBtoHEX(rgb):
     return '#%02x%02x%02x' % rgb
 
@@ -148,7 +155,7 @@ def makeErrorSecondEntryY():
     errWindow.mainloop()
 
 
-def makeIntentity(curCol, backColor, acc):
+def makeItentity(curCol, backColor, acc):
     R = niceRound(curCol[0] + (backColor[0] - curCol[0]) * acc)
     if R > 255:
         R = 255
@@ -191,19 +198,58 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    if flag:
-        for i in range(deltaX):
-            image.put(curColorLines, (curX, curY))
+    for i in range(deltaX):
+        image.put(curColorLines, (curX, curY))
 
+        if flag:
             if acc >= 0:
                 curX += stepX
                 acc -= (deltaX + deltaX)
             curY += stepY
             acc += deltaY + deltaY
-    else:
-        for i in range(deltaX):
-            image.put(curColorLines, (curX, curY))
+        else:
+            if acc >= 0:
+                curY += stepY
+                acc -= (deltaX + deltaX)
+            curX += stepX
+            acc += deltaY + deltaY
 
+
+def digitBresenhamArray(xStart, xEnd, yStart, yEnd, color):
+    pointsArray = []
+    if xStart == xEnd and yStart == yEnd:
+        pointsArray.append((color, (xStart, yStart)))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    acc = deltaY + deltaY - deltaX
+    curX = xStart
+    curY = yStart
+
+    for i in range(deltaX):
+        pointsArray.append((curColorLines, (curX, curY)))
+
+        if flag:
+            if acc >= 0:
+                curX += stepX
+                acc -= (deltaX + deltaX)
+            curY += stepY
+            acc += deltaY + deltaY
+        else:
             if acc >= 0:
                 curY += stepY
                 acc -= (deltaX + deltaX)
@@ -243,30 +289,70 @@ def WuAlg(image, xStart, xEnd, yStart, yEnd):
         curCol[k] *= 255
         backColor[k] *= 255
 
-    if flag:
-        for i in range(deltaX):
-            color = makeIntentity(curCol, backColor, 1 + acc)
-            image.put(color, (curX, curY))
+    for i in range(deltaX):
+        color = makeItentity(curCol, backColor, 1 + acc)
+        image.put(color, (curX, curY))
 
-            color = makeIntentity(curCol, backColor, - acc)
-            image.put(color, (curX, curY + stepY))
+        color = makeItentity(curCol, backColor, - acc)
+        image.put(color, (curX, curY + stepY))
+        if flag:
             if acc >= 0:
                 curX += stepX
                 acc -= 1
             curY += stepY
             acc += tngModule
-    else:
-        for i in range(deltaX):
-            color = makeIntentity(curCol, backColor, 1 + acc)
-            image.put(color, (curX, curY))
-            color = makeIntentity(curCol, backColor, - acc)
-            image.put(color, (curX, curY + stepY))
-
+        else:
             if acc >= 0:
                 curY += stepY
                 acc -= 1
             curX += stepX
             acc += tngModule
+
+
+def WuAlgArray(xStart, xEnd, yStart, yEnd, color):
+    pointsArray = []
+    if xStart == xEnd and yStart == yEnd:
+        pointsArray.append((color, (xStart, yStart)))
+        return pointsArray
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    tngModule = deltaY / deltaX
+
+    acc = -1
+    curX = xStart
+    curY = yStart
+
+    for i in range(deltaX):
+        pointsArray.append((setItentity(color), (curX, curY)))
+
+        pointsArray.append((setItentity(color), (curX, curY + stepY)))
+        if flag:
+            if acc >= 0:
+                curX += stepX
+                acc -= 1
+            curY += stepY
+            acc += tngModule
+        else:
+            if acc >= 0:
+                curY += stepY
+                acc -= 1
+            curX += stepX
+            acc += tngModule
+    return pointsArray
 
 
 def tkinterAlg(canvasWindow, xStart, xEnd, yStart, yEnd):
@@ -306,26 +392,69 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
         curCol[k] *= 255
         backColor[k] *= 255
 
-    if flag:
-        for i in range(deltaX):
-            color = makeIntentity(curCol, backColor, acc)
-            image.put(color, (curX, curY))
+    for i in range(deltaX):
+        color = makeItentity(curCol, backColor, acc)
+        image.put(color, (curX, curY))
 
+        if flag:
             if acc >= correction:
                 curX += stepX
                 acc -= correction + tngModule
             curY += stepY
             acc += tngModule
-    else:
-        for i in range(deltaX):
-            color = makeIntentity(curCol, backColor, - acc)
-            image.put(color, (curX, curY))
-
+        else:
             if acc >= correction:
                 curY += stepY
                 acc -= correction + tngModule
             curX += stepX
             acc += tngModule
+
+
+def stepRemovalBresenhamArray(xStart, xEnd, yStart, yEnd, color):
+    pointsArray = []
+    if xStart == xEnd and yStart == yEnd:
+        pointsArray.append((color, (xStart, yStart)))
+        return pointsArray
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    tngModule = deltaY / deltaX
+
+    acc = 1 / 2
+    correction = 1 - tngModule
+    curX = xStart
+    curY = yStart
+
+    for i in range(deltaX):
+        color = setItentity(color)
+        pointsArray.append((color, (curX, curY)))
+
+        if flag:
+            if acc >= correction:
+                curX += stepX
+                acc -= correction + tngModule
+            curY += stepY
+            acc += tngModule
+        else:
+            if acc >= correction:
+                curY += stepY
+                acc -= correction + tngModule
+            curX += stepX
+            acc += tngModule
+    return pointsArray
 
 
 def realBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -354,24 +483,64 @@ def realBresenham(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    if flag:
-        for i in range(deltaX):
-            image.put(curColorLines, (curX, curY))
-
+    for i in range(deltaX):
+        image.put(curColorLines, (curX, curY))
+        if flag:
             if acc >= 0:
                 curX += stepX
                 acc -= 1
             curY += stepY
             acc += tngModule
-    else:
-        for i in range(deltaX):
-            image.put(curColorLines, (curX, curY))
-
+        else:
             if acc >= 0:
                 curY += stepY
                 acc -= 1
             curX += stepX
             acc += tngModule
+
+
+def realBresenhamArray(xStart, xEnd, yStart, yEnd, color):
+    pointsArray = []
+    if xStart == xEnd and yStart == yEnd:
+        pointsArray.append((color, (xStart, yStart)))
+        return pointsArray
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    tngModule = deltaY / deltaX
+
+    acc = tngModule - 0.5
+    curX = xStart
+    curY = yStart
+
+    for i in range(deltaX):
+        pointsArray.append((color, (curX, curY)))
+        if flag:
+            if acc >= 0:
+                curX += stepX
+                acc -= 1
+            curY += stepY
+            acc += tngModule
+        else:
+            if acc >= 0:
+                curY += stepY
+                acc -= 1
+            curX += stepX
+            acc += tngModule
+    return pointsArray
 
 
 def DDAline(image, xStart, xEnd, yStart, yEnd):
@@ -390,8 +559,8 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
     else:
         length = trY
 
-    deltaX = deltaX / length
-    deltaY = deltaY / length
+    deltaX /= length
+    deltaY /= length
 
     curX = xStart
     curY = yStart
@@ -400,6 +569,33 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
         image.put(curColorLines, (niceRound(curX), niceRound(curY)))
         curX += deltaX
         curY += deltaY
+
+
+def DDAlineArray(xStart, xEnd, yStart, yEnd, color):
+    pointsArray = []
+    if xStart == xEnd and yStart == yEnd:
+        pointsArray.append((color, (xStart, yStart)))
+        return pointsArray
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    trX = abs(deltaX)
+    trY = abs(deltaY)
+
+    length = trX if trX > trY else trY
+
+    deltaX /= length
+    deltaY /= length
+
+    curX = xStart
+    curY = yStart
+
+    for i in range(length):
+        pointsArray.append((color, (niceRound(curX), niceRound(curY))))
+        curX += deltaX
+        curY += deltaY
+    return pointsArray
 
 def makeErrorDegree():
     errWindow = Tk()
@@ -466,13 +662,11 @@ def bunchResearch(image, degreeEntry, lengthEntry, centerEntryX, centerEntryY, c
     degrees = 0
     curX = centerX
     curY = centerY - length
-    constantX = centerX - length
-    constantY = centerY - length
     while abs(degrees) < 360:
         printRasterLine(image, centerX, curX, centerY, curY, combo, canvasWindow)
         degrees += degreesStep
-        curX = niceRound(constantX * sin(radians(degrees)))
-        curY = niceRound(constantY * cos(radians(degrees)))
+        curX = niceRound(centerX - length * sin(radians(degrees)))
+        curY = niceRound(centerY - length * cos(radians(degrees)))
 
 
 def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWindow):
@@ -507,106 +701,106 @@ def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWind
 def timeResearch(image, canvasWindow):
     masTime = []
     curTime = 0
-    for i in range(100):
+    for i in range(1000):
         clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
-        while abs(degrees) < 360:
+        while abs(degrees) <= 360:
             start = datetime.now()
-            DDAline(image, 500, curX, 500, curY)
+            DDAlineArray(500, curX, 500, curY, "#000000")
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
             curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 - 300 * cos(radians(degrees)))
-    curTime /= 100
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+    curTime /= 1000
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(100):
+    for i in range(1000):
         clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
-        while abs(degrees) < 360:
+        while abs(degrees) <= 360:
             start = datetime.now()
-            realBresenham(image, 500, curX, 500, curY)
+            realBresenhamArray(500, curX, 500, curY, "#000000")
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
             curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 - 300 * cos(radians(degrees)))
-    curTime /= 100
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+    curTime /= 1000
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(100):
+    for i in range(1000):
         clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
-        while abs(degrees) < 360:
+        while abs(degrees) <= 360:
             start = datetime.now()
-            digitBresenham(image, 500, curX, 500, curY)
+            digitBresenhamArray(500, curX, 500, curY, "#000000")
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
             curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 - 300 * cos(radians(degrees)))
-    curTime /= 100
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+    curTime /= 1000
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(100):
+    for i in range(1000):
         clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
-        while abs(degrees) < 360:
+        while abs(degrees) <= 360:
             start = datetime.now()
-            stepRemovalBresenham(image, 500, curX, 500, curY)
+            stepRemovalBresenhamArray(500, curX, 500, curY, "#000000")
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
             curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 - 300 * cos(radians(degrees)))
-    curTime /= 100
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+    curTime /= 1000
     masTime.append(curTime)
     curTime = 0
 
-    for i in range(100):
+    for i in range(1000):
         clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
-        while abs(degrees) < 360:
+        while abs(degrees) <= 360:
             start = datetime.now()
-            WuAlg(image, 500, curX, 500, curY)
+            WuAlgArray(500, curX, 500, curY, "#000000")
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
             degrees += 20
             curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 - 300 * cos(radians(degrees)))
-    curTime /= 100
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+    curTime /= 1000
     masTime.append(curTime)
     curTime = 0
 
-    i = 0
-    for i in range(100):
+    for i in range(1000):
         degrees = 0
-        clearImage(canvasWindow)
         curX = 500
         curY = 200
-        while abs(degrees) < 360:
+        clearImage(canvasWindow)
+        while abs(degrees) <= 360:
             start = datetime.now()
             tkinterAlg(canvasWindow, curX, 500, curY, 500)
             end = datetime.now()
             curTime = curTime + (end.timestamp() - start.timestamp())
-            degrees += 20
+            print(curTime)
             curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 - 300 * cos(radians(degrees)))
-    curTime /= 100
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+            degrees += 20
+    curTime /= 1000
     masTime.append(curTime)
 
     plt.figure(figsize = (15, 10))
@@ -616,6 +810,8 @@ def timeResearch(image, canvasWindow):
 
     plt.bar(masNames, masTime, align = "center")
     plt.title("Временные характеристики алгоритмов")
+    plt.ylabel("Затраченное время")
+    plt.xlabel("Алгоритм")
     plt.show()
 
 
