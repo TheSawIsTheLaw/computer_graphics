@@ -19,7 +19,7 @@ curColorBackground = "#ffffff"
 img = 0
 
 
-def setItentity(color):
+def setItentity(color, acc = 0):
     q = 0
     for i in range(10):
         q *= q
@@ -238,7 +238,7 @@ def digitBresenhamArray(xStart, xEnd, yStart, yEnd, color):
     curY = yStart
 
     for i in range(deltaX):
-        pointsArray.append((curColorLines, (curX, curY)))
+        pointsArray.append((color, (curX, curY)))
 
         if flag:
             if acc >= 0:
@@ -309,7 +309,7 @@ def WuAlg(image, xStart, xEnd, yStart, yEnd):
 def WuAlgArray(xStart, xEnd, yStart, yEnd, color):
     pointsArray = []
     if xStart == xEnd and yStart == yEnd:
-        pointsArray.append((color, (xStart, yStart)))
+        pointsArray.append((setItentity(color), (xStart, yStart)))
         return pointsArray
 
     deltaX = xEnd - xStart
@@ -334,9 +334,9 @@ def WuAlgArray(xStart, xEnd, yStart, yEnd, color):
     curY = yStart
 
     for i in range(deltaX):
-        pointsArray.append((setItentity(color), (curX, curY)))
+        pointsArray.append((setItentity(color, 1 + acc), (curX, curY)))
 
-        pointsArray.append((setItentity(color), (curX, curY + stepY)))
+        pointsArray.append((setItentity(color, -acc), (curX, curY + stepY)))
         if flag:
             if acc >= 0:
                 curX += stepX
@@ -410,7 +410,7 @@ def stepRemovalBresenham(image, xStart, xEnd, yStart, yEnd):
 def stepRemovalBresenhamArray(xStart, xEnd, yStart, yEnd, color):
     pointsArray = []
     if xStart == xEnd and yStart == yEnd:
-        pointsArray.append((color, (xStart, yStart)))
+        pointsArray.append((setItentity(color), (xStart, yStart)))
         return pointsArray
 
     deltaX = xEnd - xStart
@@ -695,11 +695,10 @@ def printRasterWRAP(image, entryXS, entryXE, entryYS, entryYE, combo, canvasWind
     printRasterLine(image, xStart, xEnd, yStart, yEnd, combo, canvasWindow)
 
 
-def timeResearch(image, canvasWindow):
+def timeResearch(canvasWindow):
     masTime = []
     curTime = 0
     for i in range(1000):
-        clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
@@ -716,7 +715,6 @@ def timeResearch(image, canvasWindow):
     curTime = 0
 
     for i in range(1000):
-        clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
@@ -733,7 +731,6 @@ def timeResearch(image, canvasWindow):
     curTime = 0
 
     for i in range(1000):
-        clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
@@ -750,7 +747,6 @@ def timeResearch(image, canvasWindow):
     curTime = 0
 
     for i in range(1000):
-        clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
@@ -767,7 +763,6 @@ def timeResearch(image, canvasWindow):
     curTime = 0
 
     for i in range(1000):
-        clearImage(canvasWindow)
         degrees = 0
         curX = 500
         curY = 200
@@ -787,7 +782,6 @@ def timeResearch(image, canvasWindow):
         degrees = 0
         curX = 500
         curY = 200
-        clearImage(canvasWindow)
         while abs(degrees) <= 360:
             start = datetime.now()
             tkinterAlg(canvasWindow, curX, 500, curY, 500)
@@ -801,8 +795,8 @@ def timeResearch(image, canvasWindow):
     masTime.append(curTime)
 
     plt.figure(figsize = (18, 10))
-    masNames = ["ЦДА", "Брезенхем \n(целые коэф.)",
-                "Брезенхем \n(действительные коэф.)", "Брезенхем \n(с устранением ступенчатости)",
+    masNames = ["ЦДА", "Брезенхем \n(действительные коэф.)",
+                "Брезенхем \n(целые коэф.)", "Брезенхем \n(с устранением ступенчатости)",
                 "Ву", "canvas\ncreate_line"]
 
     plt.bar(masNames, masTime, align = "center")
@@ -905,7 +899,7 @@ def makeMainWindow():
 
     Button(rootWindow, text = "Исследование визуальных характеристик отрезков,\n построенных разными алгоритмами", font = fontSettingLower, command = lambda: bunchResearch(img, angleEntry, lenghEntry, centerEntryX, centerEntryY, listBox, canvasWindow),
            width = 50).grid(row = 11, columnspan = 5)
-    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = lambda: timeResearch(img, canvasWindow), width = 50).grid(row = 12, columnspan = 5)
+    Button(rootWindow, text = "Исследование временных характеристик", font = fontSettingLower, command = lambda: timeResearch(canvasWindow), width = 50).grid(row = 12, columnspan = 5)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
