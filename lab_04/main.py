@@ -188,16 +188,50 @@ def makeMainWindow():
     xCenterEllipse.place(x = 190, y = 293)
 
     Label(rootWindow, text = "Центр по оси Y:", font = fontSettingLower).place(x = 0, y = 330)
-    yCenterEllipse = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    yCenterEllipse = Entry(rootWindow, width = 5, font = fontSettingLower)
     yCenterEllipse.place(x = 190, y = 333)
 
-    Label(rootWindow, text = "Размер полуоси по X:", font = fontSettingLower).place(x = 500, y = 290)
-    ellRadX = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
-    ellRadX.place(x = 750, y = 293)
+    Label(rootWindow, text = "Размер полуоси вдоль X:", font = fontSettingLower).place(x = 500, y = 290)
+    ellRadX = Entry(rootWindow, width = 5, font = fontSettingLower)
+    ellRadX.place(x = 780, y = 293)
 
-    Label(rootWindow, text = "Размер полуоси по Y:", font = fontSettingLower).place(x = 500, y = 330)
-    ellRadY = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
-    ellRadY.place(x = 750, y = 333)
+    Label(rootWindow, text = "Размер полуоси вдоль Y:", font = fontSettingLower).place(x = 500, y = 330)
+    ellRadY = Entry(rootWindow, width = 5, font = fontSettingLower)
+    ellRadY.place(x = 780, y = 333)
+
+    drawCurve = Button(rootWindow, text = "Построить", font = fontSettingLower, width = 79,
+                       command = print())
+    drawCurve.place(x = 0, y = 370)
+
+    Label(rootWindow, font = fontSettingLabels, text = "Параметры спектра:").place(x = 0, y = 420)
+
+    Label(rootWindow, font = fontSettingLower, text = "Центр по оси X:").place(x = 0, y = 460)
+    xCenterAnalysis = Entry(rootWindow, font = fontSettingLower, width = 5)
+    xCenterAnalysis.place(x = 190, y = 463)
+
+    Label(rootWindow, font = fontSettingLower, text = "Центр по оси Y:").place(x = 0, y = 500)
+    yCenterAnalysis = Entry(rootWindow, font = fontSettingLower, width = 5)
+    yCenterAnalysis.place(x = 190, y = 503)
+
+    Label(rootWindow, font = fontSettingLower, text = "Размер полуоси вдоль X \n(в случае окружности - её радиус):").place(x = 300, y = 460)
+    fOs = Entry(rootWindow, font = fontSettingLower, width = 8)
+    fOs.place(x = 720, y = 488)
+
+    Label(rootWindow, font = fontSettingLower, text = "Размер полуоси эллипса вдоль оси Y:").place(x = 0, y = 540)
+    sOs = Entry(rootWindow, font = fontSettingLower, width = 8)
+    sOs.place(x = 425, y = 543)
+
+    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль X (или радиуса окружности):").place(x = 0, y = 580)
+    dFOs = Entry(rootWindow, font = fontSettingLower, width = 8)
+    dFOs.place(x = 665, y = 583)
+
+    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль Y:").place(x = 0, y = 620)
+    dSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
+    dSOs.place(x = 370, y = 623)
+
+    Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 670)
+    Button(rootWindow, text = "Сравнить визуальные характеристики", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 711)
+    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 752)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
