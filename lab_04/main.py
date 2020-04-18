@@ -12,6 +12,7 @@ fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
 
 method = 0
+figure = 1
 img = 0
 
 curColorLines = "#000000"
@@ -137,29 +138,36 @@ def makeMainWindow():
     global img
     img = PhotoImage(width = 880, height = 1017)
     canvasWindow.create_image((440, 508), image = img, state = "normal")
-    canvasWindow.grid(row = 0, column = 7, rowspan = 13)
+    canvasWindow.place(x = 960, y = 0)
 
     # Выбор метода построения
-    Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1, sticky = E)
-    listBox = ttk.Combobox(rootWindow, width = 70, textvariable = method, state = 'readonly', values =
+    Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).place(x = 5, y = 10)
+    comboAlg = ttk.Combobox(rootWindow, width = 115, textvariable = method, state = 'readonly', values =
     ('1. Алгоритм на основе канонического уравнения',
      '2. Алгоритм на основе параметрического уравнения',
      '3. Алгоритм Брезенхема',
      '4. Алгоритм средней точки',
      '5. Алгоритм Tkinter Canvas'))
-    listBox.grid(row = 0, column = 1, columnspan = 4, sticky = W)
-    listBox.current(0)
+    comboAlg.place(x = 250, y = 15)
+    comboAlg.current(0)
+    Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).place(x = 5, y = 40)
+    comboFig = ttk.Combobox(rootWindow, width = 115, textvariable = figure, state = 'readonly', values =
+    ('1. Окружность',
+     '2. Эллипс'))
+    comboFig.place(x = 250, y = 45)
+    comboFig.current(0)
 
-    canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasLinesColor.grid(row = 8, column = 1, sticky = W)
-    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = lambda: chooseLinesColor(canvasLinesColor, rootWindow, 8, 1)).grid(row = 8,
-                                                                                                                                                       column = 0,
-                                                                                                                                                       sticky = E)
+    canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasLinesColor.place(x = 250, y = 82)
+    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, height = 2,
+           command = lambda: chooseLinesColor(canvasLinesColor, rootWindow, 8, 1)).place(x = 40, y = 80)
 
-    canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasBackgroundColor.grid(row = 8, column = 3, sticky = W)
-    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower,
-           command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3, canvasWindow)).grid(row = 8, column = 2, sticky = E)
+    canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasBackgroundColor.place(x = 660, y = 82)
+    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, height = 2,
+           command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3, canvasWindow)).place(x = 500, y = 80)
+
+    Label(rootWindow, text = "Параметры окружности:", font = fontSettingLabels).place(x = 0, y = 160)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
