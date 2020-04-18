@@ -181,6 +181,24 @@ def makeMainWindow():
     cirRad = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
     cirRad.place(x = 790, y = 203)
 
+    Label(rootWindow, text = "Параметры эллипса:", font = fontSettingLabels).place(x = 0, y = 250)
+
+    Label(rootWindow, text = "Центр по оси X:", font = fontSettingLower).place(x = 0, y = 290)
+    xCenterEllipse = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    xCenterEllipse.place(x = 190, y = 293)
+
+    Label(rootWindow, text = "Центр по оси Y:", font = fontSettingLower).place(x = 0, y = 330)
+    yCenterEllipse = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    yCenterEllipse.place(x = 190, y = 333)
+
+    Label(rootWindow, text = "Размер полуоси по X:", font = fontSettingLower).place(x = 500, y = 290)
+    ellRadX = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    ellRadX.place(x = 750, y = 293)
+
+    Label(rootWindow, text = "Размер полуоси по Y:", font = fontSettingLower).place(x = 500, y = 330)
+    ellRadY = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    ellRadY.place(x = 750, y = 333)
+
     makeCascadeMenu(rootWindow, canvasWindow)
 
     rootWindow.mainloop()
