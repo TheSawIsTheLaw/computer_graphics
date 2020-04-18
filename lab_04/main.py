@@ -169,6 +169,18 @@ def makeMainWindow():
 
     Label(rootWindow, text = "Параметры окружности:", font = fontSettingLabels).place(x = 0, y = 160)
 
+    Label(rootWindow, text = "Центр по оси X:", font = fontSettingLower).place(x = 0, y = 200)
+    xCenterCircle = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    xCenterCircle.place(x = 190, y = 203)
+
+    Label(rootWindow, text = "Центр по оси Y:", font = fontSettingLower).place(x = 300, y = 200)
+    yCenterCircle = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    yCenterCircle.place(x = 490, y = 203)
+
+    Label(rootWindow, text = "Радиус:", font = fontSettingLower).place(x = 700, y = 200)
+    cirRad = Entry(rootWindow, width = 5, font = fontSettingLower, command = print())
+    cirRad.place(x = 790, y = 203)
+
     makeCascadeMenu(rootWindow, canvasWindow)
 
     rootWindow.mainloop()
