@@ -1,0 +1,169 @@
+from tkinter import *
+from tkinter import colorchooser
+from math import *
+from numpy import sign
+from tkinter import ttk
+import matplotlib.pyplot as plt
+from matplotlib import colors
+from colormap import rgb2hex
+from datetime import datetime
+
+fontSettingLabels = ("Consolas", 20)
+fontSettingLower = ("Consolas", 16)
+
+method = 0
+img = 0
+
+curColorLines = "#000000"
+curColorBackground = "#ffffff"
+
+
+def RGBtoHEX(rgb):
+    return '#%02x%02x%02x' % rgb
+
+
+def niceRound(number):
+    ret = int(number)
+    if number < 0:
+        if fabs(number) - abs(ret) >= 0.5:
+            return ret - 1
+        else:
+            return ret
+    else:
+        if number - ret >= 0.5:
+            return ret + 1
+        else:
+            return ret
+
+
+def makeReference():
+    """
+        Каскадное меню->"Справка"->"Справка"
+    """
+    referenceWindow = Tk()
+    referenceWindow.title("Справка")
+    referenceLabel = Label(referenceWindow, text =
+    "Лабораторная работа 4, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = fontSettingLabels)
+    referenceLabel.pack()
+    referenceWindow.mainloop()
+
+
+def makeJobWindow():
+    jobWindow = Tk()
+    jobWindow.title("Формулировка задания")
+
+    Label(jobWindow, font = fontSettingLabels,
+          text = "Работа: реализация и исследование алгоритмов построения окружностей и эллипсов.\n\n"
+                 "Реализовать и исследовать следующие алгоритмы построения отрезков и эллипсов:\n"
+                 "Алгоритм на основе канонического уравнения\n"
+                 "Алгоритм на основе параметрического уравнения\n"
+                 "Алгоритм Брезенхема\n"
+                 "Алгоритм средней точки\n"
+                 "Алгоритм Tkinter Canvas\n"
+                 "Предоставить сравнение визуальных характеристик построенных окружностей \nи исследование временных характеристик").grid()
+
+    jobWindow.mainloop()
+
+
+def chooseBackgroundColor(canvasBackgroundColor, rootWindow, row, column, canvasWindow):
+    global curColorBackground
+    curColorBackground = colorchooser.askcolor()[1]
+    canvasBackgroundColor = Canvas(rootWindow, bg = curColorBackground, borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasBackgroundColor.grid(row = row, column = column, sticky = W)
+    canvasWindow.config(bg = curColorBackground)
+
+
+def chooseLinesColor(canvasWindow, rootWindow, row, column):
+    global curColorLines
+    curColorLines = colorchooser.askcolor()[1]
+    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasLinesColor.grid(row = row, column = column, sticky = W)
+
+
+def clearImage(canvasWindow):
+    canvasWindow.delete("all")
+    global img
+    img = PhotoImage(width = 880, height = 1017)
+    canvasWindow.create_image((440, 508), image = img, state = "normal")
+    canvasWindow.grid(row = 0, column = 7, rowspan = 13)
+
+
+def makeCascadeMenu(rootWindow, canvasWindow):
+    """
+        Функция создания каскадного меню
+    """
+    rootMenu = Menu(rootWindow)
+    rootWindow.config(menu = rootMenu)
+
+    jobMenu = Menu(rootMenu)
+    jobMenu.add_command(label = 'Формулировка задания', command = makeJobWindow)
+    jobMenu.add_command(label = 'Справка', command = makeReference)
+
+    plusCommands = Menu(rootMenu)
+    plusCommands.add_command(label = 'Очистить плоскость рисования', command = lambda: clearImage(canvasWindow))
+
+    rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
+    rootMenu.add_cascade(label = "Доп. возможности", menu = plusCommands)
+
+
+def makeItentity(curCol, backColor, acc):
+    R = niceRound(curCol[0] + (backColor[0] - curCol[0]) * acc)
+    if R > 255:
+        R = 255
+    elif R < 0:
+        R = 0
+    G = niceRound(curCol[1] + (backColor[1] - curCol[1]) * acc)
+    if G > 255:
+        G = 255
+    elif G < 0:
+        G = 0
+    B = niceRound(curCol[2] + (backColor[2] - curCol[2]) * acc)
+    if B > 255:
+        B = 255
+    elif B < 0:
+        B = 0
+    return rgb2hex(R, G, B)
+
+
+def makeMainWindow():
+    """
+            Функция Создания главного окна
+        """
+    rootWindow = Tk()
+    rootWindow.title("Рабораторная работа 4, Якуба Дмитрий, ИУ7-43Б")
+    rootWindow.geometry("1850x1080+60+0")
+
+    canvasWindow = Canvas(rootWindow, bg = "white", width = 880, height = 1016, borderwidth = 5, relief = RIDGE)
+    global img
+    img = PhotoImage(width = 880, height = 1017)
+    canvasWindow.create_image((440, 508), image = img, state = "normal")
+    canvasWindow.grid(row = 0, column = 7, rowspan = 13)
+
+    # Выбор метода построения
+    Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).grid(row = 0, column = 0, columnspan = 1, sticky = E)
+    listBox = ttk.Combobox(rootWindow, width = 70, textvariable = method, state = 'readonly', values =
+    ('1. Алгоритм на основе канонического уравнения',
+     '2. Алгоритм на основе параметрического уравнения',
+     '3. Алгоритм Брезенхема',
+     '4. Алгоритм средней точки',
+     '5. Алгоритм Tkinter Canvas'))
+    listBox.grid(row = 0, column = 1, columnspan = 4, sticky = W)
+    listBox.current(0)
+
+    canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasLinesColor.grid(row = 8, column = 1, sticky = W)
+    Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, command = lambda: chooseLinesColor(canvasLinesColor, rootWindow, 8, 1)).grid(row = 8,
+                                                                                                                                                       column = 0,
+                                                                                                                                                       sticky = E)
+
+    canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 40)
+    canvasBackgroundColor.grid(row = 8, column = 3, sticky = W)
+    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower,
+           command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3, canvasWindow)).grid(row = 8, column = 2, sticky = E)
+
+    makeCascadeMenu(rootWindow, canvasWindow)
+
+    rootWindow.mainloop()
+
+
+makeMainWindow()
