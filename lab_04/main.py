@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter import colorchooser
-from math import *
-from numpy import sign
 from tkinter import ttk
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from colormap import rgb2hex
 from datetime import datetime
+
+from lab_04.circleAlgs import *
+from lab_04.ellipseAlgs import *
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
@@ -21,20 +22,6 @@ curColorBackground = "#ffffff"
 
 def RGBtoHEX(rgb):
     return '#%02x%02x%02x' % rgb
-
-
-def niceRound(number):
-    ret = int(number)
-    if number < 0:
-        if fabs(number) - abs(ret) >= 0.5:
-            return ret - 1
-        else:
-            return ret
-    else:
-        if number - ret >= 0.5:
-            return ret + 1
-        else:
-            return ret
 
 
 def makeReference():
@@ -124,131 +111,6 @@ def makeItentity(curCol, backColor, acc):
     elif B < 0:
         B = 0
     return rgb2hex(R, G, B)
-
-def reflectPointsXY(pointsArray, xCenter, yCenter):
-    prevLen = len(pointsArray)
-    for i in range(prevLen):
-        pointsArray.append((pointsArray[i][1] - yCenter + xCenter, pointsArray[i][0] - xCenter + yCenter,
-                            pointsArray[i][2]))
-
-
-def reflectPointsY(pointsArray, xCenter):
-    prevLen = len(pointsArray)
-    for i in range(prevLen):
-        pointsArray.append((-(pointsArray[i][0] - xCenter) + xCenter, pointsArray[i][1], pointsArray[i][2]))
-
-
-def reflectPointsX(pointsArray, yCenter):
-    prevLen = len(pointsArray)
-    for i in range(prevLen):
-        pointsArray.append((pointsArray[i][0], -(pointsArray[i][1] - yCenter) + yCenter, pointsArray[i][2]))
-
-
-def canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
-    pointsArray = []
-
-    sqrRadX = radiusX * radiusX
-    sqrRadY = radiusY * radiusY
-    sqrMix = sqrRadX * sqrRadY
-
-    limitX = niceRound(xCenter + radiusX / sqrt(1 + sqrRadY / sqrRadX))
-    limitY = niceRound(yCenter + radiusY / sqrt(1 + sqrRadX / sqrRadY))
-
-    for curX in range(xCenter, limitX):
-        curY = yCenter + sqrt(sqrMix - (curX - xCenter)*(curX - xCenter) * sqrRadY) / radiusX
-        pointsArray.append((curX, curY, colour))
-
-    for curY in range(limitY, yCenter - 1, -1):
-        curX = xCenter + sqrt(sqrMix - (curY - yCenter)*(curY - yCenter) * sqrRadX) / radiusY
-        pointsArray.append((curX, curY, colour))
-
-    reflectPointsX(pointsArray, xCenter)
-    reflectPointsY(pointsArray, yCenter)
-    return pointsArray
-
-
-def middlePointCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
-    pointsArray = []
-
-    curX = radius
-    curY = 0
-    pointsArray.append((curX + xCenter, curY + yCenter, colour))
-
-    func = 1 - radius
-
-    while curY < curX:
-        curY += 1
-        if func > 0:
-            curX -= 1
-            func -= curX - 2 + curX
-
-        func += curY + curY + 3
-        pointsArray.append((curX + xCenter, curY + yCenter, colour))
-    reflectPointsXY(pointsArray, xCenter, yCenter)
-    reflectPointsY(pointsArray, xCenter)
-    reflectPointsX(pointsArray, yCenter)
-    return pointsArray
-
-
-def bresenhamCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
-    pointsArray = []
-
-    curX = 0
-    curY = radius
-    pointsArray.append((curX + xCenter, curY + yCenter, colour))
-
-    delta = 2 - radius - radius
-    while curX < curY:
-        if delta <= 0:
-            d = delta + delta + curY + curY - 1
-            curX += 1
-            if d >= 0 :
-                curY -= 1
-                delta += 2 * (curX - curY + 1)
-            else:
-                delta += curX + curX + 1
-        else:
-            d = delta - curX + delta - curX - 1
-            curY -= 1
-            if d < 0:
-                curX += 1
-                delta += curX + curX - curY - curY + 2
-            else:
-                delta -= curY + curY - 1
-        pointsArray.append((curX + xCenter, curY + yCenter, colour))
-
-    reflectPointsXY(pointsArray, xCenter, yCenter)
-    reflectPointsY(pointsArray, xCenter)
-    reflectPointsX(pointsArray, yCenter)
-    return pointsArray
-
-
-def parameterCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
-    pointsArray = []
-    degreeStep = 1 / radius
-    i = 0
-    while i <= pi / 4 + degreeStep:
-        curX = xCenter + radius * cos(i)
-        curY = yCenter + radius * sin(i)
-        pointsArray.append((curX, curY, colour))
-        i += degreeStep
-
-    reflectPointsXY(pointsArray, xCenter, yCenter)
-    reflectPointsY(pointsArray, xCenter)
-    reflectPointsX(pointsArray, yCenter)
-    return pointsArray
-
-
-def canonicalCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
-    pointsArray = []
-    sqrRad = radius * radius
-    for curX in range(xCenter, round(xCenter + radius / sqrt(2)) + 1):
-        curY = yCenter + sqrt(sqrRad - (curX - xCenter) * (curX - xCenter))
-        pointsArray.append((curX, curY, colour))
-    reflectPointsXY(pointsArray, xCenter, yCenter)
-    reflectPointsY(pointsArray, xCenter)
-    reflectPointsX(pointsArray, yCenter)
-    return pointsArray
 
 
 def drawArr(image, pointsArray):
