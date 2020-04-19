@@ -86,7 +86,7 @@ def clearImage(canvasWindow):
     global img
     img = PhotoImage(width = 880, height = 1017)
     canvasWindow.create_image((440, 508), image = img, state = "normal")
-    canvasWindow.grid(row = 0, column = 7, rowspan = 13)
+    canvasWindow.place(x = 960, y = 0)
 
 
 def makeCascadeMenu(rootWindow, canvasWindow):
@@ -252,8 +252,11 @@ def drawCanonicalCircle(xCenter, yCenter, radius):
     drawArray = canonicalCircleAlg(xCenter, yCenter, radius, curColorLines)
     drawArr(img, drawArray)
 
+def drawTkinterCircle(canvasWindow, xCenter, yCenter, radius):
+    canvasWindow.create_oval(canvasWindow, xCenter - radius, yCenter - radius, xCenter + radius, yCenter + radius)
 
-def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt):
+
+def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, canvasWindow):
     got = comboAlg.get()
     xCenter = int(xCenterEnt.get())
     yCenter = int(yCenterEnt.get())
@@ -268,12 +271,15 @@ def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt):
         drawBresenhamCircle(xCenter, yCenter, radius)
     if alg == "4":
         drawMiddlePointCircle(xCenter, yCenter, radius)
+    if alg == "5":
+        drawTkinterCircle(canvasWindow, xCenter, yCenter, radius)
 
 
-def drawCurve(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS = 0):
+def drawCurve(comboFig, comboAlg, xCenterCir, yCenterCir, radiusCir, xCenterEll,
+              yCenterEll, radiusF, radiusS, canvasWindow):
     got = comboFig.get()
     if got[0] == "1":
-        drawCircle(comboAlg, xCenter, yCenter, radiusF)
+        drawCircle(comboAlg, xCenterCir, yCenterCir, radiusCir, canvasWindow)
 
 
 def makeMainWindow():
@@ -350,7 +356,10 @@ def makeMainWindow():
     ellRadY.place(x = 780, y = 333)
 
     drawCurveButton = Button(rootWindow, text = "Построить", font = fontSettingLower, width = 79,
-                       command = lambda: drawCurve(comboFig, comboAlg, xCenterCircle, yCenterCircle, cirRad))
+                       command = lambda: drawCurve(comboFig, comboAlg,
+                                                   xCenterCircle, yCenterCircle, cirRad,
+                                                   xCenterEllipse, yCenterEllipse,
+                                                   ellRadX, ellRadY, canvasWindow))
     drawCurveButton.place(x = 0, y = 370)
 
     Label(rootWindow, font = fontSettingLabels, text = "Параметры спектра:").place(x = 0, y = 420)
