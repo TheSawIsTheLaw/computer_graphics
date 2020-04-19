@@ -119,13 +119,18 @@ def drawTkinterCircle(canvasWindow, xCenter, yCenter, radius):
     canvasWindow.create_oval(canvasWindow, xCenter - radius, yCenter - radius, xCenter + radius, yCenter + radius)
 
 
+def drawBresenhamEllipse(xCenter, yCenter, radiusX, radiusY):
+    drawArray = bresenhamEllipseAlg(xCenter, yCenter, radiusX, radiusY, curColorLines)
+    drawArr(img, drawArray)
+
+
 def drawParameterEllipse(xCenter, yCenter, radiusX, radiusY):
-    drawArray = parameterEllipseAlg(xCenter, yCenter, radiusX, radiusY)
+    drawArray = parameterEllipseAlg(xCenter, yCenter, radiusX, radiusY, curColorLines)
     drawArr(img, drawArray)
 
 
 def drawCanonicalEllipse(xCenter, yCenter, radiusX, radiusY):
-    drawArray = canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY)
+    drawArray = canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY, curColorLines)
     drawArr(img, drawArray)
 
 
@@ -141,6 +146,8 @@ def drawEllipse(comboAlg, xCenterEnt, yCenterEnt, radiusXEnt, radiusYEnt, canvas
         drawCanonicalEllipse(xCenter, yCenter, radiusX, radiusY)
     if alg == "2":
         drawParameterEllipse(xCenter, yCenter, radiusX, radiusY)
+    if alg == "3":
+        drawBresenhamEllipse(xCenter, yCenter, radiusX, radiusY)
 
 
 def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, canvasWindow):

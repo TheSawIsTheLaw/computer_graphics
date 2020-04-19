@@ -2,6 +2,41 @@ from lab_04.reflection import *
 from lab_04.shittyFuncs import *
 
 
+def bresenhamEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
+    pointsArray = []
+
+    curX = 0
+    curY = radiusY
+
+    sqrRadX = radiusX * radiusX
+    sqrRadY = radiusY * radiusY
+
+    pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    delta = sqrRadY - sqrRadX * (radiusY + radiusY + 1)
+    while curY > 0:
+        if delta <= 0:
+            negDek = delta + delta + sqrRadX * (curY + curY - 1)
+            curX += 1
+            delta += sqrRadY * (curX + curX + 1)
+            if negDek >= 0:
+                curY -= 1
+                delta += sqrRadX * (-curY - curY + 1)
+        else:
+            posDek = delta + delta + sqrRadY * (-curX - curX - 1)
+            curY -= 1
+            delta += sqrRadX * (-curY - curY + 1)
+            if posDek < 0:
+                curX += 1
+                delta += sqrRadY * (curX + curX + 1)
+        pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    reflectPointsY(pointsArray, xCenter)
+    reflectPointsX(pointsArray, yCenter)
+
+    return pointsArray
+
+
 def parameterEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
     pointsArray = []
 
