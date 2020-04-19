@@ -116,7 +116,7 @@ def drawCanonicalCircle(xCenter, yCenter, radius):
 
 
 def drawTkinterCircle(canvasWindow, xCenter, yCenter, radius):
-    canvasWindow.create_oval(canvasWindow, xCenter - radius,
+    canvasWindow.create_oval(xCenter - radius,
                              yCenter - radius, xCenter + radius,
                              yCenter + radius, outline = curColorLines)
 
@@ -195,6 +195,11 @@ def drawCurve(comboFig, comboAlg, xCenterCir, yCenterCir, radiusCir, xCenterEll,
         drawEllipse(comboAlg, xCenterEll, yCenterEll, radiusF, radiusS, canvasWindow)
 
 
+def spectralTkinterCircle(xCenter, yCenter, radius, step, end, canvasWindow):
+    for i in range(radius, end, step):
+        drawTkinterCircle(canvasWindow, xCenter, yCenter, radius + i)
+
+
 def spectralMiddlePointCircle(xCenter, yCenter, radius, step, end):
     for i in range(radius, end, step):
         drawMiddlePointCircle(xCenter, yCenter, radius + i)
@@ -234,6 +239,8 @@ def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRad
         spectralBresenhamCircle(xCenter, yCenter, radius, step, end)
     if alg == "4":
         spectralMiddlePointCircle(xCenter, yCenter, radius, step, end)
+    if alg == "5":
+        spectralTkinterCircle(xCenter, yCenter, radius, step, end, canvasWindow)
 
 
 def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
