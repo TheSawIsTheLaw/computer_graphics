@@ -144,6 +144,29 @@ def reflectPointsX(pointsArray, yCenter):
         pointsArray.append((pointsArray[i][0], -(pointsArray[i][1] - yCenter) + yCenter, pointsArray[i][2]))
 
 
+def canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
+    pointsArray = []
+
+    sqrRadX = radiusX * radiusX
+    sqrRadY = radiusY * radiusY
+    sqrMix = sqrRadX * sqrRadY
+
+    limitX = niceRound(xCenter + radiusX / sqrt(1 + sqrRadY / sqrRadX))
+    limitY = niceRound(yCenter + radiusY / sqrt(1 + sqrRadX / sqrRadY))
+
+    for curX in range(xCenter, limitX):
+        curY = yCenter + sqrt(sqrMix - (curX - xCenter)*(curX - xCenter) * sqrRadY) / radiusX
+        pointsArray.append((curX, curY, colour))
+
+    for curY in range(limitY, yCenter - 1, -1):
+        curX = xCenter + sqrt(sqrMix - (curY - yCenter)*(curY - yCenter) * sqrRadX) / radiusY
+        pointsArray.append((curX, curY, colour))
+
+    reflectPointsX(pointsArray, xCenter)
+    reflectPointsY(pointsArray, yCenter)
+    return pointsArray
+
+
 def middlePointCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
 
@@ -252,8 +275,26 @@ def drawCanonicalCircle(xCenter, yCenter, radius):
     drawArray = canonicalCircleAlg(xCenter, yCenter, radius, curColorLines)
     drawArr(img, drawArray)
 
+
 def drawTkinterCircle(canvasWindow, xCenter, yCenter, radius):
     canvasWindow.create_oval(canvasWindow, xCenter - radius, yCenter - radius, xCenter + radius, yCenter + radius)
+
+
+def drawCanonicalEllipse(xCenter, yCenter, radiusX, radiusY):
+    drawArray = canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY)
+    drawArr(img, drawArray)
+
+
+def drawEllipse(comboAlg, xCenterEnt, yCenterEnt, radiusXEnt, radiusYEnt, canvasWindow):
+    got = comboAlg.get()
+    xCenter = int(xCenterEnt.get())
+    yCenter = int(yCenterEnt.get())
+    radiusX = int(radiusXEnt.get())
+    radiusY = int(radiusYEnt.get())
+
+    alg = got[0]
+    if alg == "1":
+        drawCanonicalEllipse(xCenter, yCenter, radiusX, radiusY)
 
 
 def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, canvasWindow):
@@ -280,6 +321,8 @@ def drawCurve(comboFig, comboAlg, xCenterCir, yCenterCir, radiusCir, xCenterEll,
     got = comboFig.get()
     if got[0] == "1":
         drawCircle(comboAlg, xCenterCir, yCenterCir, radiusCir, canvasWindow)
+    else:
+        drawEllipse(comboAlg, xCenterEll, yCenterEll, radiusF, radiusS, canvasWindow)
 
 
 def makeMainWindow():
