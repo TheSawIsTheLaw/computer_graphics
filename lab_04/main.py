@@ -125,6 +125,42 @@ def makeItentity(curCol, backColor, acc):
         B = 0
     return rgb2hex(R, G, B)
 
+def reflectPointsXY(pointsArray, xCenter, yCenter):
+    output = []
+    for i in pointsArray:
+        output.append((i[1] - yCenter + xCenter, i[0] - xCenter + yCenter, i[2]))
+    return output
+
+
+def reflectPointsY(pointsArray, xCenter):
+    output = []
+    for i in pointsArray:
+        output.append((-(i[0] - xCenter) + xCenter, i[1], i[2]))
+    return output
+
+
+def reflectPointsX(pointsArray, yCenter):
+    output = []
+    for i in pointsArray:
+        output.append((i[0], -(i[1] - yCenter) + yCenter, i[2]))
+    return output
+
+
+def canonicalCircleAlg(xCenter, yCenter, radius, colour):
+    pointsArray = []
+    sqrRad = radius * radius
+    for curX in range(xCenter, round(xCenter + radius / sqrt(2)) + 1):
+        curY = yCenter + sqrt(sqrRad - (curX - xCenter) * (curX - xCenter))
+        pointsArray.append((curX, curY, colour))
+    pointsArray.append(reflectPointsXY(pointsArray, xCenter, yCenter))
+    pointsArray.append(reflectPointsY(pointsArray, xCenter))
+    pointsArray.append(reflectPointsX(pointsArray, yCenter))
+
+
+def drawArr(image, pointsArray, colour):
+    for i in pointsArray:
+        image.put(colour, (i[0], i[1]))
+
 
 def makeMainWindow():
     """
