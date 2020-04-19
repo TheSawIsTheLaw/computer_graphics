@@ -1,6 +1,7 @@
 from lab_04.reflection import *
 from math import *
 
+
 def middlePointCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
 
