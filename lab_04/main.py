@@ -20,10 +20,6 @@ curColorLines = "#000000"
 curColorBackground = "#ffffff"
 
 
-def RGBtoHEX(rgb):
-    return '#%02x%02x%02x' % rgb
-
-
 def makeReference():
     """
         Каскадное меню->"Справка"->"Справка"
@@ -92,25 +88,6 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
     rootMenu.add_cascade(label = "Доп. возможности", menu = plusCommands)
-
-
-def makeItentity(curCol, backColor, acc):
-    R = niceRound(curCol[0] + (backColor[0] - curCol[0]) * acc)
-    if R > 255:
-        R = 255
-    elif R < 0:
-        R = 0
-    G = niceRound(curCol[1] + (backColor[1] - curCol[1]) * acc)
-    if G > 255:
-        G = 255
-    elif G < 0:
-        G = 0
-    B = niceRound(curCol[2] + (backColor[2] - curCol[2]) * acc)
-    if B > 255:
-        B = 255
-    elif B < 0:
-        B = 0
-    return rgb2hex(R, G, B)
 
 
 def drawArr(image, pointsArray):
