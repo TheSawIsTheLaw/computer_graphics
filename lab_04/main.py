@@ -195,6 +195,11 @@ def drawCurve(comboFig, comboAlg, xCenterCir, yCenterCir, radiusCir, xCenterEll,
         drawEllipse(comboAlg, xCenterEll, yCenterEll, radiusF, radiusS, canvasWindow)
 
 
+def spectralMiddlePointCircle(xCenter, yCenter, radius, step, end):
+    for i in range(radius, end, step):
+        drawMiddlePointCircle(xCenter, yCenter, radius + i)
+
+
 def spectralBresenhamCircle(xCenter, yCenter, radius, step, end):
     for i in range(radius, end, step):
         drawBresenhamCircle(xCenter, yCenter, radius + i)
@@ -227,6 +232,8 @@ def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRad
         spectralParameterCircle(xCenter, yCenter, radius, step, end)
     if alg == "3":
         spectralBresenhamCircle(xCenter, yCenter, radius, step, end)
+    if alg == "4":
+        spectralMiddlePointCircle(xCenter, yCenter, radius, step, end)
 
 
 def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
