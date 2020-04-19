@@ -116,7 +116,9 @@ def drawCanonicalCircle(xCenter, yCenter, radius):
 
 
 def drawTkinterCircle(canvasWindow, xCenter, yCenter, radius):
-    canvasWindow.create_oval(canvasWindow, xCenter - radius, yCenter - radius, xCenter + radius, yCenter + radius)
+    canvasWindow.create_oval(canvasWindow, xCenter - radius,
+                             yCenter - radius, xCenter + radius,
+                             yCenter + radius, outline = curColorLines)
 
 
 def drawMiddlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY):
@@ -139,6 +141,12 @@ def drawCanonicalEllipse(xCenter, yCenter, radiusX, radiusY):
     drawArr(img, drawArray)
 
 
+def drawTkinterEllipse(xCenter, yCenter, radiusX, radiusY, canvasWindow):
+    canvasWindow.create_oval(xCenter - radiusX, yCenter - radiusY,
+                             xCenter + radiusX, yCenter + radiusY,
+                             outline = curColorLines)
+
+
 def drawEllipse(comboAlg, xCenterEnt, yCenterEnt, radiusXEnt, radiusYEnt, canvasWindow):
     got = comboAlg.get()
     xCenter = int(xCenterEnt.get())
@@ -155,6 +163,8 @@ def drawEllipse(comboAlg, xCenterEnt, yCenterEnt, radiusXEnt, radiusYEnt, canvas
         drawBresenhamEllipse(xCenter, yCenter, radiusX, radiusY)
     if alg == "4":
         drawMiddlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY)
+    if alg == "5":
+        drawTkinterEllipse(xCenter, yCenter, radiusX, radiusY, canvasWindow)
 
 
 def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, canvasWindow):

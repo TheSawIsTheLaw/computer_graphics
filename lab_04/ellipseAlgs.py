@@ -30,7 +30,7 @@ def middlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"
     curY = 0
     pointsArray.append((curX + xCenter, curY + yCenter, colour))
 
-    func = sqrRadX - niceRound(sqrRadY * (curX - 1/4))
+    func = sqrRadX - niceRound(sqrRadY * (curX - 1 / 4))
     while curY < limit:
         if func > 0:
             curX -= 1
@@ -113,11 +113,11 @@ def canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
     limitY = niceRound(yCenter + radiusY / sqrt(1 + sqrRadX / sqrRadY))
 
     for curX in range(xCenter, limitX):
-        curY = yCenter + sqrt(sqrMix - (curX - xCenter)*(curX - xCenter) * sqrRadY) / radiusX
+        curY = yCenter + sqrt(sqrMix - (curX - xCenter) * (curX - xCenter) * sqrRadY) / radiusX
         pointsArray.append((curX, curY, colour))
 
     for curY in range(limitY, yCenter - 1, -1):
-        curX = xCenter + sqrt(sqrMix - (curY - yCenter)*(curY - yCenter) * sqrRadX) / radiusY
+        curX = xCenter + sqrt(sqrMix - (curY - yCenter) * (curY - yCenter) * sqrRadX) / radiusY
         pointsArray.append((curX, curY, colour))
 
     reflectPointsX(pointsArray, xCenter)
