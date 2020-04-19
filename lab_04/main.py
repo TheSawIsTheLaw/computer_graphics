@@ -199,7 +199,9 @@ def spectralCanonicalCircle(xCenter, yCenter, radius, step, end):
     for i in range(radius, end, step):
         drawCanonicalCircle(xCenter, yCenter, radius + i)
 
-def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRadEnt):
+
+def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRadEnt,
+                    canvasWindow):
     got = comboAlg.get()
 
     xCenter = int(xCenterEnt.get())
@@ -214,10 +216,10 @@ def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRad
 
 
 def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
-                 stepX, stepY, canvasWindow):
+                 stepX, stepY, stopX, stopY, canvasWindow):
     got = comboFig.get()
     if got[0] == "1":
-        print("FFFFFF")
+        spectralCircles(comboAlg, xCenter, yCenter, radiusF, stepX, stopX, canvasWindow)
     else:
         print("eeeeeeeee")
 
@@ -336,8 +338,11 @@ def makeMainWindow():
     dSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
     dSOs.place(x = 370, y = 703)
 
-    Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 760)
-    Button(rootWindow, text = "Сравнить визуальные характеристики", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
+    Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = lambda: spectralAnal(comboFig, comboAlg, xCenterAnalysis,
+                                                                               yCenterAnalysis, fOs, sOs, dFOs, dSOs, stopFOs, stopSOs,
+                                                                               canvasWindow)).place(x = 0, y = 760)
+    Button(rootWindow, text = "Сравнить визуальные характеристики",
+           font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
     Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 842)
 
     makeCascadeMenu(rootWindow, canvasWindow)
