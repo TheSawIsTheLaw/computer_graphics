@@ -195,6 +195,33 @@ def drawCurve(comboFig, comboAlg, xCenterCir, yCenterCir, radiusCir, xCenterEll,
         drawEllipse(comboAlg, xCenterEll, yCenterEll, radiusF, radiusS, canvasWindow)
 
 
+def spectralCanonicalCircle(xCenter, yCenter, radius, step, end):
+    for i in range(radius, end, step):
+        drawCanonicalCircle(xCenter, yCenter, radius + i)
+
+def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRadEnt):
+    got = comboAlg.get()
+
+    xCenter = int(xCenterEnt.get())
+    yCenter = int(yCenterEnt.get())
+    radius = int(radiusEnt.get())
+    step = int(stepEnt.get())
+    end = int(endRadEnt.get())
+
+    alg = got[0]
+    if alg == "1":
+        spectralCanonicalCircle(xCenter, yCenter, radius, step, end)
+
+
+def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
+                 stepX, stepY, canvasWindow):
+    got = comboFig.get()
+    if got[0] == "1":
+        print("FFFFFF")
+    else:
+        print("eeeeeeeee")
+
+
 def makeMainWindow():
     """
             Функция Создания главного окна
@@ -285,25 +312,33 @@ def makeMainWindow():
     yCenterAnalysis = Entry(rootWindow, font = fontSettingLower, width = 5)
     yCenterAnalysis.place(x = 190, y = 503)
 
-    Label(rootWindow, font = fontSettingLower, text = "Размер полуоси вдоль X \n(в случае окружности - её радиус):").place(x = 300, y = 460)
+    Label(rootWindow, font = fontSettingLower, text = "Начальный размер полуоси вдоль X \n(в случае окружности - её радиус):").place(x = 300, y = 460)
     fOs = Entry(rootWindow, font = fontSettingLower, width = 8)
     fOs.place(x = 720, y = 488)
 
-    Label(rootWindow, font = fontSettingLower, text = "Размер полуоси эллипса вдоль оси Y:").place(x = 0, y = 540)
+    Label(rootWindow, font = fontSettingLower, text = "Начальный размер полуоси эллипса вдоль оси Y:").place(x = 0, y = 540)
     sOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    sOs.place(x = 425, y = 543)
+    sOs.place(x = 545, y = 543)
 
-    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль X (или радиуса окружности):").place(x = 0, y = 580)
+    Label(rootWindow, font = fontSettingLower, text = "Конечный размер полуоси эллипса X (в случае окружности - её радиус):").place(x = 0, y = 580)
+    stopFOs = Entry(rootWindow, font = fontSettingLower, width = 8)
+    stopFOs.place(x = 825, y = 583)
+
+    Label(rootWindow, font = fontSettingLower, text = "Конечный размер полуоси эллипса вдоль оси Y:").place(x = 0, y = 620)
+    stopSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
+    stopSOs.place(x = 530, y = 623)
+
+    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль X (или радиуса окружности):").place(x = 0, y = 670)
     dFOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    dFOs.place(x = 665, y = 583)
+    dFOs.place(x = 665, y = 673)
 
-    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль Y:").place(x = 0, y = 620)
+    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль Y:").place(x = 0, y = 710)
     dSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    dSOs.place(x = 370, y = 623)
+    dSOs.place(x = 370, y = 713)
 
-    Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 670)
-    Button(rootWindow, text = "Сравнить визуальные характеристики", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 711)
-    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 752)
+    Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 760)
+    Button(rootWindow, text = "Сравнить визуальные характеристики", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
+    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 842)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
