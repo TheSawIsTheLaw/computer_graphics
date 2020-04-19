@@ -144,6 +144,29 @@ def reflectPointsX(pointsArray, yCenter):
         pointsArray.append((pointsArray[i][0], -(pointsArray[i][1] - yCenter) + yCenter, pointsArray[i][2]))
 
 
+def middlePointCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
+    pointsArray = []
+
+    curX = radius
+    curY = 0
+    pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    func = 1 - radius
+
+    while curY < curX:
+        curY += 1
+        if func > 0:
+            curX -= 1
+            func -= curX - 2 + curX
+
+        func += curY + curY + 3
+        pointsArray.append((curX + xCenter, curY + yCenter, colour))
+    reflectPointsXY(pointsArray, xCenter, yCenter)
+    reflectPointsY(pointsArray, xCenter)
+    reflectPointsX(pointsArray, yCenter)
+    return pointsArray
+
+
 def bresenhamCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
 
@@ -210,13 +233,23 @@ def drawArr(image, pointsArray):
         image.put(i[2], (niceRound(i[0]), niceRound(i[1])))
 
 
-def drawCanonicalCircle(xCenter, yCenter, radius):
-    drawArray = canonicalCircleAlg(xCenter, yCenter, radius, curColorLines)
+def drawMiddlePointCircle(xCenter, yCenter, radius):
+    drawArray = middlePointCircleAlg(xCenter, yCenter, radius, curColorLines)
     drawArr(img, drawArray)
 
 
 def drawBresenhamCircle(xCenter, yCenter, radius):
     drawArray = bresenhamCircleAlg(xCenter, yCenter, radius, curColorLines)
+    drawArr(img, drawArray)
+
+
+def drawParameterCircle(xCenter, yCenter, radius):
+    drawArray = parameterCircleAlg(xCenter, yCenter, radius, curColorLines)
+    drawArr(img, drawArray)
+
+
+def drawCanonicalCircle(xCenter, yCenter, radius):
+    drawArray = canonicalCircleAlg(xCenter, yCenter, radius, curColorLines)
     drawArr(img, drawArray)
 
 
@@ -226,23 +259,21 @@ def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt):
     yCenter = int(yCenterEnt.get())
     radius = int(radiusEnt.get())
 
-    if got[0] == "1":
+    alg = got[0]
+    if alg == "1":
         drawCanonicalCircle(xCenter, yCenter, radius)
-    if got[0] == "2":
+    if alg == "2":
         drawParameterCircle(xCenter, yCenter, radius)
-    if got[0] == "3":
+    if alg == "3":
         drawBresenhamCircle(xCenter, yCenter, radius)
+    if alg == "4":
+        drawMiddlePointCircle(xCenter, yCenter, radius)
 
 
 def drawCurve(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS = 0):
     got = comboFig.get()
     if got[0] == "1":
         drawCircle(comboAlg, xCenter, yCenter, radiusF)
-
-
-def drawParameterCircle(xCenter, yCenter, radius):
-    drawArray = parameterCircleAlg(xCenter, yCenter, radius, curColorLines)
-    drawArr(img, drawArray)
 
 
 def makeMainWindow():
