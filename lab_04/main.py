@@ -69,16 +69,16 @@ def makeJobWindow():
 def chooseBackgroundColor(canvasBackgroundColor, rootWindow, row, column, canvasWindow):
     global curColorBackground
     curColorBackground = colorchooser.askcolor()[1]
-    canvasBackgroundColor = Canvas(rootWindow, bg = curColorBackground, borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasBackgroundColor.grid(row = row, column = column, sticky = W)
+    canvasBackgroundColor = Canvas(rootWindow, bg = curColorBackground, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasBackgroundColor.place(x = row, y = column)
     canvasWindow.config(bg = curColorBackground)
 
 
 def chooseLinesColor(canvasWindow, rootWindow, row, column):
     global curColorLines
     curColorLines = colorchooser.askcolor()[1]
-    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 40)
-    canvasLinesColor.grid(row = row, column = column, sticky = W)
+    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasLinesColor.place(x = row, y = column)
 
 
 def clearImage(canvasWindow):
@@ -126,40 +126,60 @@ def makeItentity(curCol, backColor, acc):
     return rgb2hex(R, G, B)
 
 def reflectPointsXY(pointsArray, xCenter, yCenter):
-    output = []
-    for i in pointsArray:
-        output.append((i[1] - yCenter + xCenter, i[0] - xCenter + yCenter, i[2]))
-    return output
+    prevLen = len(pointsArray)
+    for i in range(prevLen):
+        pointsArray.append((pointsArray[i][1] - yCenter + xCenter, pointsArray[i][0] - xCenter + yCenter,
+                            pointsArray[i][2]))
 
 
 def reflectPointsY(pointsArray, xCenter):
-    output = []
-    for i in pointsArray:
-        output.append((-(i[0] - xCenter) + xCenter, i[1], i[2]))
-    return output
+    prevLen = len(pointsArray)
+    for i in range(prevLen):
+        pointsArray.append((-(pointsArray[i][0] - xCenter) + xCenter, pointsArray[i][1], pointsArray[i][2]))
 
 
 def reflectPointsX(pointsArray, yCenter):
-    output = []
-    for i in pointsArray:
-        output.append((i[0], -(i[1] - yCenter) + yCenter, i[2]))
-    return output
+    prevLen = len(pointsArray)
+    for i in range(prevLen):
+        pointsArray.append((pointsArray[i][0], -(pointsArray[i][1] - yCenter) + yCenter, pointsArray[i][2]))
 
 
-def canonicalCircleAlg(xCenter, yCenter, radius, colour):
+def canonicalCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
     sqrRad = radius * radius
     for curX in range(xCenter, round(xCenter + radius / sqrt(2)) + 1):
         curY = yCenter + sqrt(sqrRad - (curX - xCenter) * (curX - xCenter))
         pointsArray.append((curX, curY, colour))
-    pointsArray.append(reflectPointsXY(pointsArray, xCenter, yCenter))
-    pointsArray.append(reflectPointsY(pointsArray, xCenter))
-    pointsArray.append(reflectPointsX(pointsArray, yCenter))
+    reflectPointsXY(pointsArray, xCenter, yCenter)
+    reflectPointsY(pointsArray, xCenter)
+    reflectPointsX(pointsArray, yCenter)
+    return pointsArray
 
 
-def drawArr(image, pointsArray, colour):
+def drawArr(image, pointsArray):
     for i in pointsArray:
-        image.put(colour, (i[0], i[1]))
+        image.put(i[2], (niceRound(i[0]), niceRound(i[1])))
+
+
+def drawCanonicalCircle(xCenter, yCenter, radius):
+    drawArray = canonicalCircleAlg(xCenter, yCenter, radius, curColorLines)
+    drawArr(img, drawArray)
+
+
+def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt):
+    got = comboAlg.get()
+    xCenter = int(xCenterEnt.get())
+    yCenter = int(yCenterEnt.get())
+    radius = int(radiusEnt.get())
+
+    if got[0] == "1":
+        drawCanonicalCircle(xCenter, yCenter, radius)
+
+
+def drawCurve(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS = 0):
+    got = comboFig.get()
+    if got[0] == "1":
+        drawCircle(comboAlg, xCenter, yCenter, radiusF)
 
 
 def makeMainWindow():
@@ -196,12 +216,12 @@ def makeMainWindow():
     canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasLinesColor.place(x = 250, y = 82)
     Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, height = 2,
-           command = lambda: chooseLinesColor(canvasLinesColor, rootWindow, 8, 1)).place(x = 40, y = 80)
+           command = lambda: chooseLinesColor(canvasLinesColor, rootWindow, 250, 82)).place(x = 40, y = 80)
 
     canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasBackgroundColor.place(x = 660, y = 82)
     Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, height = 2,
-           command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 8, 3, canvasWindow)).place(x = 500, y = 80)
+           command = lambda: chooseBackgroundColor(canvasBackgroundColor, rootWindow, 660, 82, canvasWindow)).place(x = 500, y = 80)
 
     Label(rootWindow, text = "Параметры окружности:", font = fontSettingLabels).place(x = 0, y = 160)
 
@@ -235,9 +255,9 @@ def makeMainWindow():
     ellRadY = Entry(rootWindow, width = 5, font = fontSettingLower)
     ellRadY.place(x = 780, y = 333)
 
-    drawCurve = Button(rootWindow, text = "Построить", font = fontSettingLower, width = 79,
-                       command = print())
-    drawCurve.place(x = 0, y = 370)
+    drawCurveButton = Button(rootWindow, text = "Построить", font = fontSettingLower, width = 79,
+                       command = lambda: drawCurve(comboFig, comboAlg, xCenterCircle, yCenterCircle, cirRad))
+    drawCurveButton.place(x = 0, y = 370)
 
     Label(rootWindow, font = fontSettingLabels, text = "Параметры спектра:").place(x = 0, y = 420)
 
