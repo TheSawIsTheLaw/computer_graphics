@@ -2,6 +2,27 @@ from lab_04.reflection import *
 from lab_04.shittyFuncs import *
 
 
+def parameterEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
+    pointsArray = []
+
+    if radiusX > radiusY:
+        step = 1 / radiusX
+    else:
+        step = 1 / radiusY
+
+    i = 0
+    while i <= pi / 2 + step:
+        curX = xCenter + radiusX * cos(i)
+        curY = yCenter + radiusY * sin(i)
+        pointsArray.append((curX, curY, colour))
+
+        i += step
+
+    reflectPointsY(pointsArray, xCenter)
+    reflectPointsX(pointsArray, yCenter)
+    return pointsArray
+
+
 def canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
     pointsArray = []
 
