@@ -243,6 +243,17 @@ def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRad
         spectralTkinterCircle(xCenter, yCenter, radius, step, end, canvasWindow)
 
 
+def spectralParameterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop):
+    i = 0
+    xi = stepX
+    yi = stepY
+    while i < stop:
+        drawParameterEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
+        i += 1
+        xi += stepX
+        yi += stepY
+
+
 def spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop):
     i = 0
     xi = stepX
@@ -268,6 +279,8 @@ def spectralEllipse(comboAlg, xCenterEnt, yCenterEnt, xRadiusEnt, yRadiusEnt, st
 
     if alg == "1":
         spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
+    if alg == "2":
+        spectralParameterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
 
 
 def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
