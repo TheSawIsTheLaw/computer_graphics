@@ -243,6 +243,39 @@ def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRad
         spectralTkinterCircle(xCenter, yCenter, radius, step, end, canvasWindow)
 
 
+def spectralTkinterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop, canvasWindow):
+    i = 0
+    xi = stepX
+    yi = stepY
+    while i < stop:
+        drawTkinterEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi, canvasWindow)
+        i += 1
+        xi += stepX
+        yi += stepY
+
+
+def spectralMiddlePointEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop):
+    i = 0
+    xi = stepX
+    yi = stepY
+    while i < stop:
+        drawMiddlePointEllipseAlg(xCenter, yCenter, xRadius + xi, yRadius + yi)
+        i += 1
+        xi += stepX
+        yi += stepY
+
+
+def spectralBresenhamEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop):
+    i = 0
+    xi = stepX
+    yi = stepY
+    while i < stop:
+        drawBresenhamEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
+        i += 1
+        xi += stepX
+        yi += stepY
+
+
 def spectralParameterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop):
     i = 0
     xi = stepX
@@ -281,6 +314,12 @@ def spectralEllipse(comboAlg, xCenterEnt, yCenterEnt, xRadiusEnt, yRadiusEnt, st
         spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
     if alg == "2":
         spectralParameterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
+    if alg == "3":
+        spectralBresenhamEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
+    if alg == "4":
+        spectralMiddlePointEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
+    if alg == "5":
+        spectralTkinterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop, canvasWindow)
 
 
 def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
