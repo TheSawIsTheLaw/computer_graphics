@@ -328,13 +328,13 @@ def makeMainWindow():
     stopSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
     stopSOs.place(x = 530, y = 623)
 
-    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль X (или радиуса окружности):").place(x = 0, y = 670)
+    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль X (или радиуса окружности):").place(x = 0, y = 660)
     dFOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    dFOs.place(x = 665, y = 673)
+    dFOs.place(x = 665, y = 663)
 
-    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль Y:").place(x = 0, y = 710)
+    Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль Y:").place(x = 0, y = 700)
     dSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    dSOs.place(x = 370, y = 713)
+    dSOs.place(x = 370, y = 703)
 
     Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 760)
     Button(rootWindow, text = "Сравнить визуальные характеристики", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
