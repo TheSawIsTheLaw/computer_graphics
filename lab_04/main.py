@@ -144,6 +144,21 @@ def reflectPointsX(pointsArray, yCenter):
         pointsArray.append((pointsArray[i][0], -(pointsArray[i][1] - yCenter) + yCenter, pointsArray[i][2]))
 
 
+def parameterCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
+    pointsArray = []
+    degreeStep = 1 / radius
+    i = 0
+    while i <= pi / 4 + degreeStep:
+        curX = xCenter + radius * cos(i)
+        curY = yCenter + radius * sin(i)
+        pointsArray.append((curX, curY, colour))
+        i += degreeStep
+    reflectPointsXY(pointsArray, xCenter, yCenter)
+    reflectPointsY(pointsArray, xCenter)
+    reflectPointsX(pointsArray, yCenter)
+    return pointsArray
+
+
 def canonicalCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
     sqrRad = radius * radius
@@ -166,6 +181,11 @@ def drawCanonicalCircle(xCenter, yCenter, radius):
     drawArr(img, drawArray)
 
 
+def drawParameterCircle(xCenter, yCenter, radius):
+    drawArray = parameterCircleAlg(xCenter, yCenter, radius)
+    drawArr(img, drawArray)
+
+
 def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt):
     got = comboAlg.get()
     xCenter = int(xCenterEnt.get())
@@ -174,6 +194,8 @@ def drawCircle(comboAlg, xCenterEnt, yCenterEnt, radiusEnt):
 
     if got[0] == "1":
         drawCanonicalCircle(xCenter, yCenter, radius)
+    if got[0] == "2":
+        drawParameterCircle(xCenter, yCenter, radius)
 
 
 def drawCurve(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS = 0):
