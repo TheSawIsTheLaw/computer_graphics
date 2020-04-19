@@ -2,6 +2,50 @@ from lab_04.reflection import *
 from lab_04.shittyFuncs import *
 
 
+def middlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
+    pointsArray = []
+
+    sqrRadX = radiusX * radiusX
+    sqrRadY = radiusY * radiusY
+
+    limit = niceRound(radiusX / sqrt(1 + sqrRadY / sqrRadX))
+
+    curX = 0
+    curY = radiusY
+    pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    func = sqrRadY - niceRound(sqrRadX * (radiusY - 1 / 4))
+    while curX < limit:
+        if func > 0:
+            curY -= 1
+            func -= sqrRadX * curY * 2
+
+        curX += 1
+        func += sqrRadY * (curX + curX + 1)
+        pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    limit = niceRound(radiusY / sqrt(1 + sqrRadX / sqrRadY))
+
+    curX = radiusX
+    curY = 0
+    pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    func = sqrRadX - niceRound(sqrRadY * (curX - 1/4))
+    while curY < limit:
+        if func > 0:
+            curX -= 1
+            func -= 2 * sqrRadY * curX
+
+        curY += 1
+        func += sqrRadX * (curY + curY + 1)
+        pointsArray.append((curX + xCenter, curY + yCenter, colour))
+
+    reflectPointsX(pointsArray, yCenter)
+    reflectPointsY(pointsArray, xCenter)
+
+    return pointsArray
+
+
 def bresenhamEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
     pointsArray = []
 
