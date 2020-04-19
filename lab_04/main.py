@@ -243,13 +243,40 @@ def spectralCircles(comboAlg, xCenterEnt, yCenterEnt, radiusEnt, stepEnt, endRad
         spectralTkinterCircle(xCenter, yCenter, radius, step, end, canvasWindow)
 
 
+def spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop):
+    i = 0
+    xi = stepX
+    yi = stepY
+    while i < stop:
+        drawCanonicalEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
+        i += 1
+        xi += stepX
+        yi += stepY
+
+
+def spectralEllipse(comboAlg, xCenterEnt, yCenterEnt, xRadiusEnt, yRadiusEnt, stepXEnt, stepYEnt, stopEnt, canvasWindow):
+    got = comboAlg.get()
+    alg = got[0]
+
+    xCenter = int(xCenterEnt.get())
+    yCenter = int(yCenterEnt.get())
+    xRadius = int(xRadiusEnt.get())
+    yRadius = int(yRadiusEnt.get())
+    stepX = int(stepXEnt.get())
+    stepY = int(stepYEnt.get())
+    stop = int(stopEnt.get())
+
+    if alg == "1":
+        spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, stop)
+
+
 def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
                  stepX, stepY, stopX, stopY, canvasWindow):
     got = comboFig.get()
     if got[0] == "1":
         spectralCircles(comboAlg, xCenter, yCenter, radiusF, stepX, stopX, canvasWindow)
     else:
-        print("eeeeeeeee")
+        spectralEllipse(comboAlg, xCenter, yCenter, radiusF, radiusS, stepX, stepY, stopY, canvasWindow)
 
 
 def makeMainWindow():
@@ -350,13 +377,13 @@ def makeMainWindow():
     sOs = Entry(rootWindow, font = fontSettingLower, width = 8)
     sOs.place(x = 545, y = 543)
 
-    Label(rootWindow, font = fontSettingLower, text = "Конечный размер полуоси эллипса X (в случае окружности - её радиус):").place(x = 0, y = 580)
+    Label(rootWindow, font = fontSettingLower, text = "Конечная длина радиуса окружности:").place(x = 0, y = 580)
     stopFOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    stopFOs.place(x = 825, y = 583)
+    stopFOs.place(x = 410, y = 583)
 
-    Label(rootWindow, font = fontSettingLower, text = "Конечный размер полуоси эллипса вдоль оси Y:").place(x = 0, y = 620)
+    Label(rootWindow, font = fontSettingLower, text = "Количество эллипсов:").place(x = 0, y = 620)
     stopSOs = Entry(rootWindow, font = fontSettingLower, width = 8)
-    stopSOs.place(x = 530, y = 623)
+    stopSOs.place(x = 250, y = 623)
 
     Label(rootWindow, font = fontSettingLower, text = "Шаг изменения полуоси вдоль X (или радиуса окружности):").place(x = 0, y = 660)
     dFOs = Entry(rootWindow, font = fontSettingLower, width = 8)
