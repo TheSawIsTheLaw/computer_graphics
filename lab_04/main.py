@@ -345,7 +345,7 @@ def ellipseTimeResearch(canvasWindow):
             canonicalEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
@@ -364,7 +364,7 @@ def ellipseTimeResearch(canvasWindow):
             parameterEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
@@ -383,7 +383,7 @@ def ellipseTimeResearch(canvasWindow):
             bresenhamEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
@@ -402,7 +402,7 @@ def ellipseTimeResearch(canvasWindow):
             middlePointEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
