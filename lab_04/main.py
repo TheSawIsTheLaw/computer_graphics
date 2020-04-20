@@ -331,6 +331,51 @@ def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
         spectralEllipse(comboAlg, xCenter, yCenter, radiusF, radiusS, stepX, stepY, stopY, canvasWindow)
 
 
+def ellipseTimeResearch(canvasWindow):
+    print("heh")
+
+
+def circleTimeResearch(canvasWindow):
+    masTime = []
+    curTime = 0
+    ''' Example
+    for i in range(1000):
+        degrees = 0
+        curX = 500
+        curY = 200
+        while abs(degrees) <= 360:
+            start = datetime.now()
+            DDAlineArray(500, curX, 500, curY, "#000000")
+            end = datetime.now()
+            curTime = curTime + (end.timestamp() - start.timestamp())
+            degrees += 20
+            curX = niceRound(500 - 300 * sin(radians(degrees)))
+            curY = niceRound(500 + 300 * cos(radians(degrees)))
+    curTime /= 1000
+    masTime.append(curTime)
+    curTime = 0
+
+    plt.figure(figsize = (18, 10))
+    masNames = ["ЦДА", "Брезенхем \n(действительные коэф.)",
+                "Брезенхем \n(целые коэф.)", "Брезенхем \n(с устранением ступенчатости)",
+                "Ву", "canvas\ncreate_line"]
+
+    plt.bar(masNames, masTime, align = "center")
+    plt.title("Временные характеристики алгоритмов")
+    plt.ylabel("Затраченное время")
+    plt.xlabel("Алгоритм")
+    plt.show()
+    '''
+
+
+def timeResearch(canvasWindow, comboFig):
+    figure = comboFig.get()
+    if figure[0] == "1":
+        circleTimeResearch(canvasWindow)
+    else:
+        ellipseTimeResearch(canvasWindow)
+
+
 def makeMainWindow():
     """
             Функция Создания главного окна
