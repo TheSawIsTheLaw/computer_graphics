@@ -345,9 +345,10 @@ def ellipseTimeResearch(canvasWindow):
             canonicalEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
-            masTime.append(curTime)
+        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     curTime = 0
@@ -363,9 +364,10 @@ def ellipseTimeResearch(canvasWindow):
             parameterEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
-            masTime.append(curTime)
+        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     curTime = 0
@@ -381,9 +383,10 @@ def ellipseTimeResearch(canvasWindow):
             bresenhamEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
-            masTime.append(curTime)
+        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     curTime = 0
@@ -399,9 +402,10 @@ def ellipseTimeResearch(canvasWindow):
             middlePointEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
-            masTime.append(curTime)
+        if not curTime > prev + 0.015 and not curTime < prev - 0.015:
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     masAllTime.append(masTime)
@@ -445,8 +449,9 @@ def circleTimeResearch(canvasWindow):
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
         if not curTime > prev + 0.01 and not curTime < prev - 0.01:
-            masTime.append(curTime)
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     curTime = 0
@@ -463,8 +468,9 @@ def circleTimeResearch(canvasWindow):
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
         if not curTime > prev + 0.01 and not curTime < prev - 0.01:
-            masTime.append(curTime)
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     curTime = 0
@@ -481,8 +487,9 @@ def circleTimeResearch(canvasWindow):
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
         if not curTime > prev + 0.01 and not curTime < prev - 0.01:
-            masTime.append(curTime)
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     curTime = 0
@@ -499,8 +506,9 @@ def circleTimeResearch(canvasWindow):
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
         if not curTime > prev + 0.01 and not curTime < prev - 0.01:
-            masTime.append(curTime)
             prev = curTime
+            curTime /= 10
+            masTime.append(curTime)
             i += 250
 
     masAllTime.append(masTime)
