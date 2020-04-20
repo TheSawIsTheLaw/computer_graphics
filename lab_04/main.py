@@ -337,40 +337,89 @@ def ellipseTimeResearch(canvasWindow):
 
 def circleTimeResearch(canvasWindow):
     masTime = []
-    curTime = 0
-    ''' Example
-    for i in range(1000):
-        degrees = 0
-        curX = 500
-        curY = 200
-        while abs(degrees) <= 360:
-            start = datetime.now()
-            DDAlineArray(500, curX, 500, curY, "#000000")
-            end = datetime.now()
-            curTime = curTime + (end.timestamp() - start.timestamp())
-            degrees += 20
-            curX = niceRound(500 - 300 * sin(radians(degrees)))
-            curY = niceRound(500 + 300 * cos(radians(degrees)))
-    curTime /= 1000
-    masTime.append(curTime)
-    curTime = 0
+    masAllTime = []
 
-    plt.figure(figsize = (18, 10))
-    masNames = ["ЦДА", "Брезенхем \n(действительные коэф.)",
-                "Брезенхем \n(целые коэф.)", "Брезенхем \n(с устранением ступенчатости)",
-                "Ву", "canvas\ncreate_line"]
+    for i in range(1, 10000, 250):
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            canonicalCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        curTime /= 10
+        masTime.append(curTime)
 
-    plt.bar(masNames, masTime, align = "center")
-    plt.title("Временные характеристики алгоритмов")
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+
+    for i in range(1, 10000, 250):
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            parameterCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        curTime /= 10
+        masTime.append(curTime)
+
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+
+    for i in range(1, 10000, 250):
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            bresenhamCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        curTime /= 10
+        masTime.append(curTime)
+
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+
+    for i in range(1, 10000, 250):
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            middlePointCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        curTime /= 10
+        masTime.append(curTime)
+
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+
+    for i in range(1, 10000, 250):
+        curTime = 0
+
+        masTime.append(0)
+
+    masAllTime.append(masTime)
+
+    fig = plt.figure(figsize = (18, 10))
+    plot = fig.add_subplot()
+    plot.plot(range(1, 10000, 250), masAllTime[0], label = "Алгоритм на основе канонического уравнения")
+    plot.plot(range(1, 10000, 250), masAllTime[1], label = "Алгоритм на основе параметрического уравнения")
+    plot.plot(range(1, 10000, 250), masAllTime[2], label = "Алгоритм Брезенхема")
+    plot.plot(range(1, 10000, 250), masAllTime[3], label = "Алгоритм средней точки")
+    plot.plot(range(1, 10000, 250), masAllTime[4], label = "Алгоритм Tkinter Canvas")
+    plt.legend()
+    plt.grid()
+    plt.title("Временные характеристики алгоритмов построения окружностей")
     plt.ylabel("Затраченное время")
-    plt.xlabel("Алгоритм")
+    plt.xlabel("Длина радиуса")
     plt.show()
-    '''
 
 
 def timeResearch(canvasWindow, comboFig):
-    figure = comboFig.get()
-    if figure[0] == "1":
+    fig = comboFig.get()
+    if fig[0] == "1":
         circleTimeResearch(canvasWindow)
     else:
         ellipseTimeResearch(canvasWindow)
@@ -493,7 +542,7 @@ def makeMainWindow():
     Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = lambda: spectralAnal(comboFig, comboAlg, xCenterAnalysis,
                                                                                yCenterAnalysis, fOs, sOs, dFOs, dSOs, stopFOs, stopSOs,
                                                                                canvasWindow)).place(x = 0, y = 760)
-    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
+    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = lambda: timeResearch(canvasWindow, comboFig)).place(x = 0, y = 801)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
