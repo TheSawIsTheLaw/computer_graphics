@@ -196,27 +196,27 @@ def drawCurve(comboFig, comboAlg, xCenterCir, yCenterCir, radiusCir, xCenterEll,
 
 
 def spectralTkinterCircle(xCenter, yCenter, radius, step, end, canvasWindow):
-    for i in range(radius, end, step):
+    for i in range(radius, end + step, step):
         drawTkinterCircle(canvasWindow, xCenter, yCenter, radius + i)
 
 
 def spectralMiddlePointCircle(xCenter, yCenter, radius, step, end):
-    for i in range(radius, end, step):
+    for i in range(radius, end + step, step):
         drawMiddlePointCircle(xCenter, yCenter, radius + i)
 
 
 def spectralBresenhamCircle(xCenter, yCenter, radius, step, end):
-    for i in range(radius, end, step):
+    for i in range(radius, end + step, step):
         drawBresenhamCircle(xCenter, yCenter, radius + i)
 
 
 def spectralParameterCircle(xCenter, yCenter, radius, step, end):
-    for i in range(radius, end, step):
+    for i in range(radius, end + step, step):
         drawParameterCircle(xCenter, yCenter, radius + i)
 
 
 def spectralCanonicalCircle(xCenter, yCenter, radius, step, end):
-    for i in range(radius, end, step):
+    for i in range(radius, end + step, step):
         drawCanonicalCircle(xCenter, yCenter, radius + i)
 
 
@@ -247,7 +247,7 @@ def spectralTkinterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, sto
     i = 0
     xi = stepX
     yi = stepY
-    while i < stop:
+    while i <= stop:
         drawTkinterEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi, canvasWindow)
         i += 1
         xi += stepX
@@ -258,7 +258,7 @@ def spectralMiddlePointEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY,
     i = 0
     xi = stepX
     yi = stepY
-    while i < stop:
+    while i <= stop:
         drawMiddlePointEllipseAlg(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -269,7 +269,7 @@ def spectralBresenhamEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, s
     i = 0
     xi = stepX
     yi = stepY
-    while i < stop:
+    while i <= stop:
         drawBresenhamEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -280,7 +280,7 @@ def spectralParameterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, s
     i = 0
     xi = stepX
     yi = stepY
-    while i < stop:
+    while i <= stop:
         drawParameterEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -291,7 +291,7 @@ def spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, s
     i = 0
     xi = stepX
     yi = stepY
-    while i < stop:
+    while i <= stop:
         drawCanonicalEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -448,9 +448,7 @@ def makeMainWindow():
     Button(rootWindow, text = "Построить спектр", font = fontSettingLower, width = 79, command = lambda: spectralAnal(comboFig, comboAlg, xCenterAnalysis,
                                                                                yCenterAnalysis, fOs, sOs, dFOs, dSOs, stopFOs, stopSOs,
                                                                                canvasWindow)).place(x = 0, y = 760)
-    Button(rootWindow, text = "Сравнить визуальные характеристики",
-           font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
-    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 842)
+    Button(rootWindow, text = "Временные характеристики предоставленных алгоритмов", font = fontSettingLower, width = 79, command = print()).place(x = 0, y = 801)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
