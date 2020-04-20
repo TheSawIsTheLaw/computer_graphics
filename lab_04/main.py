@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 from colormap import rgb2hex
 from datetime import datetime
+from scipy.interpolate import interp1d
 
 from lab_04.circleAlgs import *
 from lab_04.ellipseAlgs import *
@@ -332,83 +333,195 @@ def spectralAnal(comboFig, comboAlg, xCenter, yCenter, radiusF, radiusS,
 
 
 def ellipseTimeResearch(canvasWindow):
-    print("heh")
-
-
-def circleTimeResearch(canvasWindow):
     masTime = []
     masAllTime = []
+    i = 1
+    prev = 0
 
-    for i in range(1, 10000, 250):
+    while i <= 10001:
         curTime = 0
         for j in range(10):
             timeTempStart = datetime.now()
-            canonicalCircleAlg(500, 500, i, curColorLines)
+            canonicalEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        curTime /= 10
-        masTime.append(curTime)
+        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
 
     curTime = 0
     masAllTime.append(masTime)
     masTime = []
+    i = 1
+    prev = 0
 
-    for i in range(1, 10000, 250):
+    while i <= 10001:
         curTime = 0
         for j in range(10):
             timeTempStart = datetime.now()
-            parameterCircleAlg(500, 500, i, curColorLines)
+            parameterEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        curTime /= 10
-        masTime.append(curTime)
+        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
 
     curTime = 0
     masAllTime.append(masTime)
     masTime = []
+    i = 1
+    prev = 0
 
-    for i in range(1, 10000, 250):
+    while i <= 10001:
         curTime = 0
         for j in range(10):
             timeTempStart = datetime.now()
-            bresenhamCircleAlg(500, 500, i, curColorLines)
+            bresenhamEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        curTime /= 10
-        masTime.append(curTime)
+        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
 
     curTime = 0
     masAllTime.append(masTime)
     masTime = []
+    i = 1
+    prev = 0
 
-    for i in range(1, 10000, 250):
+    while i <= 10001:
         curTime = 0
         for j in range(10):
             timeTempStart = datetime.now()
-            middlePointCircleAlg(500, 500, i, curColorLines)
+            middlePointEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        curTime /= 10
-        masTime.append(curTime)
+        if not curTime > prev + 0.075 and not curTime < prev - 0.075:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
 
-    curTime = 0
     masAllTime.append(masTime)
     masTime = []
 
-    for i in range(1, 10000, 250):
-        curTime = 0
-
+    for i in range(1, 10002, 250):
         masTime.append(0)
 
     masAllTime.append(masTime)
 
     fig = plt.figure(figsize = (18, 10))
     plot = fig.add_subplot()
-    plot.plot(range(1, 10000, 250), masAllTime[0], label = "Алгоритм на основе канонического уравнения")
-    plot.plot(range(1, 10000, 250), masAllTime[1], label = "Алгоритм на основе параметрического уравнения")
-    plot.plot(range(1, 10000, 250), masAllTime[2], label = "Алгоритм Брезенхема")
-    plot.plot(range(1, 10000, 250), masAllTime[3], label = "Алгоритм средней точки")
-    plot.plot(range(1, 10000, 250), masAllTime[4], label = "Алгоритм Tkinter Canvas")
+    ran = []
+    for i in range(1, 10002, 250):
+        ran.append(i)
+
+    plot.plot(ran, masAllTime[0], label = "Алгоритм на основе канонического уравнения")
+    plot.plot(ran, masAllTime[1], label = "Алгоритм на основе параметрического уравнения")
+    plot.plot(ran, masAllTime[2], label = "Алгоритм Брезенхема")
+    plot.plot(ran, masAllTime[3], label = "Алгоритм средней точки")
+    plot.plot(ran, masAllTime[4], label = "Алгоритм Tkinter Canvas")
+    plt.legend()
+    plt.grid()
+    plt.title("Временные характеристики алгоритмов построения эллипсов")
+    plt.ylabel("Затраченное время")
+    plt.xlabel("Длина радиуса")
+    plt.show()
+
+
+def circleTimeResearch(canvasWindow):
+    masTime = []
+    masAllTime = []
+    i = 1
+    prev = 0
+
+    while i <= 10001:
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            canonicalCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
+
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+    i = 1
+    prev = 0
+
+    while i <= 10001:
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            parameterCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
+
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+    i = 1
+    prev = 0
+
+    while i <= 10001:
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            bresenhamCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
+
+    curTime = 0
+    masAllTime.append(masTime)
+    masTime = []
+    i = 1
+    prev = 0
+
+    while i <= 10001:
+        curTime = 0
+        for j in range(10):
+            timeTempStart = datetime.now()
+            middlePointCircleAlg(500, 500, i, curColorLines)
+            timeTempEnd = datetime.now()
+            curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
+        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+            masTime.append(curTime)
+            prev = curTime
+            i += 250
+
+    masAllTime.append(masTime)
+    masTime = []
+
+    for i in range(1, 10002, 250):
+        masTime.append(0)
+
+    masAllTime.append(masTime)
+
+    fig = plt.figure(figsize = (18, 10))
+    plot = fig.add_subplot()
+    ran = []
+    for i in range(1, 10002, 250):
+        ran.append(i)
+
+    plot.plot(ran, masAllTime[0], label = "Алгоритм на основе канонического уравнения")
+    plot.plot(ran, masAllTime[1], label = "Алгоритм на основе параметрического уравнения")
+    plot.plot(ran, masAllTime[2], label = "Алгоритм Брезенхема")
+    plot.plot(ran, masAllTime[3], label = "Алгоритм средней точки")
+    plot.plot(ran, masAllTime[4], label = "Алгоритм Tkinter Canvas")
     plt.legend()
     plt.grid()
     plt.title("Временные характеристики алгоритмов построения окружностей")
