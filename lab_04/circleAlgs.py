@@ -60,13 +60,13 @@ def bresenhamCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
 
 def parameterCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
-    degreeStep = 1 / radius
+    angleStep = 1 / radius
     i = 0
-    while i <= pi / 4 + degreeStep:
+    while i <= pi / 4:
         curX = xCenter + radius * cos(i)
         curY = yCenter + radius * sin(i)
         pointsArray.append((curX, curY, colour))
-        i += degreeStep
+        i += angleStep
 
     reflectPointsXY(pointsArray, xCenter, yCenter)
     reflectPointsY(pointsArray, xCenter)
