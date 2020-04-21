@@ -93,7 +93,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
 def drawArr(image, pointsArray):
     for i in pointsArray:
-        image.put(i[2], (niceRound(i[0]), niceRound(i[1])))
+        image.put(i[2], (round(i[0]), round(i[1])))
 
 
 def drawMiddlePointCircle(xCenter, yCenter, radius):
