@@ -1,5 +1,5 @@
 from lab_04.reflection import *
-from lab_04.shittyFuncs import *
+from math import *
 
 
 def middlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
@@ -8,13 +8,13 @@ def middlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"
     sqrRadX = radiusX * radiusX
     sqrRadY = radiusY * radiusY
 
-    limit = niceRound(radiusX / sqrt(1 + sqrRadY / sqrRadX))
+    limit = round(radiusX / sqrt(1 + sqrRadY / sqrRadX))
 
     curX = 0
     curY = radiusY
     pointsArray.append((curX + xCenter, curY + yCenter, colour))
 
-    func = sqrRadY - niceRound(sqrRadX * (radiusY - 1 / 4))
+    func = sqrRadY - round(sqrRadX * (radiusY - 1 / 4))
     while curX < limit:
         if func > 0:
             curY -= 1
@@ -24,13 +24,13 @@ def middlePointEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"
         func += sqrRadY * (curX + curX + 1)
         pointsArray.append((curX + xCenter, curY + yCenter, colour))
 
-    limit = niceRound(radiusY / sqrt(1 + sqrRadX / sqrRadY))
+    limit = round(radiusY / sqrt(1 + sqrRadX / sqrRadY))
 
     curX = radiusX
     curY = 0
     pointsArray.append((curX + xCenter, curY + yCenter, colour))
 
-    func = sqrRadX - niceRound(sqrRadY * (curX - 1 / 4))
+    func = sqrRadX - round(sqrRadY * (curX - 1 / 4))
     while curY < limit:
         if func > 0:
             curX -= 1
@@ -109,8 +109,8 @@ def canonicalEllipseAlg(xCenter, yCenter, radiusX, radiusY, colour = "#000000"):
     sqrRadY = radiusY * radiusY
     sqrMix = sqrRadX * sqrRadY
 
-    limitX = niceRound(xCenter + radiusX / sqrt(1 + sqrRadY / sqrRadX))
-    limitY = niceRound(yCenter + radiusY / sqrt(1 + sqrRadX / sqrRadY))
+    limitX = round(xCenter + radiusX / sqrt(1 + sqrRadY / sqrRadX))
+    limitY = round(yCenter + radiusY / sqrt(1 + sqrRadX / sqrRadY))
 
     for curX in range(xCenter, limitX):
         curY = yCenter + sqrt(sqrMix - (curX - xCenter) * (curX - xCenter) * sqrRadY) / radiusX
