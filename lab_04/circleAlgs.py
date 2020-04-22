@@ -62,7 +62,7 @@ def parameterCircleAlg(xCenter, yCenter, radius, colour = "#000000"):
     pointsArray = []
     angleStep = 1 / radius
     i = 0
-    while i <= pi / 4:
+    while i <= pi / 4 + angleStep:
         curX = xCenter + radius * cos(i)
         curY = yCenter + radius * sin(i)
         pointsArray.append((curX, curY, colour))

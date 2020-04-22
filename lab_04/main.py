@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 from colormap import rgb2hex
 from datetime import datetime
-from scipy.interpolate import interp1d
+from lab_04.shittyFuncs import niceRound
 
 from lab_04.circleAlgs import *
 from lab_04.ellipseAlgs import *
@@ -93,7 +93,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
 def drawArr(image, pointsArray):
     for i in pointsArray:
-        image.put(i[2], (round(i[0]), round(i[1])))
+        image.put(i[2], (niceRound(i[0]), niceRound(i[1])))
 
 
 def drawMiddlePointCircle(xCenter, yCenter, radius):
@@ -248,7 +248,7 @@ def spectralTkinterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, sto
     i = 0
     xi = stepX
     yi = stepY
-    while i <= stop:
+    while i < stop:
         drawTkinterEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi, canvasWindow)
         i += 1
         xi += stepX
@@ -259,7 +259,7 @@ def spectralMiddlePointEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY,
     i = 0
     xi = stepX
     yi = stepY
-    while i <= stop:
+    while i < stop:
         drawMiddlePointEllipseAlg(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -270,7 +270,7 @@ def spectralBresenhamEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, s
     i = 0
     xi = stepX
     yi = stepY
-    while i <= stop:
+    while i < stop:
         drawBresenhamEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -281,7 +281,7 @@ def spectralParameterEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, s
     i = 0
     xi = stepX
     yi = stepY
-    while i <= stop:
+    while i < stop:
         drawParameterEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
@@ -292,7 +292,7 @@ def spectralCanonicalEllipse(xCenter, yCenter, xRadius, yRadius, stepX, stepY, s
     i = 0
     xi = stepX
     yi = stepY
-    while i <= stop:
+    while i < stop:
         drawCanonicalEllipse(xCenter, yCenter, xRadius + xi, yRadius + yi)
         i += 1
         xi += stepX
