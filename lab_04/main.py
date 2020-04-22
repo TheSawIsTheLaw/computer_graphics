@@ -570,7 +570,8 @@ def makeMainWindow():
      '5. Алгоритм Tkinter Canvas'))
     comboAlg.place(x = 250, y = 15)
     comboAlg.current(0)
-    Label(rootWindow, text = "Алгоритм построения:", font = fontSettingLower).place(x = 5, y = 40)
+    comboAlg.current(0)
+    Label(rootWindow, text = "Тип кривой:", font = fontSettingLower).place(x = 113, y = 40)
     comboFig = ttk.Combobox(rootWindow, width = 115, textvariable = figure, state = 'readonly', values =
     ('1. Окружность',
      '2. Эллипс'))
