@@ -345,7 +345,7 @@ def ellipseTimeResearch(canvasWindow):
             canonicalEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+        if not curTime > prev + 0.02 and not curTime < prev - 0.02:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
@@ -364,7 +364,7 @@ def ellipseTimeResearch(canvasWindow):
             parameterEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+        if not curTime > prev + 0.02 and not curTime < prev - 0.02:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
@@ -383,7 +383,7 @@ def ellipseTimeResearch(canvasWindow):
             bresenhamEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+        if not curTime > prev + 0.02 and not curTime < prev - 0.02:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
@@ -402,17 +402,11 @@ def ellipseTimeResearch(canvasWindow):
             middlePointEllipseAlg(500, 500, i, i + 250, curColorLines)
             timeTempEnd = datetime.now()
             curTime += timeTempEnd.timestamp() - timeTempStart.timestamp()
-        if not curTime > prev + 0.01 and not curTime < prev - 0.01:
+        if not curTime > prev + 0.02 and not curTime < prev - 0.02:
             prev = curTime
             curTime /= 10
             masTime.append(curTime)
             i += 250
-
-    masAllTime.append(masTime)
-    masTime = []
-
-    for i in range(1, 10002, 250):
-        masTime.append(0)
 
     masAllTime.append(masTime)
 
@@ -422,11 +416,10 @@ def ellipseTimeResearch(canvasWindow):
     for i in range(1, 10002, 250):
         ran.append(i)
 
-    plot.plot(ran, masAllTime[0], label = "Алгоритм на основе канонического уравнения")
+    plot.plot(ran, masAllTime[0], label = "Алгоритм Брезенхема")
     plot.plot(ran, masAllTime[1], label = "Алгоритм на основе параметрического уравнения")
-    plot.plot(ran, masAllTime[2], label = "Алгоритм Брезенхема")
+    plot.plot(ran, masAllTime[2], label = "Алгоритм на основе канонического уравнения")
     plot.plot(ran, masAllTime[3], label = "Алгоритм средней точки")
-    plot.plot(ran, masAllTime[4], label = "Алгоритм Tkinter Canvas")
     plt.legend()
     plt.grid()
     plt.title("Временные характеристики алгоритмов построения эллипсов")
@@ -512,12 +505,6 @@ def circleTimeResearch(canvasWindow):
             i += 250
 
     masAllTime.append(masTime)
-    masTime = []
-
-    for i in range(1, 10002, 250):
-        masTime.append(0)
-
-    masAllTime.append(masTime)
 
     fig = plt.figure(figsize = (18, 10))
     plot = fig.add_subplot()
@@ -525,11 +512,10 @@ def circleTimeResearch(canvasWindow):
     for i in range(1, 10002, 250):
         ran.append(i)
 
-    plot.plot(ran, masAllTime[0], label = "Алгоритм на основе канонического уравнения")
+    plot.plot(ran, masAllTime[0], label = "Алгоритм Брезенхема")
     plot.plot(ran, masAllTime[1], label = "Алгоритм на основе параметрического уравнения")
-    plot.plot(ran, masAllTime[2], label = "Алгоритм Брезенхема")
+    plot.plot(ran, masAllTime[2], label = "Алгоритм на основе канонического уравнения")
     plot.plot(ran, masAllTime[3], label = "Алгоритм средней точки")
-    plot.plot(ran, masAllTime[4], label = "Алгоритм Tkinter Canvas")
     plt.legend()
     plt.grid()
     plt.title("Временные характеристики алгоритмов построения окружностей")
@@ -556,8 +542,8 @@ def makeMainWindow():
 
     canvasWindow = Canvas(rootWindow, bg = "white", width = 880, height = 1016, borderwidth = 5, relief = RIDGE)
     global img
-    img = PhotoImage(width = 880, height = 1017)
-    canvasWindow.create_image((440, 508), image = img, state = "normal")
+    img = PhotoImage(width = 880, height = 1018)
+    canvasWindow.create_image((440, 509), image = img, state = "normal")
     canvasWindow.place(x = 960, y = 0)
 
     # Выбор метода построения
