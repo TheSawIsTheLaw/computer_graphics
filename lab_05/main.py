@@ -278,14 +278,17 @@ def rasterScanWithFlag(img, edgesArray, sides):
 
 def setExtrems(pointsArray, sides):
     global extrems
-    extrems = []
-    extrems.append(pointsArray[0] == sides[0] or pointsArray[0] == sides[2])
+    extrems.clear()
+    extrems.append((pointsArray[0][1] < pointsArray[len(pointsArray) - 1][1] and pointsArray[0][1] < pointsArray[1][1]) or
+                       (pointsArray[0][1] > pointsArray[len(pointsArray) - 1][1] and pointsArray[0][1] > pointsArray[1][1]))
 
+    print(pointsArray)
     for i in range(1, len(pointsArray) - 1):
-        extrems.append((pointsArray[i] < pointsArray[i - 1] and pointsArray[i] < pointsArray[i + 1]) or
-                       (pointsArray[i] > pointsArray[i - 1] and pointsArray[i] > pointsArray[i + 1]))
+        extrems.append((pointsArray[i][1] < pointsArray[i - 1][1] and pointsArray[i][1] < pointsArray[i + 1][1]) or
+                       (pointsArray[i][1] > pointsArray[i - 1][1] and pointsArray[i][1] > pointsArray[i + 1][1]))
 
-    extrems.append(pointsArray[len(pointsArray) - 1] == sides[0] or pointsArray[len(pointsArray) - 1] == sides[2])
+    extrems.append((pointsArray[len(pointsArray) - 1][1] < pointsArray[len(pointsArray) - 2][1] and pointsArray[len(pointsArray) - 1][1] < pointsArray[0][1]) or
+                       (pointsArray[len(pointsArray) - 1][1] > pointsArray[len(pointsArray) - 2][1] and pointsArray[len(pointsArray) - 1][1] > pointsArray[0][1]))
 
 
 def MakeRasterScan(comboDelay):
