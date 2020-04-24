@@ -47,7 +47,7 @@ def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    for i in range(deltaX):
+    for i in range(deltaX + 1):
         image.put(curColorLines, (curX, curY))
 
         if flag:
@@ -138,7 +138,7 @@ def drawArr(image, pointsArray):
         image.put(i[2], (i[0], i[1]))
 
 
-def setColorButtons(rootWindow):
+def setColorButtons(rootWindow, canvasWindow):
     canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasLinesColor.place(x = 250, y = 182)
     Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
@@ -147,7 +147,7 @@ def setColorButtons(rootWindow):
     canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasBackgroundColor.place(x = 660, y = 182)
     Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseBackgroundColor(rootWindow, 660, 82)).place(x = 500, y = 180)
+           command = lambda: chooseBackgroundColor(rootWindow, 660, 182, canvasWindow)).place(x = 500, y = 180)
 
 
 def setComboDelay(rootWindow):
@@ -185,20 +185,22 @@ def endClick(event):
 
 
 def cancelClick(event):
-    global curEndPoint
     global pointsArray
+    if len(pointsArray) == 0:
+        return
+    global curEndPoint
     global curColorLines
     global curColorBackground
     tempCol = curColorLines
     curColorLines = curColorBackground
     if curEndPoint != len(pointsArray):
-        digitBresenham(img, pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][1], pointsArray[len(pointsArray) - 2][1])
+        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1], pointsArray[len(pointsArray) - 1][1])
         pointsArray.pop()
     else:
         global prevCurEnd
         curEndPoint = prevCurEnd.pop()
-        digitBresenham(img, pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][1],
-                pointsArray[curEndPoint][1])
+        digitBresenham(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1],
+                       pointsArray[len(pointsArray) - 1][1])
     curColorLines = tempCol
 
 
@@ -224,7 +226,7 @@ def makeMainWindow():
 
     setComboDelay(rootWindow)
 
-    setColorButtons(rootWindow)
+    setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
     makeAlgButton.place(x = 5, y = 300)
