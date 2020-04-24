@@ -16,8 +16,10 @@ img = 0
 
 curColorLines = "#000000"
 curColorBackground = "#ffffff"
+noteColor = "#00C12B"
 
 pointsArray = []
+edgesArray = []
 
 prevCurEnd = []
 curEndPoint = 0
@@ -110,6 +112,7 @@ def clearImage(canvasWindow):
     global prevCurEnd
     curEndPoint = 0
     prevCurEnd = []
+    edgesArray = []
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -132,6 +135,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
     rootMenu.add_cascade(label = "Доп. возможности", menu = plusCommands)
+
 
 def drawArr(image, pointsArray):
     for i in pointsArray:
@@ -158,6 +162,7 @@ def setComboDelay(rootWindow):
 
     comboDelay.place(x = 250, y = 145)
     comboDelay.current(0)
+    return comboDelay
 
 
 def setImageToCanvas(canvasWindow):
@@ -170,15 +175,20 @@ def click(event):
     global pointsArray
     global img
     global curEndPoint
-    pointsArray.append((event.x, event.y, curColorLines))
+    pointsArray.append([event.x, event.y, curColorLines])
     if len(pointsArray) >= 2 and len(pointsArray) != curEndPoint + 1:
-        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1], pointsArray[len(pointsArray) - 1][1])
+        edgesArray.append([[pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 2][1]], [pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 1][1]]])
+        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1],
+                       pointsArray[len(pointsArray) - 1][1])
 
 
 def endClick(event):
     global curEndPoint
     global pointsArray
+    global edgesArray
     digitBresenham(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1], pointsArray[len(pointsArray) - 1][1])
+    edgesArray.append([[pointsArray[curEndPoint][0], pointsArray[curEndPoint][1]],
+                      [pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 1][1]]])
     global prevCurEnd
     prevCurEnd.append(curEndPoint)
     curEndPoint = len(pointsArray)
@@ -194,14 +204,75 @@ def cancelClick(event):
     tempCol = curColorLines
     curColorLines = curColorBackground
     if curEndPoint != len(pointsArray):
-        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1], pointsArray[len(pointsArray) - 1][1])
+        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1],
+                       pointsArray[len(pointsArray) - 1][1])
         pointsArray.pop()
+        edgesArray.pop()
     else:
         global prevCurEnd
         curEndPoint = prevCurEnd.pop()
         digitBresenham(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1],
                        pointsArray[len(pointsArray) - 1][1])
     curColorLines = tempCol
+
+
+def getSides(pointsArray):
+    right = 0
+    left = 1090
+    bottom = 0
+    top = 1060
+    for i in pointsArray:
+        if i[0] > right: right = i[0]
+        if i[0] < left: left = i[0]
+        if i[1] > bottom: bottom = i[1]
+        if i[1] < top: top = i[1]
+    return top, right, bottom, left
+
+
+def leadRoundEdge(img, edge, sides):
+    if edge[0][1] == edge[1][1]:
+        return
+
+    if edge[0][1] > edge[1][1]:
+        edge[0], edge[1] = edge[1], edge[0]
+
+    yStep = 1
+    xStep = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
+
+    if edge[0][1] == sides[2]:
+        edge[0][0] += xStep
+        edge[0][1] += yStep
+    if edge[1][1] == sides[0]:
+        edge[1][0] -= xStep
+        edge[1][1] -= yStep
+
+    curPointX = edge[0][0]
+    curPointY = edge[0][1]
+
+    while curPointY < edge[1][1]:
+        img.put(noteColor, (int(curPointX) + 1, curPointY))
+        curPointX += xStep
+        curPointY += yStep
+
+
+def leadRoundFigure(img, edgesArray, sides):
+    for i in range(len(edgesArray)):
+        leadRoundEdge(img, edgesArray[i], sides)
+
+
+'''
+def rasterScanWithFlag(sides, edgesArray):
+    leadRoundFigure(edgesArray)
+'''
+
+def MakeRasterScan(comboDelay):
+    delay = comboDelay.get()
+    sides = getSides(pointsArray)
+    global edgesArray
+    if delay[1] == 'ы':
+        leadRoundFigure(img, edgesArray, sides)
+    else:
+        print("Или с делея?")
 
 
 def makeMainWindow():
@@ -224,11 +295,11 @@ def makeMainWindow():
 
     canvasWindow.place(x = 750, y = 0)
 
-    setComboDelay(rootWindow)
+    comboDelay = setComboDelay(rootWindow)
 
     setColorButtons(rootWindow, canvasWindow)
 
-    makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
+    makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: MakeRasterScan(comboDelay))
     makeAlgButton.place(x = 5, y = 300)
 
     makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
