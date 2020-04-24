@@ -109,6 +109,14 @@ def setImageToCanvas(canvasWindow):
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
 
+def click(event):
+    print(event.x)
+    print(event.y)
+
+
+def endClick(event):
+    print("Ну и всё тогда...")
+
 
 def makeMainWindow():
     """
@@ -121,6 +129,10 @@ def makeMainWindow():
     canvasWindow = Canvas(rootWindow, bg = "white", width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     setImageToCanvas(canvasWindow)
+
+    canvasWindow.bind('<1>', click)
+
+    canvasWindow.bind('<3>', endClick)
 
     canvasWindow.place(x = 750, y = 0)
 
