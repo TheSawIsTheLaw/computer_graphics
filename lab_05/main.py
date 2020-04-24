@@ -14,9 +14,12 @@ fontSettingLower = ("Consolas", 16)
 delay = 0
 img = 0
 
+extrems = []
+
 curColorLines = "#000000"
 curColorBackground = "#ffffff"
 noteColor = "#00C12B"
+noteColorCheck = (0, 193, 43)
 
 pointsArray = []
 edgesArray = []
@@ -229,20 +232,21 @@ def getSides(pointsArray):
     return top, right, bottom, left
 
 
-def leadRoundEdge(img, edge, sides):
+def leadRoundEdge(img, edge, isFE, isSE):
     if edge[0][1] == edge[1][1]:
         return
 
     if edge[0][1] > edge[1][1]:
         edge[0], edge[1] = edge[1], edge[0]
+        isFE, isSE = isSE, isFE
 
     yStep = 1
     xStep = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
 
-    if edge[0][1] == sides[2]:
+    if isFE:
         edge[0][0] += xStep
         edge[0][1] += yStep
-    if edge[1][1] == sides[0]:
+    if isSE:
         edge[1][0] -= xStep
         edge[1][1] -= yStep
 
@@ -255,22 +259,42 @@ def leadRoundEdge(img, edge, sides):
         curPointY += yStep
 
 
-def leadRoundFigure(img, edgesArray, sides):
-    for i in range(len(edgesArray)):
-        leadRoundEdge(img, edgesArray[i], sides)
+def leadRoundFigure(img, edgesArray):
+    for i in range(len(edgesArray) - 1):
+        leadRoundEdge(img, edgesArray[i], extrems[i], extrems[i + 1])
+    leadRoundEdge(img, edgesArray[len(edgesArray) - 1], extrems[len(edgesArray) - 1], extrems[0])
 
 
-'''
-def rasterScanWithFlag(sides, edgesArray):
-    leadRoundFigure(edgesArray)
-'''
+def rasterScanWithFlag(img, edgesArray, sides):
+    leadRoundFigure(img, edgesArray)
+    for curY in range(sides[0], sides[2]):
+        curColor = curColorBackground
+        invColor = curColorLines
+        for curX in range(sides[3] - 1, sides[1] + 2):
+            if img.get(curX, curY) == noteColorCheck:
+                curColor, invColor = invColor, curColor
+            img.put(curColor, (curX, curY))
+
+
+def setExtrems(pointsArray, sides):
+    global extrems
+    extrems = []
+    extrems.append(pointsArray[0] == sides[0] or pointsArray[0] == sides[2])
+
+    for i in range(1, len(pointsArray) - 1):
+        extrems.append((pointsArray[i] < pointsArray[i - 1] and pointsArray[i] < pointsArray[i + 1]) or
+                       (pointsArray[i] > pointsArray[i - 1] and pointsArray[i] > pointsArray[i + 1]))
+
+    extrems.append(pointsArray[len(pointsArray) - 1] == sides[0] or pointsArray[len(pointsArray) - 1] == sides[2])
+
 
 def MakeRasterScan(comboDelay):
     delay = comboDelay.get()
     sides = getSides(pointsArray)
     global edgesArray
+    setExtrems(pointsArray, sides)
     if delay[1] == 'ы':
-        leadRoundFigure(img, edgesArray, sides)
+        rasterScanWithFlag(img, edgesArray, sides)
     else:
         print("Или с делея?")
 
