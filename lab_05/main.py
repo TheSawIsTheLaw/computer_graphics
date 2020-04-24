@@ -13,6 +13,8 @@ img = 0
 curColorLines = "#000000"
 curColorBackground = "#ffffff"
 
+pointsArray = []
+
 
 def makeReference():
     """
@@ -54,10 +56,11 @@ def chooseLinesColor(rootWindow, row, column):
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
+    pointsArray.clear()
     global img
-    img = PhotoImage(width = 880, height = 1017)
-    canvasWindow.create_image((440, 508), image = img, state = "normal")
-    canvasWindow.place(x = 960, y = 0)
+    img = PhotoImage(width = 1090, height = 1016)
+    canvasWindow.create_image((545, 508), image = img, state = "normal")
+    canvasWindow.place(x = 750, y = 0)
 
 
 def makeCascadeMenu(rootWindow, canvasWindow):
