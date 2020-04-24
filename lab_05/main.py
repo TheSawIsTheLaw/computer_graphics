@@ -42,7 +42,7 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
     curX = xStart
     curY = yStart
 
-    for i in range(length):
+    for i in range(length + 1):
         image.put(curColorLines, (niceRound(curX), niceRound(curY)))
         curX += deltaX
         curY += deltaY
