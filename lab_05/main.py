@@ -84,30 +84,30 @@ def drawArr(image, pointsArray):
 
 def setColorButtons(rootWindow):
     canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
-    canvasLinesColor.place(x = 250, y = 82)
+    canvasLinesColor.place(x = 250, y = 182)
     Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseLinesColor(rootWindow, 250, 82)).place(x = 40, y = 80)
+           command = lambda: chooseLinesColor(rootWindow, 250, 82)).place(x = 40, y = 180)
 
     canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
-    canvasBackgroundColor.place(x = 660, y = 82)
+    canvasBackgroundColor.place(x = 660, y = 182)
     Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseBackgroundColor(rootWindow, 660, 82)).place(x = 500, y = 80)
+           command = lambda: chooseBackgroundColor(rootWindow, 660, 82)).place(x = 500, y = 180)
 
 
 def setComboDelay(rootWindow):
-    Label(rootWindow, text = "Задержка рисования:", font = fontSettingLower).place(x = 5, y = 10)
-    comboDelay = ttk.Combobox(rootWindow, width = 115, textvariable = delay, state = 'readonly', values =
+    Label(rootWindow, text = "Задержка рисования:", font = fontSettingLower).place(x = 5, y = 140)
+    comboDelay = ttk.Combobox(rootWindow, width = 80, textvariable = delay, state = 'readonly', values =
     ('Выключена',
      'Включена'))
 
-    comboDelay.place(x = 250, y = 15)
+    comboDelay.place(x = 250, y = 145)
     comboDelay.current(0)
 
 
 def setImageToCanvas(canvasWindow):
     global img
-    img = PhotoImage(width = 880, height = 1018)
-    canvasWindow.create_image((440, 509), image = img, state = "normal")
+    img = PhotoImage(width = 1090, height = 1016)
+    canvasWindow.create_image((545, 508), image = img, state = "normal")
 
 
 def makeMainWindow():
@@ -118,15 +118,28 @@ def makeMainWindow():
     rootWindow.title("Рабораторная работа 5, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.geometry("1850x1080+60+0")
 
-    canvasWindow = Canvas(rootWindow, bg = "white", width = 880, height = 1016, borderwidth = 5, relief = RIDGE)
+    canvasWindow = Canvas(rootWindow, bg = "white", width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     setImageToCanvas(canvasWindow)
 
-    canvasWindow.place(x = 960, y = 0)
+    canvasWindow.place(x = 750, y = 0)
 
     setComboDelay(rootWindow)
 
     setColorButtons(rootWindow)
+
+    makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
+    makeAlgButton.place(x = 5, y = 300)
+
+    makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
+    makeTimeResearch.place(x = 5, y = 600)
+
+    Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
+                 "\nЧтобы завершить рисование - \nнажмите правую кнопку мыши и фигура замкнётся.", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 60).place(x = 5, y = 400)
+
+    Label(text = "Алгоритм растрового заполнения \nсплошных областей со списком \nрёбер и флагом", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLabels, width = 48).place(x = 5, y = 15)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
