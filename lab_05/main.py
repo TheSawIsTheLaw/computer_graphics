@@ -4,6 +4,8 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+from lab_04.shittyFuncs import niceRound
+
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
 
@@ -14,6 +16,36 @@ curColorLines = "#000000"
 curColorBackground = "#ffffff"
 
 pointsArray = []
+
+curEndPoint = 0
+
+
+def DDAline(image, xStart, xEnd, yStart, yEnd):
+    if xStart == xEnd and yStart == yEnd:
+        image.put(curColorLines, (xStart, yStart))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    trX = abs(deltaX)
+    trY = abs(deltaY)
+
+    if trX > trY:
+        length = trX
+    else:
+        length = trY
+
+    deltaX /= length
+    deltaY /= length
+
+    curX = xStart
+    curY = yStart
+
+    for i in range(length):
+        image.put(curColorLines, (niceRound(curX), niceRound(curY)))
+        curX += deltaX
+        curY += deltaY
 
 
 def makeReference():
@@ -56,7 +88,10 @@ def chooseLinesColor(rootWindow, row, column):
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
+    global pointsArray
     pointsArray.clear()
+    global curEndPoint
+    curEndPoint = 0
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -112,13 +147,22 @@ def setImageToCanvas(canvasWindow):
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
 
+
 def click(event):
-    print(event.x)
-    print(event.y)
+    global pointsArray
+    global img
+    global curEndPoint
+    pointsArray.append((event.x, event.y, curColorLines))
+    if len(pointsArray) >= 2 and len(pointsArray) != curEndPoint + 1:
+        for i in range(curEndPoint, len(pointsArray) - 1):
+            DDAline(img, pointsArray[i][0], pointsArray[i + 1][0], pointsArray[i][1], pointsArray[i + 1][1])
 
 
 def endClick(event):
-    print("Ну и всё тогда...")
+    global curEndPoint
+    global pointsArray
+    DDAline(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1], pointsArray[len(pointsArray) - 1][1])
+    curEndPoint = len(pointsArray)
 
 
 def cancelClick(event):
