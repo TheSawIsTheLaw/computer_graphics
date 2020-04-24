@@ -4,6 +4,8 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 from time import sleep, time
 
+from numpy import sign
+
 from lab_04.shittyFuncs import niceRound
 
 fontSettingLabels = ("Consolas", 20)
@@ -17,11 +19,11 @@ curColorBackground = "#ffffff"
 
 pointsArray = []
 
-prevCurEnd = 0
+prevCurEnd = []
 curEndPoint = 0
 
 
-def DDAline(image, xStart, xEnd, yStart, yEnd):
+def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
         image.put(curColorLines, (xStart, yStart))
         return
@@ -29,24 +31,37 @@ def DDAline(image, xStart, xEnd, yStart, yEnd):
     deltaX = xEnd - xStart
     deltaY = yEnd - yStart
 
-    trX = abs(deltaX)
-    trY = abs(deltaY)
+    stepX = int(sign(deltaX))
+    stepY = int(sign(deltaY))
 
-    if trX > trY:
-        length = trX
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
     else:
-        length = trY
+        flag = False
 
-    deltaX /= length
-    deltaY /= length
-
+    acc = deltaY + deltaY - deltaX
     curX = xStart
     curY = yStart
 
-    for i in range(length + 1):
-        image.put(curColorLines, (niceRound(curX), niceRound(curY)))
-        curX += deltaX
-        curY += deltaY
+    for i in range(deltaX):
+        image.put(curColorLines, (curX, curY))
+
+        if flag:
+            if acc >= 0:
+                curX += stepX
+                acc -= (deltaX + deltaX)
+            curY += stepY
+            acc += deltaY + deltaY
+        else:
+            if acc >= 0:
+                curY += stepY
+                acc -= (deltaX + deltaX)
+            curX += stepX
+            acc += deltaY + deltaY
 
 
 def makeReference():
@@ -94,7 +109,7 @@ def clearImage(canvasWindow):
     global curEndPoint
     global prevCurEnd
     curEndPoint = 0
-    prevCurEnd = 0
+    prevCurEnd = []
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -127,7 +142,7 @@ def setColorButtons(rootWindow):
     canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasLinesColor.place(x = 250, y = 182)
     Button(rootWindow, text = "Цвет отрезков: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseLinesColor(rootWindow, 250, 82)).place(x = 40, y = 180)
+           command = lambda: chooseLinesColor(rootWindow, 250, 182)).place(x = 40, y = 180)
 
     canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasBackgroundColor.place(x = 660, y = 182)
@@ -157,16 +172,15 @@ def click(event):
     global curEndPoint
     pointsArray.append((event.x, event.y, curColorLines))
     if len(pointsArray) >= 2 and len(pointsArray) != curEndPoint + 1:
-        for i in range(curEndPoint, len(pointsArray) - 1):
-            DDAline(img, pointsArray[i][0], pointsArray[i + 1][0], pointsArray[i][1], pointsArray[i + 1][1])
+        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1], pointsArray[len(pointsArray) - 1][1])
 
 
 def endClick(event):
     global curEndPoint
     global pointsArray
-    DDAline(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1], pointsArray[len(pointsArray) - 1][1])
+    digitBresenham(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1], pointsArray[len(pointsArray) - 1][1])
     global prevCurEnd
-    prevCurEnd = curEndPoint
+    prevCurEnd.append(curEndPoint)
     curEndPoint = len(pointsArray)
 
 
@@ -178,12 +192,12 @@ def cancelClick(event):
     tempCol = curColorLines
     curColorLines = curColorBackground
     if curEndPoint != len(pointsArray):
-        DDAline(img, pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][1], pointsArray[len(pointsArray) - 2][1])
+        digitBresenham(img, pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][1], pointsArray[len(pointsArray) - 2][1])
         pointsArray.pop()
     else:
         global prevCurEnd
-        curEndPoint = prevCurEnd
-        DDAline(img, pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][1],
+        curEndPoint = prevCurEnd.pop()
+        digitBresenham(img, pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][1],
                 pointsArray[curEndPoint][1])
     curColorLines = tempCol
 
