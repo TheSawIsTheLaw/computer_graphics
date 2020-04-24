@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
 import matplotlib.pyplot as plt
-from datetime import datetime
+from time import sleep, time
 
 from lab_04.shittyFuncs import niceRound
 
@@ -17,6 +17,7 @@ curColorBackground = "#ffffff"
 
 pointsArray = []
 
+prevCurEnd = 0
 curEndPoint = 0
 
 
@@ -91,7 +92,9 @@ def clearImage(canvasWindow):
     global pointsArray
     pointsArray.clear()
     global curEndPoint
+    global prevCurEnd
     curEndPoint = 0
+    prevCurEnd = 0
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -162,11 +165,27 @@ def endClick(event):
     global curEndPoint
     global pointsArray
     DDAline(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1], pointsArray[len(pointsArray) - 1][1])
+    global prevCurEnd
+    prevCurEnd = curEndPoint
     curEndPoint = len(pointsArray)
 
 
 def cancelClick(event):
-    print("Ну отменили и отменили, чего бубнить-то...")
+    global curEndPoint
+    global pointsArray
+    global curColorLines
+    global curColorBackground
+    tempCol = curColorLines
+    curColorLines = curColorBackground
+    if curEndPoint != len(pointsArray):
+        DDAline(img, pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][1], pointsArray[len(pointsArray) - 2][1])
+        pointsArray.pop()
+    else:
+        global prevCurEnd
+        curEndPoint = prevCurEnd
+        DDAline(img, pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][1],
+                pointsArray[curEndPoint][1])
+    curColorLines = tempCol
 
 
 def makeMainWindow():
