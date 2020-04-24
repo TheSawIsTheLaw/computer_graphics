@@ -118,6 +118,10 @@ def endClick(event):
     print("Ну и всё тогда...")
 
 
+def cancelClick(event):
+    print("Ну отменили и отменили, чего бубнить-то...")
+
+
 def makeMainWindow():
     """
             Функция Создания главного окна
@@ -131,6 +135,8 @@ def makeMainWindow():
     setImageToCanvas(canvasWindow)
 
     canvasWindow.bind('<1>', click)
+
+    canvasWindow.bind('<2>', cancelClick)
 
     canvasWindow.bind('<3>', endClick)
 
@@ -147,7 +153,8 @@ def makeMainWindow():
     makeTimeResearch.place(x = 5, y = 600)
 
     Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
-                 "\nЧтобы завершить рисование - \nнажмите правую кнопку мыши и фигура замкнётся.", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+                 "\nЧтобы завершить рисование - \nнажмите правую кнопку мыши и фигура замкнётся.\n"
+                 "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
     Label(text = "Алгоритм растрового заполнения \nсплошных областей со списком \nрёбер и флагом", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
