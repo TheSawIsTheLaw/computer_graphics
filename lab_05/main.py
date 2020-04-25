@@ -192,15 +192,21 @@ def click(event):
 
 
 def endClick(event):
-    global curEndPoint, curFig
+    global curFig
     global pointsArray
     global edgesArray
-    digitBresenham(img, pointsArray[curFig][curEndPoint][0], pointsArray[curFig][len(pointsArray[curFig]) - 1][0], pointsArray[curFig][curEndPoint][1], pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-    edgesArray.append([[pointsArray[curFig][curEndPoint[curFig]][0], pointsArray[curFig][curEndPoint][1]],
-                      [pointsArray[curFig][len(pointsArray[curFig]) - 1][0], pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
-    global prevCurEnd
-    prevCurEnd.append(curEndPoint)
-    curEndPoint = len(pointsArray)
+    digitBresenham(img, pointsArray[curFig][0][0],
+                   pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                   pointsArray[curFig][0][1],
+                   pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+    edgesArray.append([[pointsArray[curFig][0][0],
+                        pointsArray[curFig][0][1]],
+                      [pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
+    curFig += 1
+    print(pointsArray, edgesArray)
+    edgesArray.append(list())
+    pointsArray.append(list())
 
 
 def cancelClick(event):
