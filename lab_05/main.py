@@ -244,11 +244,12 @@ def getSides(pointsArray):
     left = 1090
     bottom = 0
     top = 1060
-    for i in pointsArray:
-        if i[0] > right: right = i[0]
-        if i[0] < left: left = i[0]
-        if i[1] > bottom: bottom = i[1]
-        if i[1] < top: top = i[1]
+    for figure in pointsArray:
+        for i in figure:
+            if i[0] > right: right = i[0]
+            if i[0] < left: left = i[0]
+            if i[1] > bottom: bottom = i[1]
+            if i[1] < top: top = i[1]
     return top, right, bottom, left
 
 
