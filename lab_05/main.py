@@ -21,8 +21,9 @@ curColorBackground = "#ffffff"
 noteColor = "#00C12B"
 noteColorCheck = (0, 193, 43)
 
-pointsArray = []
-edgesArray = []
+pointsArray = [[]]
+edgesArray = [[]]
+curFig = 0
 
 prevCurEnd = []
 curEndPoint = 0
@@ -177,21 +178,26 @@ def setImageToCanvas(canvasWindow):
 def click(event):
     global pointsArray
     global img
-    global curEndPoint
-    pointsArray.append([event.x, event.y, curColorLines])
-    if len(pointsArray) >= 2 and len(pointsArray) != curEndPoint + 1:
-        edgesArray.append([[pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 2][1]], [pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 1][1]]])
-        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1],
-                       pointsArray[len(pointsArray) - 1][1])
+    global curFig
+    pointsArray[curFig].append([event.x, event.y, curColorLines])
+    if len(pointsArray[curFig]) >= 2:
+        edgesArray[curFig].append([[pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                                    pointsArray[curFig][len(pointsArray[curFig]) - 2][1]],
+                                   [pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                                    pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
+        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
 
 
 def endClick(event):
-    global curEndPoint
+    global curEndPoint, curFig
     global pointsArray
     global edgesArray
-    digitBresenham(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1], pointsArray[len(pointsArray) - 1][1])
-    edgesArray.append([[pointsArray[curEndPoint][0], pointsArray[curEndPoint][1]],
-                      [pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 1][1]]])
+    digitBresenham(img, pointsArray[curFig][curEndPoint][0], pointsArray[curFig][len(pointsArray[curFig]) - 1][0], pointsArray[curFig][curEndPoint][1], pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+    edgesArray.append([[pointsArray[curFig][curEndPoint[curFig]][0], pointsArray[curFig][curEndPoint][1]],
+                      [pointsArray[curFig][len(pointsArray[curFig]) - 1][0], pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
     global prevCurEnd
     prevCurEnd.append(curEndPoint)
     curEndPoint = len(pointsArray)
