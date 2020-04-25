@@ -189,6 +189,7 @@ def click(event):
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                        pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+    print(pointsArray, edgesArray)
 
 
 def endClick(event):
@@ -199,35 +200,42 @@ def endClick(event):
                    pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                    pointsArray[curFig][0][1],
                    pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-    edgesArray.append([[pointsArray[curFig][0][0],
+    edgesArray[curFig].append([[pointsArray[curFig][0][0],
                         pointsArray[curFig][0][1]],
                       [pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
     curFig += 1
-    print(pointsArray, edgesArray)
+
     edgesArray.append(list())
     pointsArray.append(list())
+    print(pointsArray, edgesArray)
 
 
 def cancelClick(event):
-    global pointsArray
+    global pointsArray, curFig
     if len(pointsArray) == 0:
         return
-    global curEndPoint
     global curColorLines
     global curColorBackground
     tempCol = curColorLines
     curColorLines = curColorBackground
-    if curEndPoint != len(pointsArray):
-        digitBresenham(img, pointsArray[len(pointsArray) - 2][0], pointsArray[len(pointsArray) - 1][0], pointsArray[len(pointsArray) - 2][1],
-                       pointsArray[len(pointsArray) - 1][1])
-        pointsArray.pop()
-        edgesArray.pop()
+    if len(pointsArray[curFig]):
+        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+        pointsArray[curFig].pop()
+        edgesArray[curFig].pop()
+        print(pointsArray, edgesArray)
     else:
-        global prevCurEnd
-        curEndPoint = prevCurEnd.pop()
-        digitBresenham(img, pointsArray[curEndPoint][0], pointsArray[len(pointsArray) - 1][0], pointsArray[curEndPoint][1],
-                       pointsArray[len(pointsArray) - 1][1])
+        edgesArray.pop()
+        pointsArray.pop()
+        curFig -= 1
+        digitBresenham(img, pointsArray[curFig][0][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][0][1],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+        print(pointsArray, edgesArray)
     curColorLines = tempCol
 
 
