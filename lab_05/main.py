@@ -1,12 +1,9 @@
 from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
-import matplotlib.pyplot as plt
 from time import sleep, time
 
 from numpy import sign
-
-from lab_04.shittyFuncs import niceRound
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
@@ -257,9 +254,11 @@ def leadRoundEdge(img, edge, isFE, isSE):
     if edge[0][1] == edge[1][1]:
         return
 
+    print(edge[0], edge[1], isFE, isSE)
     if edge[0][1] > edge[1][1]:
-        edge[0], edge[1] = edge[1], edge[0]
+        edge[1], edge[0] = edge[0], edge[1]
         isFE, isSE = isSE, isFE
+    print(edge[0], edge[1], isFE, isSE)
 
     stepY = 1
     stepX = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
@@ -273,7 +272,7 @@ def leadRoundEdge(img, edge, isFE, isSE):
 
     curX = edge[0][0]
     curY = edge[0][1]
-    while curY <= edge[1][1]:
+    while curY < edge[1][1]:
         if img.get(int(curX) + 1, curY) != noteColorCheck:
             img.put(noteColor, (int(curX) + 1, curY))
         else:
@@ -284,29 +283,26 @@ def leadRoundEdge(img, edge, isFE, isSE):
 
 
 def leadRoundFigure(img, edgesArray):
+    print(extrems, edgesArray)
     for figure in range(len(edgesArray)):
         for i in range(len(edgesArray[figure]) - 1):
-            leadRoundEdge(img,
-                          edgesArray[figure][i],
-                          extrems[figure][i],
-                          extrems[figure][i + 1])
-        leadRoundEdge(img,
-                      edgesArray[figure][len(edgesArray[figure]) - 1],
-                      extrems[figure][len(edgesArray[figure]) - 1],
-                      extrems[figure][0])
+            leadRoundEdge(img, edgesArray[figure][i], extrems[figure][i], extrems[figure][i + 1])
+        leadRoundEdge(img, edgesArray[figure][len(edgesArray[figure]) - 1], extrems[figure][0], extrems[figure][len(edgesArray[figure]) - 1])
 
 
 def rasterScanWithFlag(img, edgesArray, sides):
     leadRoundFigure(img, edgesArray)
 
-    for curY in range(sides[0], sides[2]):
+    for curY in range(sides[2], sides[0], -1):
         curColor = curColorBackground
         invColor = curColorLines
-        for curX in range(sides[3], sides[1]):
+        firstPoint = sides[3] - 1
+        for curX in range(sides[3] - 1, sides[1] + 2):
             if img.get(curX, curY) == noteColorCheck:
+                img.put(curColor, (firstPoint, curY, curX, curY + 1))
                 curColor, invColor = invColor, curColor
-            img.put(curColor, (curX, curY))
-
+                firstPoint = curX
+        img.put(curColor, (firstPoint, curY, curX, curY + 1))
 
 def setExtrems(pointsArray, sides):
     global extrems
@@ -314,9 +310,9 @@ def setExtrems(pointsArray, sides):
     extrems = [[]]
 
     for figure in range(len(pointsArray)):
-        extrems[figure].append(((pointsArray[figure][0][1] < pointsArray[figure][-1][1] and
+        extrems[figure].append(((pointsArray[figure][0][1] < pointsArray[figure][len(pointsArray[figure]) - 1][1] and
                                 pointsArray[figure][0][1] < pointsArray[figure][1][1]) or
-                               (pointsArray[figure][0][1] > pointsArray[figure][-1][1] and
+                               (pointsArray[figure][0][1] > pointsArray[figure][len(pointsArray[figure]) - 1][1] and
                                 pointsArray[figure][0][1] > pointsArray[figure][1][1])))
         for i in range(1, len(pointsArray[figure]) - 1):
             extrems[figure].append(((pointsArray[figure][i][1] < pointsArray[figure][i - 1][1] and
