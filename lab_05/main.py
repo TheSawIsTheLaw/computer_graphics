@@ -14,7 +14,7 @@ fontSettingLower = ("Consolas", 16)
 delay = 0
 img = 0
 
-extrems = []
+extrems = [[]]
 
 curColorLines = "#000000"
 curColorBackground = "#ffffff"
@@ -110,13 +110,9 @@ def chooseLinesColor(rootWindow, row, column):
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global pointsArray
-    pointsArray.clear()
-    global curEndPoint
-    global prevCurEnd
-    curEndPoint = 0
-    prevCurEnd = []
-    edgesArray = []
+    global pointsArray, edgesArray
+    pointsArray = [[]]
+    edgesArray = [[]]
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -246,10 +242,14 @@ def getSides(pointsArray):
     top = 1060
     for figure in pointsArray:
         for i in figure:
-            if i[0] > right: right = i[0]
-            if i[0] < left: left = i[0]
-            if i[1] > bottom: bottom = i[1]
-            if i[1] < top: top = i[1]
+            if i[0] > right:
+                right = i[0]
+            if i[0] < left:
+                left = i[0]
+            if i[1] > bottom:
+                bottom = i[1]
+            if i[1] < top:
+                top = i[1]
     return top, right, bottom, left
 
 
@@ -261,37 +261,48 @@ def leadRoundEdge(img, edge, isFE, isSE):
         edge[0], edge[1] = edge[1], edge[0]
         isFE, isSE = isSE, isFE
 
-    yStep = 1
-    xStep = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
+    stepY = 1
+    stepX = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
 
     if isFE:
-        edge[0][0] += xStep
-        edge[0][1] += yStep
+        edge[0][0] += stepX
+        edge[0][1] += stepY
     if isSE:
-        edge[1][0] -= xStep
-        edge[1][1] -= yStep
+        edge[1][0] -= stepX
+        edge[1][1] -= stepY
 
-    curPointX = edge[0][0]
-    curPointY = edge[0][1]
+    curX = edge[0][0]
+    curY = edge[0][1]
+    while curY <= edge[1][1]:
+        if img.get(int(curX) + 1, curY) != noteColorCheck:
+            img.put(noteColor, (int(curX) + 1, curY))
+        else:
+            img.put(curColorBackground, (int(curX) + 1, curY))
+        curX += stepX
+        curY += stepY
 
-    while curPointY < edge[1][1]:
-        img.put(noteColor, (int(curPointX) + 1, curPointY))
-        curPointX += xStep
-        curPointY += yStep
 
 
 def leadRoundFigure(img, edgesArray):
-    for i in range(len(edgesArray) - 1):
-        leadRoundEdge(img, edgesArray[i], extrems[i], extrems[i + 1])
-    leadRoundEdge(img, edgesArray[len(edgesArray) - 1], extrems[len(edgesArray) - 1], extrems[0])
+    for figure in range(len(edgesArray)):
+        for i in range(len(edgesArray[figure]) - 1):
+            leadRoundEdge(img,
+                          edgesArray[figure][i],
+                          extrems[figure][i],
+                          extrems[figure][i + 1])
+        leadRoundEdge(img,
+                      edgesArray[figure][len(edgesArray[figure]) - 1],
+                      extrems[figure][len(edgesArray[figure]) - 1],
+                      extrems[figure][0])
 
 
 def rasterScanWithFlag(img, edgesArray, sides):
     leadRoundFigure(img, edgesArray)
+
     for curY in range(sides[0], sides[2]):
         curColor = curColorBackground
         invColor = curColorLines
-        for curX in range(sides[3] - 1, sides[1] + 2):
+        for curX in range(sides[3], sides[1]):
             if img.get(curX, curY) == noteColorCheck:
                 curColor, invColor = invColor, curColor
             img.put(curColor, (curX, curY))
@@ -300,22 +311,34 @@ def rasterScanWithFlag(img, edgesArray, sides):
 def setExtrems(pointsArray, sides):
     global extrems
     extrems.clear()
-    extrems.append((pointsArray[0][1] < pointsArray[len(pointsArray) - 1][1] and pointsArray[0][1] < pointsArray[1][1]) or
-                       (pointsArray[0][1] > pointsArray[len(pointsArray) - 1][1] and pointsArray[0][1] > pointsArray[1][1]))
+    extrems = [[]]
 
-    print(pointsArray)
-    for i in range(1, len(pointsArray) - 1):
-        extrems.append((pointsArray[i][1] < pointsArray[i - 1][1] and pointsArray[i][1] < pointsArray[i + 1][1]) or
-                       (pointsArray[i][1] > pointsArray[i - 1][1] and pointsArray[i][1] > pointsArray[i + 1][1]))
+    for figure in range(len(pointsArray)):
+        extrems[figure].append(((pointsArray[figure][0][1] < pointsArray[figure][-1][1] and
+                                pointsArray[figure][0][1] < pointsArray[figure][1][1]) or
+                               (pointsArray[figure][0][1] > pointsArray[figure][-1][1] and
+                                pointsArray[figure][0][1] > pointsArray[figure][1][1])))
+        for i in range(1, len(pointsArray[figure]) - 1):
+            extrems[figure].append(((pointsArray[figure][i][1] < pointsArray[figure][i - 1][1] and
+                                    pointsArray[figure][i][1] < pointsArray[figure][i + 1][1]) or
+                                   (pointsArray[figure][i][1] > pointsArray[figure][i - 1][1] and
+                                    pointsArray[figure][i][1] > pointsArray[figure][i + 1][1]))
+                                   )
 
-    extrems.append((pointsArray[len(pointsArray) - 1][1] < pointsArray[len(pointsArray) - 2][1] and pointsArray[len(pointsArray) - 1][1] < pointsArray[0][1]) or
-                       (pointsArray[len(pointsArray) - 1][1] > pointsArray[len(pointsArray) - 2][1] and pointsArray[len(pointsArray) - 1][1] > pointsArray[0][1]))
+        extrems[figure].append((pointsArray[figure][len(pointsArray[figure]) - 1][1] < pointsArray[figure][len(pointsArray[figure]) - 2][1] and
+                        pointsArray[figure][len(pointsArray[figure]) - 1][1] < pointsArray[figure][0][1]) or
+                       (pointsArray[figure][len(pointsArray[figure]) - 1][1] > pointsArray[figure][len(pointsArray[figure]) - 2][1] and
+                        pointsArray[figure][len(pointsArray[figure]) - 1][1] > pointsArray[figure][0][1]))
+        extrems.append(list())
+    extrems.pop()
 
 
 def MakeRasterScan(comboDelay):
+    pointsArray.pop()
     delay = comboDelay.get()
     sides = getSides(pointsArray)
     global edgesArray
+    edgesArray.pop()
     setExtrems(pointsArray, sides)
     if delay[1] == 'ы':
         rasterScanWithFlag(img, edgesArray, sides)
