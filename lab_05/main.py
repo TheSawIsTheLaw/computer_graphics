@@ -303,6 +303,26 @@ def rasterScanWithFlag(img, edgesArray, sides):
                 firstPoint = curX
         img.put(curColor, (firstPoint, curY, curX, curY + 1))
 
+
+def rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides):
+    leadRoundFigure(img, edgesArray)
+    canvasWindow.update()
+    sleep(3)
+
+    for curY in range(sides[2], sides[0], -1):
+        curColor = curColorBackground
+        invColor = curColorLines
+        firstPoint = sides[3] - 1
+        for curX in range(sides[3] - 1, sides[1] + 2):
+            if img.get(curX, curY) == noteColorCheck:
+                img.put(curColor, (firstPoint, curY, curX, curY + 1))
+                curColor, invColor = invColor, curColor
+                firstPoint = curX
+        canvasWindow.update()
+        sleep(0.1)
+        img.put(curColor, (firstPoint, curY, curX, curY + 1))
+
+
 def setExtrems(pointsArray):
     global extrems
     extrems.clear()
@@ -328,7 +348,7 @@ def setExtrems(pointsArray):
     extrems.pop()
 
 
-def MakeRasterScan(comboDelay):
+def MakeRasterScan(comboDelay, canvasWindow):
     pointsArray.pop()
     delay = comboDelay.get()
     sides = getSides(pointsArray)
@@ -338,7 +358,7 @@ def MakeRasterScan(comboDelay):
     if delay[1] == 'ы':
         rasterScanWithFlag(img, edgesArray, sides)
     else:
-        print("Или с делея?")
+        rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides)
 
 
 def makeMainWindow():
@@ -365,7 +385,8 @@ def makeMainWindow():
 
     setColorButtons(rootWindow, canvasWindow)
 
-    makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: MakeRasterScan(comboDelay))
+    makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60,
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: MakeRasterScan(comboDelay, canvasWindow))
     makeAlgButton.place(x = 5, y = 300)
 
     makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
