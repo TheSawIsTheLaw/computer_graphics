@@ -377,6 +377,20 @@ def MakeRasterScan(comboDelay, canvasWindow):
         rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides)
 
 
+def timeResearch():
+    pointsArray.pop()
+    edgesArray.pop()
+    sides = getSides(pointsArray)
+    setExtrems(pointsArray)
+    previous = time()
+    rasterScanWithFlag(img, edgesArray, sides)
+    after = time()
+    researchWindow = Tk()
+    researchWindow.title("Временные затраты")
+    Label(researchWindow, text = "Временные затраты составили " + str(after - previous) + " секунд", font = fontSettingLower).grid()
+    researchWindow.mainloop()
+
+
 def makeMainWindow():
     """
             Функция Создания главного окна
@@ -405,7 +419,7 @@ def makeMainWindow():
                            font = fontSettingLower, bg = "#FF9C00", command = lambda: MakeRasterScan(comboDelay, canvasWindow))
     makeAlgButton.place(x = 5, y = 300)
 
-    makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
+    makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = timeResearch)
     makeTimeResearch.place(x = 5, y = 980)
 
     Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
