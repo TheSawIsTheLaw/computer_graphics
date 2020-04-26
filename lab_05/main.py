@@ -22,9 +22,6 @@ pointsArray = [[]]
 edgesArray = [[]]
 curFig = 0
 
-prevCurEnd = []
-curEndPoint = 0
-
 
 def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
@@ -107,9 +104,11 @@ def chooseLinesColor(rootWindow, row, column):
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global pointsArray, edgesArray
+    global pointsArray, edgesArray, extrems, curFig
+    curFig = 0
     pointsArray = [[]]
     edgesArray = [[]]
+    extrems = [[]]
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -335,7 +334,7 @@ def MakeRasterScan(comboDelay):
     sides = getSides(pointsArray)
     global edgesArray
     edgesArray.pop()
-    setExtrems(pointsArray, sides)
+    setExtrems(pointsArray)
     if delay[1] == 'ы':
         rasterScanWithFlag(img, edgesArray, sides)
     else:
