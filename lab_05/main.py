@@ -304,7 +304,7 @@ def rasterScanWithFlag(img, edgesArray, sides):
                 firstPoint = curX
         img.put(curColor, (firstPoint, curY, curX, curY + 1))
 
-def setExtrems(pointsArray, sides):
+def setExtrems(pointsArray):
     global extrems
     extrems.clear()
     extrems = [[]]
@@ -370,12 +370,23 @@ def makeMainWindow():
     makeAlgButton.place(x = 5, y = 300)
 
     makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = print())
-    makeTimeResearch.place(x = 5, y = 600)
+    makeTimeResearch.place(x = 5, y = 980)
 
     Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
                  "\nЧтобы завершить рисование - \nнажмите правую кнопку мыши и фигура замкнётся.\n"
-                 "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+                 "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши\n"
+                 "Для проверки случаев горизонтальных и вертикальных рёбер\nпредусмотрены поля ввода ниже\n", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
+
+    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower).place(x = 10, y = 698)
+    xEntry = Entry(rootWindow, font = fontSettingLower, width = 4)
+    xEntry.place(x = 239, y = 700)
+
+    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower).place(x = 420, y = 698)
+    yEntry = Entry(rootWindow, font = fontSettingLower, width = 4)
+    yEntry.place(x = 649, y = 700)
+
+    Button(rootWindow, text = "Добавить точку", command = print(), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
 
     Label(text = "Алгоритм растрового заполнения \nсплошных областей со списком \nрёбер и флагом", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
