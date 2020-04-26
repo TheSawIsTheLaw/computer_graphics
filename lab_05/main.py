@@ -181,7 +181,24 @@ def click(event):
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                        pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-    print(pointsArray, edgesArray)
+
+def addPoint(xEntry, yEntry):
+    xCoord = int(xEntry.get())
+    yCoord = int(yEntry.get())
+
+    global pointsArray
+    global img
+    global curFig
+    pointsArray[curFig].append([xCoord, yCoord, curColorLines])
+    if len(pointsArray[curFig]) >= 2:
+        edgesArray[curFig].append([[pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                                    pointsArray[curFig][len(pointsArray[curFig]) - 2][1]],
+                                   [pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                                    pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
+        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
 
 
 def endClick(event):
@@ -278,7 +295,6 @@ def leadRoundEdge(img, edge, isFE, isSE):
             img.put(curColorBackground, (int(curX) + 1, curY))
         curX += stepX
         curY += stepY
-
 
 
 def leadRoundFigure(img, edgesArray):
@@ -406,7 +422,7 @@ def makeMainWindow():
     yEntry = Entry(rootWindow, font = fontSettingLower, width = 4)
     yEntry.place(x = 649, y = 700)
 
-    Button(rootWindow, text = "Добавить точку", command = print(), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
+    Button(rootWindow, text = "Добавить точку", command = lambda: addPoint(xEntry, yEntry), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
 
     Label(text = "Алгоритм растрового заполнения \nсплошных областей со списком \nрёбер и флагом", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
