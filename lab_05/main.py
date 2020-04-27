@@ -276,7 +276,6 @@ def leadRoundEdge(img, edge):
 
     curX = edge[0][0]
     curY = edge[0][1]
-    
     while curY < edge[1][1]:
         if img.get(int(curX) + 1, curY) != noteColorCheck:
             img.put(noteColor, (int(curX) + 1, curY))
