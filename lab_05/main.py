@@ -266,29 +266,22 @@ def getSides(pointsArray):
     return top, right, bottom, left
 
 
-def leadRoundEdge(img, edge, isFE, isSE):
+def leadRoundEdge(img, edge):
     if edge[0][1] == edge[1][1]:
         return
 
     if edge[0][1] > edge[1][1]:
         edge[1], edge[0] = edge[0], edge[1]
-        isFE, isSE = isSE, isFE
     stepX = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
-
-    if isFE:
-        edge[0][0] += stepX
-        edge[0][1] += 1
-    if isSE:
-        edge[1][0] -= stepX
-        edge[1][1] -= 1
 
     curX = edge[0][0]
     curY = edge[0][1]
+    
     while curY < edge[1][1]:
         if img.get(int(curX) + 1, curY) != noteColorCheck:
             img.put(noteColor, (int(curX) + 1, curY))
         else:
-            img.put(curColorBackground, (int(curX) + 1, curY))
+            img.put(noteColor, (int(curX), curY))
         curX += stepX
         curY += 1
 
@@ -297,8 +290,8 @@ def leadRoundFigure(img, edgesArray):
     for figure in range(len(edgesArray)):
         arrEnd = len(edgesArray[figure]) - 1
         for i in range(arrEnd):
-            leadRoundEdge(img, edgesArray[figure][i], extrems[figure][i], extrems[figure][i + 1])
-        leadRoundEdge(img, edgesArray[figure][arrEnd], extrems[figure][0], extrems[figure][arrEnd])
+            leadRoundEdge(img, edgesArray[figure][i])
+        leadRoundEdge(img, edgesArray[figure][arrEnd])
 
 
 def rasterScanWithFlag(img, edgesArray, sides):
@@ -307,7 +300,7 @@ def rasterScanWithFlag(img, edgesArray, sides):
         curColor = curColorBackground
         invColor = curColorLines
         curPointScanString = sides[3]
-        for curX in range(sides[3], sides[1] + 1):
+        for curX in range(sides[3], sides[1] + 3):
             if img.get(curX, curY) == noteColorCheck:
                 img.put(curColor, (curPointScanString, curY, curX, curY + 1))
                 curColor, invColor = invColor, curColor
@@ -324,7 +317,7 @@ def rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides):
         curColor = curColorBackground
         invColor = curColorLines
         curPointScanString = sides[3]
-        for curX in range(sides[3], sides[1] + 1):
+        for curX in range(sides[3], sides[1] + 3):
             if img.get(curX, curY) == noteColorCheck:
                 img.put(curColor, (curPointScanString, curY, curX, curY + 1))
                 curColor, invColor = invColor, curColor
@@ -419,7 +412,7 @@ def makeMainWindow():
 
     Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
                  "\nЧтобы завершить рисование - \nнажмите правую кнопку мыши и фигура замкнётся.\n"
-                 "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши\n"
+                 "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши\n\n"
                  "Для проверки случаев горизонтальных и вертикальных рёбер\nпредусмотрены поля ввода ниже\n", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
