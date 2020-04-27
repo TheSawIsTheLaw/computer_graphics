@@ -270,21 +270,17 @@ def leadRoundEdge(img, edge, isFE, isSE):
     if edge[0][1] == edge[1][1]:
         return
 
-    print(edge[0], edge[1], isFE, isSE)
     if edge[0][1] > edge[1][1]:
         edge[1], edge[0] = edge[0], edge[1]
         isFE, isSE = isSE, isFE
-    print(edge[0], edge[1], isFE, isSE)
-
-    stepY = 1
     stepX = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
 
     if isFE:
         edge[0][0] += stepX
-        edge[0][1] += stepY
+        edge[0][1] += 1
     if isSE:
         edge[1][0] -= stepX
-        edge[1][1] -= stepY
+        edge[1][1] -= 1
 
     curX = edge[0][0]
     curY = edge[0][1]
@@ -294,30 +290,29 @@ def leadRoundEdge(img, edge, isFE, isSE):
         else:
             img.put(curColorBackground, (int(curX) + 1, curY))
         curX += stepX
-        curY += stepY
+        curY += 1
 
 
 def leadRoundFigure(img, edgesArray):
-    print(extrems, edgesArray)
     for figure in range(len(edgesArray)):
-        for i in range(len(edgesArray[figure]) - 1):
+        arrEnd = len(edgesArray[figure]) - 1
+        for i in range(arrEnd):
             leadRoundEdge(img, edgesArray[figure][i], extrems[figure][i], extrems[figure][i + 1])
-        leadRoundEdge(img, edgesArray[figure][len(edgesArray[figure]) - 1], extrems[figure][0], extrems[figure][len(edgesArray[figure]) - 1])
+        leadRoundEdge(img, edgesArray[figure][arrEnd], extrems[figure][0], extrems[figure][arrEnd])
 
 
 def rasterScanWithFlag(img, edgesArray, sides):
     leadRoundFigure(img, edgesArray)
-
-    for curY in range(sides[2], sides[0], -1):
+    for curY in range(sides[0], sides[2] + 1):
         curColor = curColorBackground
         invColor = curColorLines
-        firstPoint = sides[3] - 1
-        for curX in range(sides[3] - 1, sides[1] + 2):
+        curPointScanString = sides[3]
+        for curX in range(sides[3], sides[1] + 1):
             if img.get(curX, curY) == noteColorCheck:
-                img.put(curColor, (firstPoint, curY, curX, curY + 1))
+                img.put(curColor, (curPointScanString, curY, curX, curY + 1))
                 curColor, invColor = invColor, curColor
-                firstPoint = curX
-        img.put(curColor, (firstPoint, curY, curX, curY + 1))
+                curPointScanString = curX
+        img.put(curColor, (curPointScanString, curY, curX, curY + 1))
 
 
 def rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides):
@@ -325,18 +320,18 @@ def rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides):
     canvasWindow.update()
     sleep(3)
 
-    for curY in range(sides[2], sides[0], -1):
+    for curY in range(sides[0], sides[2] + 1):
         curColor = curColorBackground
         invColor = curColorLines
-        firstPoint = sides[3] - 1
-        for curX in range(sides[3] - 1, sides[1] + 2):
+        curPointScanString = sides[3]
+        for curX in range(sides[3], sides[1] + 1):
             if img.get(curX, curY) == noteColorCheck:
-                img.put(curColor, (firstPoint, curY, curX, curY + 1))
+                img.put(curColor, (curPointScanString, curY, curX, curY + 1))
                 curColor, invColor = invColor, curColor
-                firstPoint = curX
+                curPointScanString = curX
         canvasWindow.update()
         sleep(0.1)
-        img.put(curColor, (firstPoint, curY, curX, curY + 1))
+        img.put(curColor, (curPointScanString, curY, curX, curY + 1))
 
 
 def setExtrems(pointsArray):
