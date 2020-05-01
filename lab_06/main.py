@@ -321,6 +321,24 @@ def seedFill(img, canvasWindow, xSeed, ySeed):
                 curX += 1
                 gotColor = img.get(curX, curY)
 
+        curX = xLeft
+        curY -= 2
+
+        while curX <= xRight:
+            flag = False
+            gotColor = img.get(curX, curY)
+            while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
+                flag = True
+                curX += 1
+                gotColor = img.get(curX, curY)
+
+            if flag:
+                stack.append([curX - 1, curY])
+            gotColor = img.get(curX, curY)
+            while (gotColor == linesRGB or gotColor == seedRGB) and curX <= xRight:
+                curX += 1
+                gotColor = img.get(curX, curY)
+
 
 def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
     xStart = xStartEntry.get()
