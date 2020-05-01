@@ -310,8 +310,8 @@ def seedFill(img, xSeed, ySeed):
         curX = xLeft
         curY += 1
 
+        flag = False
         while curX <= xRight:
-            flag = False
             gotColor = img.get(curX, curY)
             while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
                 flag = True
@@ -336,8 +336,8 @@ def seedFill(img, xSeed, ySeed):
         curX = xLeft
         curY -= 2
 
+        flag = False
         while curX <= xRight:
-            flag = False
             gotColor = img.get(curX, curY)
             while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
                 flag = True
@@ -390,8 +390,8 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
         curX = xLeft
         curY += 1
 
+        flag = False
         while curX <= xRight:
-            flag = False
             gotColor = img.get(curX, curY)
             while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
                 flag = True
@@ -416,8 +416,8 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
         curX = xLeft
         curY -= 2
 
+        flag = False
         while curX <= xRight:
-            flag = False
             gotColor = img.get(curX, curY)
             while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
                 flag = True
