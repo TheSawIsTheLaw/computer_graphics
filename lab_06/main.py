@@ -272,6 +272,16 @@ def setExtrems(pointsArray):
         extrems.append(list())
     extrems.pop()
 
+
+def seedFill(canvasWindow, xSeed, ySeed):
+    stack = []
+    stack.append([xSeed, ySeed])
+
+    while len(stack):
+        curPixel = stack.pop()
+        
+
+
 def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
     xStart = xStartEntry.get()
     yStart = yStartEntry.get()
@@ -284,7 +294,7 @@ def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
 
     delayGot = comboDelay.get()
     if delayGot[1] == "ы":
-        print("Тебе с делея?")
+        seedFill(canvasWindow, xStart, yStart)
     else:
         print("Или с делея?")
 
