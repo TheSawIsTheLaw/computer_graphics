@@ -293,17 +293,17 @@ def seedFill(img, xSeed, ySeed):
         gotColor = img.get(curX, curY)
         while gotColor != linesRGB and gotColor != seedRGB:
             img.put(seedColor, (curX, curY))
-            curX += 1
-            gotColor = img.get(curX, curY)
-        xRight = curX - 1
-
-        curX = gotDot[0] - 1
-        gotColor = img.get(curX, curY)
-        while gotColor != linesRGB and gotColor != seedRGB:
-            img.put(seedColor, (curX, curY))
             curX -= 1
             gotColor = img.get(curX, curY)
         xLeft = curX + 1
+
+        curX = gotDot[0] + 1
+        gotColor = img.get(curX, curY)
+        while gotColor != linesRGB and gotColor != seedRGB:
+            img.put(seedColor, (curX, curY))
+            curX += 1
+            gotColor = img.get(curX, curY)
+        xRight = curX - 1
 
         curX = xLeft
         curY += 1
@@ -317,8 +317,11 @@ def seedFill(img, xSeed, ySeed):
                 gotColor = img.get(curX, curY)
 
             if flag:
-                stack.append([curX - 1, curY])
-            gotColor = img.get(curX, curY)
+                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                    stack.append([curX, curY])
+                else:
+                    stack.append([curX - 1, curY])
+                flag = False
 
             xStart = curX
             while (gotColor == linesRGB or gotColor == seedRGB) and curX < xRight:
@@ -340,16 +343,19 @@ def seedFill(img, xSeed, ySeed):
                 gotColor = img.get(curX, curY)
 
             if flag:
-                stack.append([curX - 1, curY])
-            gotColor = img.get(curX, curY)
+                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                    stack.append([curX, curY])
+                else:
+                    stack.append([curX - 1, curY])
+                flag = False
 
             xStart = curX
-            while (gotColor == linesRGB or gotColor == seedRGB) and curX <= xRight:
+            while (gotColor == linesRGB or gotColor == seedRGB) and curX < xRight:
                 curX += 1
                 gotColor = img.get(curX, curY)
 
             if curX == xStart:
-                xStart += 1
+                curX += 1
 
 
 def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
