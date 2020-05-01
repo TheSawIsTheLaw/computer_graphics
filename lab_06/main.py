@@ -17,6 +17,7 @@ curColorBackground = "#000000"
 seedColor = "#a04020"
 
 linesRGB = (255, 255, 255)
+seedRGB = (160, 64, 32)
 
 pointsArray = [[]]
 
@@ -278,24 +279,47 @@ def setExtrems(pointsArray):
 
 
 def seedFill(img, canvasWindow, xSeed, ySeed):
-    stack = []
+    stack = list()
     stack.append([xSeed, ySeed])
 
     while len(stack):
-        curPixel = stack.pop()
-        stepX = 1
-        curX = curPixel[0]
-        curY = curPixel[1]
-        while img.get(curX, curY) != linesRGB:
+        gotDot = stack.pop()
+
+        curX = gotDot[0]
+        curY = gotDot[1]
+
+        gotColor = img.get(curX, curY)
+        while gotColor != linesRGB and gotColor != seedRGB:
             img.put(seedColor, (curX, curY))
-            curX += stepX
-            print(img.get(curX, curY), linesRGB)
+            curX += 1
+            gotColor = img.get(curX, curY)
         xRight = curX - 1
-        curX = curPixel[0]
-        while img.get(curX, curY) != linesRGB:
+
+        curX = gotDot[0] - 1
+        gotColor = img.get(curX, curY)
+        while gotColor != linesRGB and gotColor != seedRGB:
             img.put(seedColor, (curX, curY))
-            curX -= stepX
+            curX -= 1
+            gotColor = img.get(curX, curY)
         xLeft = curX + 1
+
+        curX = xLeft
+        curY += 1
+
+        while curX <= xRight:
+            flag = False
+            gotColor = img.get(curX, curY)
+            while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
+                flag = True
+                curX += 1
+                gotColor = img.get(curX, curY)
+
+            if flag:
+                stack.append([curX - 1, curY])
+            gotColor = img.get(curX, curY)
+            while (gotColor == linesRGB or gotColor == seedRGB) and curX <= xRight:
+                curX += 1
+                gotColor = img.get(curX, curY)
 
 
 def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
