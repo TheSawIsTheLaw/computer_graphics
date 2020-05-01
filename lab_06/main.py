@@ -278,7 +278,7 @@ def setExtrems(pointsArray):
     extrems.pop()
 
 
-def seedFill(img, canvasWindow, xSeed, ySeed):
+def seedFill(img, xSeed, ySeed):
     stack = list()
     stack.append([xSeed, ySeed])
 
@@ -354,7 +354,7 @@ def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
     global img
 
     if delayGot[1] == "ы":
-        seedFill(img, canvasWindow, xStart, yStart)
+        seedFill(img, xStart, yStart)
     else:
         print("Или с делея?")
 
