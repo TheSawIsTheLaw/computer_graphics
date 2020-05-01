@@ -282,8 +282,11 @@ def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
         xStart = int(xStart)
         yStart = int(yStart)
 
-    print(delay)
-    print(xStart, yStart)
+    delayGot = comboDelay.get()
+    if delayGot[1] == "ы":
+        print("Тебе с делея?")
+    else:
+        print("Или с делея?")
 
 def timeResearch():
     print("And i know you flocking feeling me now")
