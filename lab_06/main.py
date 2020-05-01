@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
 
+from time import sleep, time
+
 from numpy import sign
 
 fontSettingLabels = ("Consolas", 20)
@@ -317,9 +319,14 @@ def seedFill(img, xSeed, ySeed):
             if flag:
                 stack.append([curX - 1, curY])
             gotColor = img.get(curX, curY)
-            while (gotColor == linesRGB or gotColor == seedRGB) and curX <= xRight:
+
+            xStart = curX
+            while (gotColor == linesRGB or gotColor == seedRGB) and curX < xRight:
                 curX += 1
                 gotColor = img.get(curX, curY)
+
+            if curX == xStart:
+                curX += 1
 
         curX = xLeft
         curY -= 2
@@ -335,9 +342,94 @@ def seedFill(img, xSeed, ySeed):
             if flag:
                 stack.append([curX - 1, curY])
             gotColor = img.get(curX, curY)
+
+            xStart = curX
             while (gotColor == linesRGB or gotColor == seedRGB) and curX <= xRight:
                 curX += 1
                 gotColor = img.get(curX, curY)
+
+            if curX == xStart:
+                xStart += 1
+
+
+def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
+    stack = list()
+    stack.append([xSeed, ySeed])
+
+    while len(stack):
+        gotDot = stack.pop()
+
+        curX = gotDot[0]
+        curY = gotDot[1]
+
+        gotColor = img.get(curX, curY)
+        while gotColor != linesRGB and gotColor != seedRGB:
+            img.put(seedColor, (curX, curY))
+            curX -= 1
+            gotColor = img.get(curX, curY)
+        xLeft = curX + 1
+
+        curX = gotDot[0] + 1
+        gotColor = img.get(curX, curY)
+        while gotColor != linesRGB and gotColor != seedRGB:
+            img.put(seedColor, (curX, curY))
+            curX += 1
+            gotColor = img.get(curX, curY)
+        xRight = curX - 1
+        canvasWindow.update()
+        sleep(0.03)
+
+        curX = xLeft
+        curY += 1
+
+        while curX <= xRight:
+            flag = False
+            gotColor = img.get(curX, curY)
+            while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
+                flag = True
+                curX += 1
+                gotColor = img.get(curX, curY)
+
+            if flag:
+                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                    stack.append([curX, curY])
+                else:
+                    stack.append([curX - 1, curY])
+                flag = False
+
+            xStart = curX
+            while (gotColor == linesRGB or gotColor == seedRGB) and curX < xRight:
+                curX += 1
+                gotColor = img.get(curX, curY)
+
+            if curX == xStart:
+                curX += 1
+
+        curX = xLeft
+        curY -= 2
+
+        while curX <= xRight:
+            flag = False
+            gotColor = img.get(curX, curY)
+            while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
+                flag = True
+                curX += 1
+                gotColor = img.get(curX, curY)
+
+            if flag:
+                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                    stack.append([curX, curY])
+                else:
+                    stack.append([curX - 1, curY])
+                flag = False
+
+            xStart = curX
+            while (gotColor == linesRGB or gotColor == seedRGB) and curX < xRight:
+                curX += 1
+                gotColor = img.get(curX, curY)
+
+            if curX == xStart:
+                curX += 1
 
 
 def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
@@ -356,7 +448,7 @@ def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
     if delayGot[1] == "ы":
         seedFill(img, xStart, yStart)
     else:
-        print("Или с делея?")
+        seedFillDelayed(img, canvasWindow, xStart, yStart)
 
 def timeResearch():
     print("And i know you flocking feeling me now")
@@ -373,6 +465,8 @@ def makeMainWindow():
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     setImageToCanvas(canvasWindow)
+
+    canvasWindow.bind('<B1-Motion>', click)
 
     canvasWindow.bind('<1>', click)
 
