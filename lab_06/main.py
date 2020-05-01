@@ -19,6 +19,8 @@ seedColor = "#a0a0a0"
 
 pointsArray = [[]]
 
+dotsArray = []
+
 
 def digitBresenham(image, xStart, xEnd, yStart, yEnd):
     if xStart == xEnd and yStart == yEnd:
@@ -135,27 +137,42 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
 
 def setColorButtons(rootWindow, canvasWindow):
-    canvasLinesColor = Canvas(rootWindow, bg = "black", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasLinesColor = Canvas(rootWindow, bg = "black",
+                              borderwidth = 5, relief = RIDGE,
+                              width = 60, height = 50)
     canvasLinesColor.place(x = 250, y = 182)
-    Button(rootWindow, text = "Цвет границ: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
+    Button(rootWindow, text = "Цвет границ: ",
+           font = fontSettingLower, height = 2, bg = "#FF9C00",
            command = lambda: chooseLinesColor(rootWindow, 250, 182)).place(x = 40, y = 180)
 
-    canvasBackgroundColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasBackgroundColor = Canvas(rootWindow, bg = "white",
+                                   borderwidth = 5, relief = RIDGE,
+                                   width = 60, height = 50)
     canvasBackgroundColor.place(x = 660, y = 182)
-    Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseBackgroundColor(rootWindow, 660, 182, canvasWindow)).place(x = 500, y = 180)
+    Button(rootWindow, text = "Цвет фона: ",
+           font = fontSettingLower,
+           height = 2, bg = "#FF9C00",
+           command = lambda: chooseBackgroundColor(rootWindow, 660,
+                                                   182, canvasWindow)).place(x = 500, y = 180)
 
-    canvasSeedColor = Canvas(rootWindow, bg = seedColor, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
+    canvasSeedColor = Canvas(rootWindow, bg = seedColor,
+                             borderwidth = 5, relief = RIDGE,
+                             width = 440, height = 50)
     canvasSeedColor.place(x = 280, y = 262)
-    Button(rootWindow, text = "Цвет заполнения: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
+    Button(rootWindow, text = "Цвет заполнения: ",
+           font = fontSettingLower, height = 2, bg = "#FF9C00",
            command = lambda: chooseSeedColor(rootWindow, 280, 262)).place(x = 40, y = 260)
 
 
 def setComboDelay(rootWindow):
     Label(rootWindow, text = "Задержка рисования:", font = fontSettingLower).place(x = 5, y = 140)
-    comboDelay = ttk.Combobox(rootWindow, width = 80, textvariable = delay, state = 'readonly', values =
-    ('Выключена',
-     'Включена'))
+    comboDelay = ttk.Combobox(rootWindow,
+                              width = 80,
+                              textvariable = delay,
+                              state = 'readonly',
+                              values =
+                                ('Выключена',
+                                 'Включена'))
 
     comboDelay.place(x = 250, y = 145)
     comboDelay.current(0)
@@ -178,6 +195,7 @@ def click(event):
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                        pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+
 
 def addPoint(xEntry, yEntry):
     xCoord = int(xEntry.get())
@@ -254,6 +272,18 @@ def setExtrems(pointsArray):
         extrems.append(list())
     extrems.pop()
 
+def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
+    xStart = xStartEntry.get()
+    yStart = yStartEntry.get()
+    if xStart == "" or yStart == "":
+        xStart = pointsArray[-1][0][0]
+        yStart = pointsArray[-1][0][1]
+    else:
+        xStart = int(xStart)
+        yStart = int(yStart)
+
+    print(delay)
+    print(xStart, yStart)
 
 def timeResearch():
     print("And i know you flocking feeling me now")
@@ -284,7 +314,7 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print("lox"))
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: makeSeedFill(canvasWindow, comboDelay, xEntrySeed, yEntrySeed))
     makeAlgButton.place(x = 5, y = 350)
 
     makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = timeResearch)
