@@ -292,18 +292,20 @@ def seedFill(img, xSeed, ySeed):
 
         gotColor = img.get(curX, curY)
         while gotColor != linesRGB and gotColor != seedRGB:
-            img.put(seedColor, (curX, curY))
+            #img.put(seedColor, (curX, curY))    НА ПРОДЕ УБЕРИ КОММЕНТАРИИ, ВЕРНИ ИСХОД
             curX -= 1
             gotColor = img.get(curX, curY)
         xLeft = curX + 1
+        img.put(seedColor, (xLeft, curY, gotDot[0] + 1, curY + 1))
 
         curX = gotDot[0] + 1
         gotColor = img.get(curX, curY)
         while gotColor != linesRGB and gotColor != seedRGB:
-            img.put(seedColor, (curX, curY))
+            #img.put(seedColor, (curX, curY))
             curX += 1
             gotColor = img.get(curX, curY)
         xRight = curX - 1
+        img.put(seedColor, (gotDot[0], curY, xRight + 1, curY + 1))
 
         curX = xLeft
         curY += 1
