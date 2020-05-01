@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
 from time import sleep, time
+from colormap import hex2rgb
 
 from numpy import sign
 
@@ -13,9 +14,11 @@ img = 0
 
 curFig = 0
 
-curColorLines = "#000000"
-curColorBackground = "#ffffff"
-seedColor = "#a0a0a0"
+curColorLines = "#ffffff"
+curColorBackground = "#000000"
+seedColor = "#a04020"
+
+linesRGB = (255, 255, 255)
 
 pointsArray = [[]]
 
@@ -95,7 +98,10 @@ def chooseBackgroundColor(rootWindow, row, column, canvasWindow):
 
 def chooseLinesColor(rootWindow, row, column):
     global curColorLines
-    curColorLines = colorchooser.askcolor()[1]
+    global linesRGB
+    got = colorchooser.askcolor()
+    linesRGB = (int(got[0][0]), int(got[0][1]), int(got[0][2]))
+    curColorLines = got[1]
     canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasLinesColor.place(x = row, y = column)
 
@@ -137,7 +143,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
 
 def setColorButtons(rootWindow, canvasWindow):
-    canvasLinesColor = Canvas(rootWindow, bg = "black",
+    canvasLinesColor = Canvas(rootWindow, bg = curColorLines,
                               borderwidth = 5, relief = RIDGE,
                               width = 60, height = 50)
     canvasLinesColor.place(x = 250, y = 182)
@@ -145,7 +151,7 @@ def setColorButtons(rootWindow, canvasWindow):
            font = fontSettingLower, height = 2, bg = "#FF9C00",
            command = lambda: chooseLinesColor(rootWindow, 250, 182)).place(x = 40, y = 180)
 
-    canvasBackgroundColor = Canvas(rootWindow, bg = "white",
+    canvasBackgroundColor = Canvas(rootWindow, bg = curColorBackground,
                                    borderwidth = 5, relief = RIDGE,
                                    width = 60, height = 50)
     canvasBackgroundColor.place(x = 660, y = 182)
@@ -273,13 +279,25 @@ def setExtrems(pointsArray):
     extrems.pop()
 
 
-def seedFill(canvasWindow, xSeed, ySeed):
+def seedFill(img, canvasWindow, xSeed, ySeed):
     stack = []
     stack.append([xSeed, ySeed])
 
     while len(stack):
         curPixel = stack.pop()
-        
+        stepX = 1
+        curX = curPixel[0]
+        curY = curPixel[1]
+        while img.get(curX, curY) != linesRGB:
+            img.put(seedColor, (curX, curY))
+            curX += stepX
+            print(img.get(curX, curY), linesRGB)
+        xRight = curX - 1
+        curX = curPixel[0]
+        while img.get(curX, curY) != linesRGB:
+            img.put(seedColor, (curX, curY))
+            curX -= stepX
+        xLeft = curX + 1
 
 
 def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
@@ -293,8 +311,10 @@ def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
         yStart = int(yStart)
 
     delayGot = comboDelay.get()
+    global img
+
     if delayGot[1] == "ы":
-        seedFill(canvasWindow, xStart, yStart)
+        seedFill(img, canvasWindow, xStart, yStart)
     else:
         print("Или с делея?")
 
@@ -310,7 +330,7 @@ def makeMainWindow():
     rootWindow.title("Рабораторная работа 6, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.geometry("1850x1080+60+0")
 
-    canvasWindow = Canvas(rootWindow, bg = "white", width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
+    canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     setImageToCanvas(canvasWindow)
 
