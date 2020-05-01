@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
 from time import sleep, time
-from colormap import hex2rgb
 
 from numpy import sign
 
