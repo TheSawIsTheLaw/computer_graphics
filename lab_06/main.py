@@ -11,9 +11,11 @@ fontSettingLower = ("Consolas", 16)
 delay = 0
 img = 0
 
+curFig = 0
+
 curColorLines = "#000000"
 curColorBackground = "#ffffff"
-seedColor = "#000001"
+seedColor = "#a0a0a0"
 
 pointsArray = [[]]
 
@@ -99,13 +101,14 @@ def chooseLinesColor(rootWindow, row, column):
 def chooseSeedColor(rootWindow, row, column):
     global seedColor
     seedColor = colorchooser.askcolor()[1]
-    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasLinesColor = Canvas(rootWindow, bg = seedColor, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
     canvasLinesColor.place(x = row, y = column)
 
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global pointsArray
+    global pointsArray, curFig
+    curFig = 0
     pointsArray = [[]]
     global img
     img = PhotoImage(width = 1090, height = 1016)
@@ -142,10 +145,10 @@ def setColorButtons(rootWindow, canvasWindow):
     Button(rootWindow, text = "Цвет фона: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
            command = lambda: chooseBackgroundColor(rootWindow, 660, 182, canvasWindow)).place(x = 500, y = 180)
 
-    canvasSeedColor = Canvas(rootWindow, bg = "white", borderwidth = 5, relief = RIDGE, width = 60, height = 50)
-    canvasSeedColor.place(x = 660, y = 182)
+    canvasSeedColor = Canvas(rootWindow, bg = seedColor, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
+    canvasSeedColor.place(x = 280, y = 262)
     Button(rootWindow, text = "Цвет заполнения: ", font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseSeedColor(rootWindow, 660, 182)).place(x = 300, y = 240)
+           command = lambda: chooseSeedColor(rootWindow, 280, 262)).place(x = 40, y = 260)
 
 
 def setComboDelay(rootWindow):
@@ -168,16 +171,13 @@ def setImageToCanvas(canvasWindow):
 def click(event):
     global pointsArray
     global img
-    pointsArray.append([event.x, event.y, curColorLines])
-    if len(pointsArray) >= 2:
-        edgesArray.append([[pointsArray[len(pointsArray[curFig]) - 2][0],
-                                    pointsArray[len(pointsArray) - 2][1]],
-                                   [pointsArray[len(pointsArray) - 1][0],
-                                    pointsArray[len(pointsArray) - 1][1]]])
-        digitBresenham(img, pointsArray[len(pointsArray) - 2][0],
-                       pointsArray[len(pointsArray) - 1][0],
-                       pointsArray[len(pointsArray) - 2][1],
-                       pointsArray[len(pointsArray) - 1][1])
+    global curFig
+    pointsArray[curFig].append([event.x, event.y, curColorLines])
+    if len(pointsArray[curFig]) >= 2:
+        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
 
 def addPoint(xEntry, yEntry):
     xCoord = int(xEntry.get())
@@ -185,34 +185,25 @@ def addPoint(xEntry, yEntry):
 
     global pointsArray
     global img
-    pointsArray.append([xCoord, yCoord, curColorLines])
-    if len(pointsArray) >= 2:
-        edgesArray.append([[pointsArray[len(pointsArray[curFig]) - 2][0],
-                            pointsArray[len(pointsArray) - 2][1]],
-                           [pointsArray[len(pointsArray) - 1][0],
-                            pointsArray[len(pointsArray) - 1][1]]])
-        digitBresenham(img, pointsArray[len(pointsArray) - 2][0],
-                       pointsArray[len(pointsArray) - 1][0],
-                       pointsArray[len(pointsArray) - 2][1],
-                       pointsArray[len(pointsArray) - 1][1])
+    global curFig
+    pointsArray[curFig].append([xCoord, yCoord, curColorLines])
+    if len(pointsArray[curFig]) >= 2:
+        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
+                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
 
 
 def endClick(event):
+    global curFig
     global pointsArray
-    global edgesArray
     digitBresenham(img, pointsArray[curFig][0][0],
                    pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                    pointsArray[curFig][0][1],
                    pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-    edgesArray[curFig].append([[pointsArray[curFig][0][0],
-                        pointsArray[curFig][0][1]],
-                      [pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1]]])
     curFig += 1
 
-    edgesArray.append(list())
     pointsArray.append(list())
-    print(pointsArray, edgesArray)
 
 
 def cancelClick(event):
@@ -229,96 +220,14 @@ def cancelClick(event):
                        pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
         pointsArray[curFig].pop()
-        edgesArray[curFig].pop()
-        print(pointsArray, edgesArray)
     else:
-        edgesArray.pop()
         pointsArray.pop()
         curFig -= 1
         digitBresenham(img, pointsArray[curFig][0][0],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
                        pointsArray[curFig][0][1],
                        pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-        print(pointsArray, edgesArray)
     curColorLines = tempCol
-
-
-def getSides(pointsArray):
-    right = 0
-    left = 1090
-    bottom = 0
-    top = 1060
-    for figure in pointsArray:
-        for i in figure:
-            if i[0] > right:
-                right = i[0]
-            if i[0] < left:
-                left = i[0]
-            if i[1] > bottom:
-                bottom = i[1]
-            if i[1] < top:
-                top = i[1]
-    return top, right, bottom, left
-
-
-def leadRoundEdge(img, edge):
-    if edge[0][1] == edge[1][1]:
-        return
-
-    if edge[0][1] > edge[1][1]:
-        edge[1], edge[0] = edge[0], edge[1]
-    stepX = (edge[1][0] - edge[0][0])/(edge[1][1] - edge[0][1])
-
-    curX = edge[0][0]
-    curY = edge[0][1]
-    while curY < edge[1][1]:
-        if img.get(int(curX) + 1, curY) != noteColorCheck:
-            img.put(noteColor, (int(curX) + 1, curY))
-        else:
-            img.put(noteColor, (int(curX), curY))
-        curX += stepX
-        curY += 1
-
-
-def leadRoundFigure(img, edgesArray):
-    for figure in range(len(edgesArray)):
-        arrEnd = len(edgesArray[figure]) - 1
-        for i in range(arrEnd):
-            leadRoundEdge(img, edgesArray[figure][i])
-        leadRoundEdge(img, edgesArray[figure][arrEnd])
-
-
-def rasterScanWithFlag(img, edgesArray, sides):
-    leadRoundFigure(img, edgesArray)
-    for curY in range(sides[0], sides[2] + 1):
-        curColor = curColorBackground
-        invColor = curColorLines
-        curPointScanString = sides[3]
-        for curX in range(sides[3], sides[1] + 3):
-            if img.get(curX, curY) == noteColorCheck:
-                img.put(curColor, (curPointScanString, curY, curX, curY + 1))
-                curColor, invColor = invColor, curColor
-                curPointScanString = curX
-        img.put(curColor, (curPointScanString, curY, curX, curY + 1))
-
-
-def rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides):
-    leadRoundFigure(img, edgesArray)
-    canvasWindow.update()
-    sleep(3)
-
-    for curY in range(sides[0], sides[2] + 1):
-        curColor = curColorBackground
-        invColor = curColorLines
-        curPointScanString = sides[3]
-        for curX in range(sides[3], sides[1] + 3):
-            if img.get(curX, curY) == noteColorCheck:
-                img.put(curColor, (curPointScanString, curY, curX, curY + 1))
-                curColor, invColor = invColor, curColor
-                curPointScanString = curX
-        canvasWindow.update()
-        sleep(0.1)
-        img.put(curColor, (curPointScanString, curY, curX, curY + 1))
 
 
 def setExtrems(pointsArray):
@@ -346,31 +255,8 @@ def setExtrems(pointsArray):
     extrems.pop()
 
 
-def MakeRasterScan(comboDelay, canvasWindow):
-    pointsArray.pop()
-    delay = comboDelay.get()
-    sides = getSides(pointsArray)
-    global edgesArray
-    edgesArray.pop()
-    setExtrems(pointsArray)
-    if delay[1] == 'ы':
-        rasterScanWithFlag(img, edgesArray, sides)
-    else:
-        rasterScanWithFlagDelay(canvasWindow, img, edgesArray, sides)
-
-
 def timeResearch():
-    pointsArray.pop()
-    edgesArray.pop()
-    sides = getSides(pointsArray)
-    setExtrems(pointsArray)
-    previous = time()
-    rasterScanWithFlag(img, edgesArray, sides)
-    after = time()
-    researchWindow = Tk()
-    researchWindow.title("Временные затраты")
-    Label(researchWindow, text = "Временные затраты составили " + str(after - previous) + " секунд", font = fontSettingLower).grid()
-    researchWindow.mainloop()
+    print("And i know you flocking feeling me now")
 
 
 def makeMainWindow():
@@ -398,8 +284,8 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: MakeRasterScan(comboDelay, canvasWindow))
-    makeAlgButton.place(x = 5, y = 300)
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print("lox"))
+    makeAlgButton.place(x = 5, y = 350)
 
     makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = timeResearch)
     makeTimeResearch.place(x = 5, y = 980)
@@ -410,17 +296,27 @@ def makeMainWindow():
                  "Для проверки случаев горизонтальных и вертикальных рёбер\nпредусмотрены поля ввода ниже\n", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
-    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower).place(x = 10, y = 698)
-    xEntry = Entry(rootWindow, font = fontSettingLower, width = 4)
-    xEntry.place(x = 239, y = 700)
+    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 700)
+    xEntry = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntry.place(x = 259, y = 700)
 
-    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower).place(x = 420, y = 698)
-    yEntry = Entry(rootWindow, font = fontSettingLower, width = 4)
-    yEntry.place(x = 649, y = 700)
+    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 700)
+    yEntry = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntry.place(x = 669, y = 700)
 
     Button(rootWindow, text = "Добавить точку", command = lambda: addPoint(xEntry, yEntry), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
 
-    Label(text = "Алгоритм растрового заполнения \nсплошных областей со списком \nрёбер и флагом", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(rootWindow, text = "Координаты затравочной точки (если оставить поля пустыми,\nто ею будет являться последняя поставленная мышью точка)", font = fontSettingLower).place(x = 10, y = 820)
+
+    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 900)
+    xEntrySeed = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntrySeed.place(x = 260, y = 900)
+
+    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 900)
+    yEntrySeed = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntrySeed.place(x = 669, y = 900)
+
+    Label(text = "Алгоритм построчного \nзатравочкного заполнения", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
 
     makeCascadeMenu(rootWindow, canvasWindow)
