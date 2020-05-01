@@ -456,8 +456,30 @@ def makeSeedFill(canvasWindow, comboDelay, xStartEntry, yStartEntry):
     else:
         seedFillDelayed(img, canvasWindow, xStart, yStart)
 
-def timeResearch():
-    print("And i know you flocking feeling me now")
+
+def makeTimeResearchWindow(time):
+    resWindow = Tk()
+    resWindow.title("Временные замеры")
+
+    Label(resWindow, font = fontSettingLower, text = "Операция заполнения заняла " + str(time) + " секунд").grid()
+
+    resWindow.mainloop()
+
+
+def timeResearch(xStartEntry, yStartEntry):
+    xStart = xStartEntry.get()
+    yStart = yStartEntry.get()
+    if xStart == "" or yStart == "":
+        xStart = pointsArray[-1][0][0]
+        yStart = pointsArray[-1][0][1]
+    else:
+        xStart = int(xStart)
+        yStart = int(yStart)
+
+    before = time()
+    seedFill(img, xStart, yStart)
+    after = time()
+    makeTimeResearchWindow(after - before)
 
 
 def makeMainWindow():
@@ -490,7 +512,7 @@ def makeMainWindow():
                            font = fontSettingLower, bg = "#FF9C00", command = lambda: makeSeedFill(canvasWindow, comboDelay, xEntrySeed, yEntrySeed))
     makeAlgButton.place(x = 5, y = 350)
 
-    makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = timeResearch)
+    makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: timeResearch(xEntrySeed, yEntrySeed))
     makeTimeResearch.place(x = 5, y = 980)
 
     Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
