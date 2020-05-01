@@ -264,7 +264,7 @@ def makeMainWindow():
             Функция Создания главного окна
     """
     rootWindow = Tk()
-    rootWindow.title("Рабораторная работа 5, Якуба Дмитрий, ИУ7-43Б")
+    rootWindow.title("Рабораторная работа 6, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.geometry("1850x1080+60+0")
 
     canvasWindow = Canvas(rootWindow, bg = "white", width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
@@ -316,7 +316,7 @@ def makeMainWindow():
     yEntrySeed = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntrySeed.place(x = 669, y = 900)
 
-    Label(text = "Алгоритм построчного \nзатравочкного заполнения", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(text = "Алгоритм построчного \nзатравочного заполнения", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
 
     makeCascadeMenu(rootWindow, canvasWindow)
