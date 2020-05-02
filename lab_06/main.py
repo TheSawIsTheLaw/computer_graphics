@@ -319,7 +319,7 @@ def seedFill(img, xSeed, ySeed):
                 gotColor = img.get(curX, curY)
 
             if flag:
-                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                if curX == xRight and gotColor != linesRGB and gotColor != seedRGB:
                     stack.append([curX, curY])
                 else:
                     stack.append([curX - 1, curY])
@@ -345,7 +345,7 @@ def seedFill(img, xSeed, ySeed):
                 gotColor = img.get(curX, curY)
 
             if flag:
-                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                if curX == xRight and gotColor != linesRGB and gotColor != seedRGB:
                     stack.append([curX, curY])
                 else:
                     stack.append([curX - 1, curY])
@@ -399,7 +399,7 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
                 gotColor = img.get(curX, curY)
 
             if flag:
-                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                if curX == xRight and gotColor != linesRGB and gotColor != seedRGB:
                     stack.append([curX, curY])
                 else:
                     stack.append([curX - 1, curY])
@@ -425,7 +425,7 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
                 gotColor = img.get(curX, curY)
 
             if flag:
-                if curX == xRight and gotColor == linesRGB and gotColor == seedRGB:
+                if curX == xRight and gotColor != linesRGB and gotColor != seedRGB:
                     stack.append([curX, curY])
                 else:
                     stack.append([curX - 1, curY])
