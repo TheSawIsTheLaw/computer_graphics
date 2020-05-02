@@ -108,8 +108,10 @@ def chooseLinesColor(rootWindow, row, column):
 
 
 def chooseSeedColor(rootWindow, row, column):
-    global seedColor
-    seedColor = colorchooser.askcolor()[1]
+    global seedColor, seedRGB
+    got = colorchooser.askcolor()
+    seedRGB = (int(got[0][0]), int(got[0][1]), int(got[0][2]))
+    seedColor = got[1]
     canvasLinesColor = Canvas(rootWindow, bg = seedColor, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
     canvasLinesColor.place(x = row, y = column)
 
@@ -372,18 +374,21 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
 
         gotColor = img.get(curX, curY)
         while gotColor != linesRGB and gotColor != seedRGB:
-            img.put(seedColor, (curX, curY))
+            # img.put(seedColor, (curX, curY))    НА ПРОДЕ УБЕРИ КОММЕНТАРИИ, ВЕРНИ ИСХОД
             curX -= 1
             gotColor = img.get(curX, curY)
         xLeft = curX + 1
+        img.put(seedColor, (xLeft, curY, gotDot[0] + 1, curY + 1))
 
         curX = gotDot[0] + 1
         gotColor = img.get(curX, curY)
         while gotColor != linesRGB and gotColor != seedRGB:
-            img.put(seedColor, (curX, curY))
+            # img.put(seedColor, (curX, curY))
             curX += 1
             gotColor = img.get(curX, curY)
         xRight = curX - 1
+        img.put(seedColor, (gotDot[0], curY, xRight + 1, curY + 1))
+
         canvasWindow.update()
         sleep(0.03)
 
@@ -393,6 +398,7 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
         flag = False
         while curX <= xRight:
             gotColor = img.get(curX, curY)
+            print(gotColor, linesRGB, seedRGB)
             while gotColor != linesRGB and gotColor != seedRGB and curX <= xRight:
                 flag = True
                 curX += 1
