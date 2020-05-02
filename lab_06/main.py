@@ -390,7 +390,7 @@ def seedFillDelayed(img, canvasWindow, xSeed, ySeed):
         img.put(seedColor, (gotDot[0], curY, xRight + 1, curY + 1))
 
         canvasWindow.update()
-        sleep(0.03)
+        sleep(0.1)
 
         curX = xLeft
         curY += 1
