@@ -12,7 +12,7 @@ fontSettingLower = ("Consolas", 16)
 delay = 0
 img = 0
 
-curFig = 0
+curLine = 0
 
 curColorCutter = "#ffffff"
 curColorBackground = "#000000"
@@ -20,13 +20,14 @@ curColorLines = "#a04020"
 curColorCuted = "#f0a0ff"
 
 comboWhatToDraw = 0
+tempArr = []
 
 linesArray = []
 
 cutterArray = []
 
 
-def digitBresenham(image, xStart, xEnd, yStart, yEnd):
+def digitBresenham(image, xStart, yStart, xEnd, yEnd):
     if xStart == xEnd and yStart == yEnd:
         image.put(curColorLines, (xStart, yStart))
         return
@@ -122,8 +123,8 @@ def chooseLineColor(rootWindow, row, column):
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global linesArray, curFig
-    curFig = 0
+    global linesArray, curLine
+    curLine = 0
     linesArray = []
     global img
     img = PhotoImage(width = 1090, height = 1016)
@@ -207,65 +208,67 @@ def setImageToCanvas(canvasWindow):
 
 
 def click(event):
-    global pointsArray
-    global img
-    global curFig
-    pointsArray[curFig].append([event.x, event.y, curColorLines])
-    if len(pointsArray[curFig]) >= 2:
-        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+    global tempArr
+    tempArr.append([event.x, event.y, curColorLines])
+    if len(tempArr) == 2:
+        global curLine
+        global linesArray
+        global img
+        linesArray.append(tempArr)
+        print(linesArray[curLine][1][1])
+        tempArr = []
+        digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
+        curLine += 1
 
 
 def addPoint(xEntry, yEntry):
     xCoord = int(xEntry.get())
     yCoord = int(yEntry.get())
 
-    global pointsArray
+    global linesArray
     global img
-    global curFig
-    pointsArray[curFig].append([xCoord, yCoord, curColorLines])
-    if len(pointsArray[curFig]) >= 2:
-        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+    global curLine
+    linesArray[curLine].append([xCoord, yCoord, curColorLines])
+    if len(linesArray[curLine]) >= 2:
+        digitBresenham(img, linesArray[curLine][len(linesArray[curLine]) - 2][0],
+                       linesArray[curLine][len(linesArray[curLine]) - 1][0],
+                       linesArray[curLine][len(linesArray[curLine]) - 2][1],
+                       linesArray[curLine][len(linesArray[curLine]) - 1][1])
 
 
 def endClick(event):
-    global curFig
-    global pointsArray
-    digitBresenham(img, pointsArray[curFig][0][0],
-                   pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
-                   pointsArray[curFig][0][1],
-                   pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-    curFig += 1
+    global curLine
+    global linesArray
+    digitBresenham(img, linesArray[curLine][0][0],
+                   linesArray[curLine][len(linesArray[curLine]) - 1][0],
+                   linesArray[curLine][0][1],
+                   linesArray[curLine][len(linesArray[curLine]) - 1][1])
+    curLine += 1
 
-    pointsArray.append(list())
+    linesArray.append(list())
 
 
 def cancelClick(event):
-    global pointsArray, curFig
-    if len(pointsArray) == 0:
+    global linesArray, curLine
+    if len(linesArray) == 0:
         return
     global curColorLines
     global curColorBackground
     tempCol = curColorLines
     curColorLines = curColorBackground
-    if len(pointsArray[curFig]):
-        digitBresenham(img, pointsArray[curFig][len(pointsArray[curFig]) - 2][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 2][1],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
-        pointsArray[curFig].pop()
+    if len(linesArray[curLine]):
+        digitBresenham(img, linesArray[curLine][len(linesArray[curLine]) - 2][0],
+                       linesArray[curLine][len(linesArray[curLine]) - 1][0],
+                       linesArray[curLine][len(linesArray[curLine]) - 2][1],
+                       linesArray[curLine][len(linesArray[curLine]) - 1][1])
+        linesArray[curLine].pop()
     else:
-        pointsArray.pop()
-        curFig -= 1
-        digitBresenham(img, pointsArray[curFig][0][0],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][0],
-                       pointsArray[curFig][0][1],
-                       pointsArray[curFig][len(pointsArray[curFig]) - 1][1])
+        linesArray.pop()
+        curLine -= 1
+        digitBresenham(img, linesArray[curLine][0][0],
+                       linesArray[curLine][len(linesArray[curLine]) - 1][0],
+                       linesArray[curLine][0][1],
+                       linesArray[curLine][len(linesArray[curLine]) - 1][1])
     curColorLines = tempCol
 
 def makeMainWindow():
@@ -279,8 +282,6 @@ def makeMainWindow():
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     setImageToCanvas(canvasWindow)
-
-    canvasWindow.bind('<B1-Motion>', click)
 
     canvasWindow.bind('<1>', click)
 
