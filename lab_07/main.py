@@ -274,7 +274,7 @@ def makeMainWindow():
             Функция Создания главного окна
     """
     rootWindow = Tk()
-    rootWindow.title("Рабораторная работа 6, Якуба Дмитрий, ИУ7-43Б")
+    rootWindow.title("Лабораторная работа 7, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.geometry("1850x1080+60+0")
 
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
@@ -349,9 +349,9 @@ def makeMainWindow():
     yEntryEnd = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntryEnd.place(x = 669, y = 900)
 
-    addLine = Button(rootWindow, text = "Добавить заданный отрезок", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: addPoint(xEntryStart, yEntryStart,
+    addLine = Button(rootWindow, text = "Добавить заданный отрезок", width = 60, height = 3, font = fontSettingLower, bg = "#FF9C00", command = lambda: addPoint(xEntryStart, yEntryStart,
                                                                                                                                                      xEntryEnd, yEntryEnd))
-    addLine.place(x = 5, y = 950)
+    addLine.place(x = 5, y = 945)
 
     Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
