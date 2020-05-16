@@ -351,7 +351,7 @@ def makeMainWindow():
 
     addLine = Button(rootWindow, text = "Добавить заданный отрезок", width = 60, height = 3, font = fontSettingLower, bg = "#FF9C00", command = lambda: addPoint(xEntryStart, yEntryStart,
                                                                                                                                                      xEntryEnd, yEntryEnd))
-    addLine.place(x = 5, y = 945)
+    addLine.place(x = 5, y = 946)
 
     Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
