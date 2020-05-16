@@ -95,13 +95,11 @@ def chooseBackgroundColor(rootWindow, row, column, canvasWindow):
     canvasWindow.config(bg = curColorBackground)
 
 
-def chooseCutedColor(rootWindow, row, column, canvasWindow):
+def chooseCutedColor(rootWindow, row, column):
     global curColorCuted
     curColorCuted = colorchooser.askcolor()[1]
     canvasBackgroundColor = Canvas(rootWindow, bg = curColorCuted, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasBackgroundColor.place(x = row, y = column)
-    canvasWindow.config(bg = curColorCuted)
-
 
 def chooseCutterColor(rootWindow, row, column):
     global curColorCutter
@@ -182,7 +180,7 @@ def setColorButtons(rootWindow, canvasWindow):
     canvasCuted.place(x = 660, y = 262)
     Button(rootWindow, text = "Цвет отсечения: ",
            font = fontSettingLower, height = 2, bg = "#FF9C00", width = 17,
-           command = lambda: chooseCutedColor(rootWindow, 280, 262)).place(x = 435, y = 260)
+           command = lambda: chooseCutedColor(rootWindow, 660, 262)).place(x = 435, y = 260)
 
 
 def setComboWhatToDraw(rootWindow):
@@ -290,11 +288,11 @@ def makeMainWindow():
 
     canvasWindow.place(x = 750, y = 0)
 
-    comboDelay = setComboWhatToDraw(rootWindow)
+    comboWhatToDraw = setComboWhatToDraw(rootWindow)
 
     setColorButtons(rootWindow, canvasWindow)
 
-    makeAlgButton = Button(rootWindow, text = "Закрасить изображённую фигуру", width = 60,
+    makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
                            font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
     makeAlgButton.place(x = 5, y = 350)
 
@@ -303,9 +301,13 @@ def makeMainWindow():
 
     Label(text = "Ввод вершин отсекателя и отрезков \nпроизводится с помощью мыши\n"
                  "\nТакже предусмотрены поля ввода этих данных ниже\n"
-                 "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши\n\n"
                  , borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
+
+    Label(rootWindow, text = "Координаты левого верхнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
+
+    Label(rootWindow, text = "Координаты правого нижнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
+          fg = "white").place(x = 5, y = 650)
 
     Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 700)
     xEntry = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
@@ -315,7 +317,7 @@ def makeMainWindow():
     yEntry = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntry.place(x = 669, y = 700)
 
-    Button(rootWindow, text = "Добавить точку", command = lambda: addPoint(xEntry, yEntry), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
+    Button(rootWindow, text = "Построить отсекатель", command = lambda: print(), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
 
     Label(rootWindow, text = "Координаты затравочной точки (если оставить поля пустыми,\nто ею будет являться последняя поставленная мышью точка)", font = fontSettingLower).place(x = 10, y = 820)
 
