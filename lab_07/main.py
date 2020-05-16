@@ -19,9 +19,11 @@ curColorBackground = "#000000"
 curColorLines = "#a04020"
 curColorCuted = "#f0a0ff"
 
-pointsArray = [[]]
+comboWhatToDraw = 0
 
-dotsArray = []
+linesArray = []
+
+cutterArray = []
 
 
 def digitBresenham(image, xStart, xEnd, yStart, yEnd):
@@ -72,7 +74,7 @@ def makeReference():
     referenceWindow = Tk()
     referenceWindow.title("Справка")
     referenceLabel = Label(referenceWindow, text =
-    "Лабораторная работа 6, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = fontSettingLabels)
+    "Лабораторная работа 7, Якуба Дмитрий, ИУ7-43Б, 2020 год.", font = fontSettingLabels)
     referenceLabel.pack()
     referenceWindow.mainloop()
 
@@ -82,7 +84,7 @@ def makeJobWindow():
     jobWindow.title("Формулировка задания")
 
     Label(jobWindow, font = fontSettingLabels,
-          text = "Работа: реализация и исследование алгоритма построчного затравочного заполнения спрошных областей").grid()
+          text = "Работа: что-то очень инетерсное.").grid()
 
     jobWindow.mainloop()
 
@@ -110,19 +112,19 @@ def chooseCutterColor(rootWindow, row, column):
 
 
 def chooseLineColor(rootWindow, row, column):
-    global lineColor, seedRGB
+    global curColorLines, seedRGB
     got = colorchooser.askcolor()
     seedRGB = (int(got[0][0]), int(got[0][1]), int(got[0][2]))
-    seedColor = got[1]
-    canvasLinesColor = Canvas(rootWindow, bg = seedColor, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
+    lineColor = got[1]
+    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
     canvasLinesColor.place(x = row, y = column)
 
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global pointsArray, curFig
+    global linesArray, curFig
     curFig = 0
-    pointsArray = [[]]
+    linesArray = []
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
@@ -185,17 +187,17 @@ def setColorButtons(rootWindow, canvasWindow):
 
 def setComboWhatToDraw(rootWindow):
     Label(rootWindow, text = "Режим ввода:", font = fontSettingLower).place(x = 5, y = 140)
-    comboDelay = ttk.Combobox(rootWindow,
+    global comboWhatToDraw
+    comboWhatToDraw = ttk.Combobox(rootWindow,
                               width = 95,
                               textvariable = delay,
                               state = 'readonly',
                               values =
                                 ('Отрезки',
-                                 'Отсекать'))
+                                 'Отсекатель'))
 
-    comboDelay.place(x = 155, y = 145)
-    comboDelay.current(0)
-    return comboDelay
+    comboWhatToDraw.place(x = 155, y = 145)
+    comboWhatToDraw.current(0)
 
 
 def setImageToCanvas(canvasWindow):
@@ -288,7 +290,7 @@ def makeMainWindow():
 
     canvasWindow.place(x = 750, y = 0)
 
-    comboWhatToDraw = setComboWhatToDraw(rootWindow)
+    setComboWhatToDraw(rootWindow)
 
     setColorButtons(rootWindow, canvasWindow)
 
