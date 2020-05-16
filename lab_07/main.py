@@ -17,6 +17,7 @@ curFig = 0
 curColorCutter = "#ffffff"
 curColorBackground = "#000000"
 curColorLines = "#a04020"
+curColorCuted = "#f0a0ff"
 
 pointsArray = [[]]
 
@@ -94,6 +95,14 @@ def chooseBackgroundColor(rootWindow, row, column, canvasWindow):
     canvasWindow.config(bg = curColorBackground)
 
 
+def chooseCutedColor(rootWindow, row, column, canvasWindow):
+    global curColorCuted
+    curColorCuted = colorchooser.askcolor()[1]
+    canvasBackgroundColor = Canvas(rootWindow, bg = curColorCuted, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasBackgroundColor.place(x = row, y = column)
+    canvasWindow.config(bg = curColorCuted)
+
+
 def chooseCutterColor(rootWindow, row, column):
     global curColorCutter
     got = colorchooser.askcolor()
@@ -155,9 +164,9 @@ def setColorButtons(rootWindow, canvasWindow):
     canvasBackgroundColor.place(x = 660, y = 182)
     Button(rootWindow, text = "Цвет фона: ",
            font = fontSettingLower,
-           height = 2, bg = "#FF9C00",
+           height = 2, bg = "#FF9C00", width = 17,
            command = lambda: chooseBackgroundColor(rootWindow, 660,
-                                                   182, canvasWindow)).place(x = 500, y = 180)
+                                                   182, canvasWindow)).place(x = 435, y = 180)
 
     canvasLinesColor = Canvas(rootWindow, bg = curColorLines,
                              borderwidth = 5, relief = RIDGE,
@@ -166,6 +175,14 @@ def setColorButtons(rootWindow, canvasWindow):
     Button(rootWindow, text = "Цвет отрезков: ",
            font = fontSettingLower, height = 2, bg = "#FF9C00", width = 17,
            command = lambda: chooseLineColor(rootWindow, 280, 262)).place(x = 40, y = 260)
+
+    canvasCuted = Canvas(rootWindow, bg = curColorCuted,
+                              borderwidth = 5, relief = RIDGE,
+                              width = 60, height = 50)
+    canvasCuted.place(x = 660, y = 262)
+    Button(rootWindow, text = "Цвет отсечения: ",
+           font = fontSettingLower, height = 2, bg = "#FF9C00", width = 17,
+           command = lambda: chooseCutedColor(rootWindow, 280, 262)).place(x = 435, y = 260)
 
 
 def setComboWhatToDraw(rootWindow):
@@ -284,10 +301,10 @@ def makeMainWindow():
     makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: timeResearch(xEntrySeed, yEntrySeed))
     makeTimeResearch.place(x = 5, y = 980)
 
-    Label(text = "Ввод вершин многоугольника производится с помощью мыши\n"
-                 "\nЧтобы завершить рисование - \nнажмите правую кнопку мыши и фигура замкнётся.\n"
+    Label(text = "Ввод вершин отсекателя и отрезков \nпроизводится с помощью мыши\n"
+                 "\nТакже предусмотрены поля ввода этих данных ниже\n"
                  "\nЧтобы отменить последнее действие -\n нажмите среднюю кнопку мыши\n\n"
-                 "Для проверки случаев горизонтальных и вертикальных рёбер\nпредусмотрены поля ввода ниже\n", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+                 , borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
     Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 700)
@@ -310,7 +327,7 @@ def makeMainWindow():
     yEntrySeed = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntrySeed.place(x = 669, y = 900)
 
-    Label(text = "Алгоритм построчного \nзатравочного заполнения", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
 
     makeCascadeMenu(rootWindow, canvasWindow)
