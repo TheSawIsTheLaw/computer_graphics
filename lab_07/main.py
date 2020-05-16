@@ -208,17 +208,38 @@ def setImageToCanvas(canvasWindow):
 
 
 def click(event):
-    global tempArr
-    tempArr.append([event.x, event.y, curColorLines])
-    if len(tempArr) == 2:
-        global curLine
-        global linesArray
-        global img
-        linesArray.append(tempArr)
-        print(linesArray[curLine][1][1])
-        tempArr = []
-        digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
-        curLine += 1
+    global cutterArray
+    global curColorLines
+    global curColorCutter
+    global curLine
+    global linesArray
+    global img
+    got = comboWhatToDraw.get()
+    if got[2] == "р":
+        global tempArr
+        tempArr.append([event.x, event.y, curColorLines])
+        if len(tempArr) == 2:
+
+            linesArray.append(tempArr)
+            print(linesArray[curLine][1][1])
+            tempArr = []
+            digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
+            curLine += 1
+    else:
+
+        temp = curColorLines
+        if len(cutterArray) == 0:
+            cutterArray.append([event.x, event.y, curColorCutter])
+        else:
+            cutterArray.append([event.x, cutterArray[0][1], curColorCutter])
+            cutterArray.append([event.x, event.y, curColorCutter])
+            cutterArray.append([cutterArray[0][0], event.y, curColorCutter])
+            curColorLines = curColorCutter
+            digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[1][0], cutterArray[1][1])
+            digitBresenham(img, cutterArray[1][0], cutterArray[1][1], cutterArray[2][0], cutterArray[2][1])
+            digitBresenham(img, cutterArray[2][0], cutterArray[2][1], cutterArray[3][0], cutterArray[3][1])
+            digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[3][0], cutterArray[3][1])
+            curColorLines = temp
 
 
 def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
