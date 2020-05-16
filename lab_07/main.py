@@ -296,8 +296,8 @@ def makeMainWindow():
                            font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
     makeAlgButton.place(x = 5, y = 350)
 
-    makeTimeResearch = Button(rootWindow, text = "Временные характеристики алгоритма", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: timeResearch(xEntrySeed, yEntrySeed))
-    makeTimeResearch.place(x = 5, y = 980)
+    addLine = Button(rootWindow, text = "Добавить заданный отрезок", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
+    addLine.place(x = 5, y = 950)
 
     Label(text = "Ввод вершин отсекателя и отрезков \nпроизводится с помощью мыши\n"
                  "\nТакже предусмотрены поля ввода этих данных ниже\n"
@@ -306,28 +306,49 @@ def makeMainWindow():
 
     Label(rootWindow, text = "Координаты левого верхнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
 
+    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10,
+                                                                                                                                                 y = 600)
+    xEntryLeft = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntryLeft.place(x = 259, y = 600)
+
+    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420,
+                                                                                                                                                 y = 600)
+    yEntryLeft = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntryLeft.place(x = 669, y = 600)
+
     Label(rootWindow, text = "Координаты правого нижнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
           fg = "white").place(x = 5, y = 650)
 
     Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 700)
-    xEntry = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    xEntry.place(x = 259, y = 700)
+    xEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntryRight.place(x = 259, y = 700)
 
     Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 700)
-    yEntry = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    yEntry.place(x = 669, y = 700)
+    yEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntryRight.place(x = 669, y = 700)
 
     Button(rootWindow, text = "Построить отсекатель", command = lambda: print(), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
 
-    Label(rootWindow, text = "Координаты затравочной точки (если оставить поля пустыми,\nто ею будет являться последняя поставленная мышью точка)", font = fontSettingLower).place(x = 10, y = 820)
+    Label(rootWindow, text = "Координаты начала и конца отрезка", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
+          fg = "white").place(x = 5, y = 800)
 
-    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 900)
-    xEntrySeed = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    xEntrySeed.place(x = 260, y = 900)
+    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 850)
+    xEntryStart = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntryStart.place(x = 260, y = 850)
 
-    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 900)
-    yEntrySeed = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    yEntrySeed.place(x = 669, y = 900)
+    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 850)
+    yEntryStart = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntryStart.place(x = 669, y = 850)
+
+    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10,
+                                                                                                                                                 y = 900)
+    xEntryEnd = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntryEnd.place(x = 260, y = 900)
+
+    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420,
+                                                                                                                                                 y = 900)
+    yEntryEnd = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntryEnd.place(x = 669, y = 900)
 
     Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
