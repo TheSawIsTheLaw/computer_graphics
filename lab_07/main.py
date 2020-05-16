@@ -221,12 +221,10 @@ def click(event):
         if len(tempArr) == 2:
 
             linesArray.append(tempArr)
-            print(linesArray[curLine][1][1])
             tempArr = []
             digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
             curLine += 1
     else:
-
         temp = curColorLines
         if len(cutterArray) == 0:
             cutterArray.append([event.x, event.y, curColorCutter])
