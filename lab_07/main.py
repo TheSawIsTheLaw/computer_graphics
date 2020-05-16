@@ -221,19 +221,17 @@ def click(event):
         curLine += 1
 
 
-def addPoint(xEntry, yEntry):
-    xCoord = int(xEntry.get())
-    yCoord = int(yEntry.get())
-
+def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
+    xStart = int(xStartEntry.get())
+    xEnd = int(xEndEntry.get())
+    yStart = int(yStartEntry.get())
+    yEnd = int(yEndEntry.get())
+    global curLine
     global linesArray
     global img
-    global curLine
-    linesArray[curLine].append([xCoord, yCoord, curColorLines])
-    if len(linesArray[curLine]) >= 2:
-        digitBresenham(img, linesArray[curLine][len(linesArray[curLine]) - 2][0],
-                       linesArray[curLine][len(linesArray[curLine]) - 1][0],
-                       linesArray[curLine][len(linesArray[curLine]) - 2][1],
-                       linesArray[curLine][len(linesArray[curLine]) - 1][1])
+    linesArray.append([[xStart, yStart, curColorLines], [xEnd, yEnd, curColorLines]])
+    digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
+    curLine += 1
 
 
 def endClick(event):
@@ -299,8 +297,6 @@ def makeMainWindow():
                            font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
     makeAlgButton.place(x = 5, y = 350)
 
-    addLine = Button(rootWindow, text = "Добавить заданный отрезок", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
-    addLine.place(x = 5, y = 950)
 
     Label(text = "Ввод вершин отсекателя и отрезков \nпроизводится с помощью мыши\n"
                  "\nТакже предусмотрены поля ввода этих данных ниже\n"
@@ -352,6 +348,10 @@ def makeMainWindow():
                                                                                                                                                  y = 900)
     yEntryEnd = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntryEnd.place(x = 669, y = 900)
+
+    addLine = Button(rootWindow, text = "Добавить заданный отрезок", width = 60, font = fontSettingLower, bg = "#FF9C00", command = lambda: addPoint(xEntryStart, yEntryStart,
+                                                                                                                                                     xEntryEnd, yEntryEnd))
+    addLine.place(x = 5, y = 950)
 
     Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
