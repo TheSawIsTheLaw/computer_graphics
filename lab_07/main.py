@@ -108,16 +108,16 @@ def chooseCutterColor(rootWindow, row, column):
     global curColorCutter
     got = colorchooser.askcolor()
     curColorCutter = got[1]
-    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
-    canvasLinesColor.place(x = row, y = column)
+    canvasCutterColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasCutterColor.place(x = row, y = column)
 
 
 def chooseLineColor(rootWindow, row, column):
     global curColorLines, seedRGB
     got = colorchooser.askcolor()
     seedRGB = (int(got[0][0]), int(got[0][1]), int(got[0][2]))
-    lineColor = got[1]
-    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 440, height = 50)
+    curColorLines = got[1]
+    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasLinesColor.place(x = row, y = column)
 
 
@@ -175,7 +175,7 @@ def setColorButtons(rootWindow, canvasWindow):
     canvasLinesColor.place(x = 270, y = 262)
     Button(rootWindow, text = "Цвет отрезков: ",
            font = fontSettingLower, height = 2, bg = "#FF9C00", width = 17,
-           command = lambda: chooseLineColor(rootWindow, 280, 262)).place(x = 40, y = 260)
+           command = lambda: chooseLineColor(rootWindow, 270, 262)).place(x = 40, y = 260)
 
     canvasCuted = Canvas(rootWindow, bg = curColorCuted,
                               borderwidth = 5, relief = RIDGE,
@@ -295,15 +295,43 @@ def setBinCodes(linesArray, cutterArray):
         leftSide = cutterArray[0][0]
         rightSide = cutterArray[1][0]
     else:
-        leftSide = cutterArray[0][0]
-        rightSide = cutterArray[1][0]
+        rightSide = cutterArray[0][0]
+        leftSide = cutterArray[1][0]
+
+    if cutterArray[0][1] < cutterArray[1][1]:
+        topSide = cutterArray[0][1]
+        botSide = cutterArray[1][1]
+    else:
+        botSide = cutterArray[0][1]
+        topSide = cutterArray[1][1]
 
     for line in linesArray:
+        firstPoint = 0b0000
+        secondPoint = 0b0000
+        if line[0][0] < leftSide:
+            firstPoint += 0b1000
+        if line[0][0] > rightSide:
+            firstPoint += 0b0100
+        if line[0][1] > botSide:
+            firstPoint += 0b0010
+        if line[0][1] < topSide:
+            firstPoint += 0b0001
+
+        if line[1][0] < leftSide:
+            secondPoint += 0b1000
+        if line[1][0] > rightSide:
+            secondPoint += 0b0100
+        if line[1][1] > botSide:
+            secondPoint += 0b0010
+        if line[1][1] < topSide:
+            secondPoint += 0b0001
+
+        binArray.append([firstPoint, secondPoint])
+    return binArray
 
 
-
-def simpleAlgCut():
-
+def simpleAlgCut(linesArray, cutterArray):
+    binArray = setBinCodes(linesArray, cutterArray)
 
 
 def makeMainWindow():
@@ -331,7 +359,7 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: simpleAlgCut(linesArray, cutterArray))
     makeAlgButton.place(x = 5, y = 350)
 
 
