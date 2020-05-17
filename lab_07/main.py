@@ -291,7 +291,33 @@ def cancelClick(event):
     curColorLines = tempCol
 
 
-def setBinCodes(linesArray, cutterArray):
+def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
+    firstPoint = 0b0000
+    secondPoint = 0b0000
+    if curLine[0][0] < leftSide:
+        firstPoint += 0b1000
+    if curLine[0][0] > rightSide:
+        firstPoint += 0b0100
+    if curLine[0][1] > botSide:
+        firstPoint += 0b0010
+    if curLine[0][1] < topSide:
+        firstPoint += 0b0001
+
+    if curLine[1][0] < leftSide:
+        secondPoint += 0b1000
+    if curLine[1][0] > rightSide:
+        secondPoint += 0b0100
+    if curLine[1][1] > botSide:
+        secondPoint += 0b0010
+    if curLine[1][1] < topSide:
+        secondPoint += 0b0001
+
+    return firstPoint, secondPoint
+
+
+def simpleAlgCut(linesArray, cutterArray):
+    finalArray = []
+
     if cutterArray[0][0] < cutterArray[2][0]:
         leftSide = cutterArray[0][0]
         rightSide = cutterArray[2][0]
@@ -307,32 +333,16 @@ def setBinCodes(linesArray, cutterArray):
         topSide = cutterArray[2][1]
 
     for line in range(len(linesArray)):
-        firstPoint = 0b0000
-        secondPoint = 0b0000
-        if linesArray[line][0][0] < leftSide:
-            firstPoint += 0b1000
-        if linesArray[line][0][0] > rightSide:
-            firstPoint += 0b0100
-        if linesArray[line][0][1] > botSide:
-            firstPoint += 0b0010
-        if linesArray[line][0][1] < topSide:
-            firstPoint += 0b0001
+        binCodes = getBinCodes(linesArray[line], leftSide, rightSide, botSide, topSide)
+        firstPoint = binCodes[0]
+        secondPoint = binCodes[1]
 
-        if linesArray[line][1][0] < leftSide:
-            secondPoint += 0b1000
-        if linesArray[line][1][0] > rightSide:
-            secondPoint += 0b0100
-        if linesArray[line][1][1] > botSide:
-            secondPoint += 0b0010
-        if linesArray[line][1][1] < topSide:
-            secondPoint += 0b0001
+        if firstPoint == 0 and secondPoint == 0:
+            finalArray.append(linesArray[line])
+            continue
 
-        linesArray[line].append([firstPoint, secondPoint])
-
-
-def simpleAlgCut(linesArray, cutterArray):
-    setBinCodes(linesArray, cutterArray)
-    print(linesArray)
+        if firstPoint & secondPoint:
+            continue
 
 
 def makeMainWindow():
