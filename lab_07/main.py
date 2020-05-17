@@ -315,6 +315,15 @@ def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
     return firstPoint, secondPoint
 
 
+def drawLines(array):
+    global img, curColorLines, curColorCuted
+    temp = curColorLines
+    curColorLines = curColorCuted
+    for line in array:
+        digitBresenham(img, line[0][0], line[0][1], line[1][0], line[1][1])
+    curColorLines = temp
+
+
 def simpleAlgCut(linesArray, cutterArray):
     finalArray = []
 
@@ -372,12 +381,27 @@ def simpleAlgCut(linesArray, cutterArray):
                 if workVar[0] <= leftSide:
                     crosser = tan * (leftSide - workVar[0]) + workVar[1]
                     if (crosser >= botSide) and (crosser <= topSide):
-                        result.append([leftSide, crosser])
+                        result.append([leftSide, round(crosser)])
                         continue
                 elif workVar[0] >= rightSide:
-                    crosser = tan * (rightSide - )
-
-
+                    crosser = tan * (rightSide - workVar[0]) + workVar[1]
+                    if (crosser >= botSide) and (crosser <= topSide):
+                        result.append([rightSide, round(crosser)])
+                        continue
+            if fCoordinates[1] != sCoordinates[1]:
+                if workVar[1] >= topSide:
+                    crosser = (topSide - workVar[1])/tan + workVar[0]
+                    if (crosser >= leftSide) and (crosser <= rightSide):
+                        result.append([round(crosser), topSide])
+                        continue
+                elif workVar[1] <= botSide:
+                    crosser = (botSide - workVar[1])/tan + workVar[0]
+                    if (crosser >= leftSide) and (crosser <= rightSide):
+                        result.append([round(crosser), botSide])
+                        continue
+        finalArray.append(result)
+    print(finalArray)
+    drawLines(finalArray)
 
 
 def makeMainWindow():
