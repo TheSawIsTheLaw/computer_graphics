@@ -123,9 +123,11 @@ def chooseLineColor(rootWindow, row, column):
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global linesArray, curLine
+    global linesArray, curLine, cutterArray, tempArr
     curLine = 0
     linesArray = []
+    cutterArray = []
+    tempArr = []
     global img
     img = PhotoImage(width = 1090, height = 1016)
     canvasWindow.create_image((545, 508), image = img, state = "normal")
