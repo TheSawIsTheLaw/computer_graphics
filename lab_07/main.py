@@ -355,48 +355,47 @@ def simpleAlgCut(linesArray, cutterArray):
         if firstPoint & secondPoint:
             continue
 
-        flag = 0
-        tan = 1e30
+        flag = 1
         i = -1
         if not firstPoint:
             result = [fCoordinates]
             workVar = sCoordinates
             i = 1
-            flag = 1
+            flag = 0
         elif not secondPoint:
             result = [sCoordinates]
             workVar = fCoordinates
             i = 1
-            flag = 1
+            flag = 0
         else:
             result = []
-            workVar = fCoordinates
 
         while i <= 1:
-            if not flag:
+            if flag:
                 workVar = linesArray[line][i]
             i += 1
             if fCoordinates[0] != sCoordinates[0]:
-                tan = (sCoordinates[1] - fCoordinates[1]) / sCoordinates[0] - fCoordinates[0]
+                tan = (sCoordinates[1] - fCoordinates[1]) / (sCoordinates[0] - fCoordinates[0])
                 if workVar[0] <= leftSide:
                     crosser = tan * (leftSide - workVar[0]) + workVar[1]
-                    if (crosser >= botSide) and (crosser <= topSide):
+                    print(botSide, crosser, topSide)
+                    if (crosser <= botSide) and (crosser >= topSide):
                         result.append([leftSide, round(crosser)])
                         continue
                 elif workVar[0] >= rightSide:
                     crosser = tan * (rightSide - workVar[0]) + workVar[1]
-                    if (crosser >= botSide) and (crosser <= topSide):
+                    if (crosser <= botSide) and (crosser >= topSide):
                         result.append([rightSide, round(crosser)])
                         continue
             if fCoordinates[1] != sCoordinates[1]:
                 if workVar[1] >= topSide:
                     crosser = (topSide - workVar[1])/tan + workVar[0]
-                    if (crosser >= leftSide) and (crosser <= rightSide):
+                    if (crosser <= leftSide) and (crosser >= rightSide):
                         result.append([round(crosser), topSide])
                         continue
                 elif workVar[1] <= botSide:
                     crosser = (botSide - workVar[1])/tan + workVar[0]
-                    if (crosser >= leftSide) and (crosser <= rightSide):
+                    if (crosser <= leftSide) and (crosser >= rightSide):
                         result.append([round(crosser), botSide])
                         continue
         finalArray.append(result)
