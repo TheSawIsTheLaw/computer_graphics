@@ -291,19 +291,21 @@ def cancelClick(event):
 
 def setBinCodes(linesArray, cutterArray):
     binArray = []
-    if cutterArray[0][0] < cutterArray[1][0]:
+    if cutterArray[0][0] < cutterArray[2][0]:
         leftSide = cutterArray[0][0]
-        rightSide = cutterArray[1][0]
+        rightSide = cutterArray[2][0]
     else:
         rightSide = cutterArray[0][0]
-        leftSide = cutterArray[1][0]
+        leftSide = cutterArray[2][0]
 
-    if cutterArray[0][1] < cutterArray[1][1]:
+    if cutterArray[0][1] < cutterArray[2][1]:
         topSide = cutterArray[0][1]
-        botSide = cutterArray[1][1]
+        botSide = cutterArray[2][1]
     else:
         botSide = cutterArray[0][1]
-        topSide = cutterArray[1][1]
+        topSide = cutterArray[2][1]
+
+    print(leftSide, rightSide, botSide, topSide)
 
     for line in linesArray:
         firstPoint = 0b0000
@@ -332,6 +334,7 @@ def setBinCodes(linesArray, cutterArray):
 
 def simpleAlgCut(linesArray, cutterArray):
     binArray = setBinCodes(linesArray, cutterArray)
+    print(binArray)
 
 
 def makeMainWindow():
