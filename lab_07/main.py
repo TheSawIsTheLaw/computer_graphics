@@ -288,6 +288,24 @@ def cancelClick(event):
                        linesArray[curLine][len(linesArray[curLine]) - 1][1])
     curColorLines = tempCol
 
+
+def setBinCodes(linesArray, cutterArray):
+    binArray = []
+    if cutterArray[0][0] < cutterArray[1][0]:
+        leftSide = cutterArray[0][0]
+        rightSide = cutterArray[1][0]
+    else:
+        leftSide = cutterArray[0][0]
+        rightSide = cutterArray[1][0]
+
+    for line in linesArray:
+
+
+
+def simpleAlgCut():
+
+
+
 def makeMainWindow():
     """
             Функция Создания главного окна
