@@ -336,6 +336,8 @@ def simpleAlgCut(linesArray, cutterArray):
         binCodes = getBinCodes(linesArray[line], leftSide, rightSide, botSide, topSide)
         firstPoint = binCodes[0]
         secondPoint = binCodes[1]
+        fCoordinates = linesArray[line][0]
+        sCoordinates = linesArray[line][1]
 
         if firstPoint == 0 and secondPoint == 0:
             finalArray.append(linesArray[line])
@@ -343,6 +345,39 @@ def simpleAlgCut(linesArray, cutterArray):
 
         if firstPoint & secondPoint:
             continue
+
+        flag = 0
+        tan = 1e30
+        i = -1
+        if not firstPoint:
+            result = [fCoordinates]
+            workVar = sCoordinates
+            i = 1
+            flag = 1
+        elif not secondPoint:
+            result = [sCoordinates]
+            workVar = fCoordinates
+            i = 1
+            flag = 1
+        else:
+            result = []
+            workVar = fCoordinates
+
+        while i <= 1:
+            if not flag:
+                workVar = linesArray[line][i]
+            i += 1
+            if fCoordinates[0] != sCoordinates[0]:
+                tan = (sCoordinates[1] - fCoordinates[1]) / sCoordinates[0] - fCoordinates[0]
+                if workVar[0] <= leftSide:
+                    crosser = tan * (leftSide - workVar[0]) + workVar[1]
+                    if (crosser >= botSide) and (crosser <= topSide):
+                        result.append([leftSide, crosser])
+                        continue
+                elif workVar[0] >= rightSide:
+                    crosser = tan * (rightSide - )
+
+
 
 
 def makeMainWindow():
