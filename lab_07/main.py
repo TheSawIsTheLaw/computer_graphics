@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import colorchooser
 from tkinter import ttk
 
-from time import sleep, time
+import numpy as np
 
 from numpy import sign
 
@@ -35,8 +35,8 @@ def digitBresenham(image, xStart, yStart, xEnd, yEnd):
     deltaX = xEnd - xStart
     deltaY = yEnd - yStart
 
-    stepX = int(sign(deltaX))
-    stepY = int(sign(deltaY))
+    stepX = int(np.round(sign(deltaX)))
+    stepY = int(np.round(sign(deltaY)))
 
     deltaX = abs(deltaX)
     deltaY = abs(deltaY)
@@ -221,7 +221,6 @@ def click(event):
         global tempArr
         tempArr.append([event.x, event.y, curColorLines])
         if len(tempArr) == 2:
-
             linesArray.append(tempArr)
             tempArr = []
             digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
@@ -318,9 +317,13 @@ def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
 def drawLines(array):
     global img, curColorLines, curColorCuted
     temp = curColorLines
+    curColorLines = curColorBackground
+    for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
+        digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
+
     curColorLines = curColorCuted
     for line in array:
-        digitBresenham(img, line[0][0], line[0][1], line[1][0], line[1][1])
+        digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
     curColorLines = temp
 
 
@@ -380,23 +383,23 @@ def simpleAlgCut(linesArray, cutterArray):
                     crosser = tan * (leftSide - workVar[0]) + workVar[1]
                     print(botSide, crosser, topSide)
                     if (crosser <= botSide) and (crosser >= topSide):
-                        result.append([leftSide, round(crosser)])
+                        result.append([leftSide, int(np.round(crosser))])
                         continue
                 elif workVar[0] >= rightSide:
                     crosser = tan * (rightSide - workVar[0]) + workVar[1]
                     if (crosser <= botSide) and (crosser >= topSide):
-                        result.append([rightSide, round(crosser)])
+                        result.append([rightSide, int(np.round(crosser))])
                         continue
             if fCoordinates[1] != sCoordinates[1]:
                 if workVar[1] <= topSide:
                     crosser = (topSide - workVar[1])/tan + workVar[0]
                     if (crosser >= leftSide) and (crosser <= rightSide):
-                        result.append([round(crosser), topSide])
+                        result.append([int(np.round(crosser)), topSide])
                         continue
                 elif workVar[1] >= botSide:
                     crosser = (botSide - workVar[1])/tan + workVar[0]
                     if (crosser >= leftSide) and (crosser <= rightSide):
-                        result.append([round(crosser), botSide])
+                        result.append([int(np.round(crosser)), botSide])
                         continue
         if result:
             finalArray.append(result)
