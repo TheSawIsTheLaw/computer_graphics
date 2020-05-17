@@ -388,17 +388,18 @@ def simpleAlgCut(linesArray, cutterArray):
                         result.append([rightSide, round(crosser)])
                         continue
             if fCoordinates[1] != sCoordinates[1]:
-                if workVar[1] >= topSide:
+                if workVar[1] <= topSide:
                     crosser = (topSide - workVar[1])/tan + workVar[0]
-                    if (crosser <= leftSide) and (crosser >= rightSide):
+                    if (crosser >= leftSide) and (crosser <= rightSide):
                         result.append([round(crosser), topSide])
                         continue
-                elif workVar[1] <= botSide:
+                elif workVar[1] >= botSide:
                     crosser = (botSide - workVar[1])/tan + workVar[0]
-                    if (crosser <= leftSide) and (crosser >= rightSide):
+                    if (crosser >= leftSide) and (crosser <= rightSide):
                         result.append([round(crosser), botSide])
                         continue
-        finalArray.append(result)
+        if result:
+            finalArray.append(result)
     print(finalArray)
     drawLines(finalArray)
 
