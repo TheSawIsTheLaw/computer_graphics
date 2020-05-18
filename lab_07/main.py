@@ -17,7 +17,7 @@ curLine = 0
 curColorCutter = "#ffffff"
 curColorBackground = "#000000"
 curColorLines = "#ffff00"
-curColorCuted = "#f0a0ff"
+curColorCuted = "#ab00ff"
 
 comboWhatToDraw = 0
 tempArr = []
@@ -327,6 +327,65 @@ def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
     return firstPoint, secondPoint
 
 
+def getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide):
+    binCodes = getBinCodes(linesArray[line], leftSide, rightSide, botSide, topSide)
+    firstPoint = binCodes[0]
+    secondPoint = binCodes[1]
+    fCoordinates = linesArray[line][0]
+    sCoordinates = linesArray[line][1]
+
+    if firstPoint == 0 and secondPoint == 0:
+        return linesArray[line]
+
+    if firstPoint & secondPoint:
+        return []
+
+    flag = 1
+    i = -1
+    if not firstPoint:
+        result = [fCoordinates]
+        workVar = sCoordinates
+        i = 1
+        flag = 0
+    elif not secondPoint:
+        result = [sCoordinates]
+        workVar = fCoordinates
+        i = 1
+        flag = 0
+    else:
+        result = []
+
+    while i <= 1:
+        if flag:
+            workVar = linesArray[line][i]
+        i += 1
+        if fCoordinates[0] != sCoordinates[0]:
+            tan = (sCoordinates[1] - fCoordinates[1]) / (sCoordinates[0] - fCoordinates[0])
+            if workVar[0] <= leftSide:
+                crosser = tan * (leftSide - workVar[0]) + workVar[1]
+                if (crosser <= botSide) and (crosser >= topSide):
+                    result.append([leftSide, int(np.round(crosser))])
+                    continue
+            elif workVar[0] >= rightSide:
+                crosser = tan * (rightSide - workVar[0]) + workVar[1]
+                if (crosser <= botSide) and (crosser >= topSide):
+                    result.append([rightSide, int(np.round(crosser))])
+                    continue
+        if fCoordinates[1] != sCoordinates[1]:
+            if workVar[1] <= topSide:
+                crosser = (topSide - workVar[1]) / tan + workVar[0]
+                if (crosser >= leftSide) and (crosser <= rightSide):
+                    result.append([int(np.round(crosser)), topSide])
+                    continue
+            elif workVar[1] >= botSide:
+                crosser = (botSide - workVar[1]) / tan + workVar[0]
+                if (crosser >= leftSide) and (crosser <= rightSide):
+                    result.append([int(np.round(crosser)), botSide])
+                    continue
+
+    return result
+
+
 def simpleAlgCut(linesArray, cutterArray):
     finalArray = []
 
@@ -345,62 +404,7 @@ def simpleAlgCut(linesArray, cutterArray):
         topSide = cutterArray[2][1]
 
     for line in range(len(linesArray)):
-        binCodes = getBinCodes(linesArray[line], leftSide, rightSide, botSide, topSide)
-        firstPoint = binCodes[0]
-        secondPoint = binCodes[1]
-        fCoordinates = linesArray[line][0]
-        sCoordinates = linesArray[line][1]
-
-        if firstPoint == 0 and secondPoint == 0:
-            finalArray.append(linesArray[line])
-            continue
-
-        if firstPoint & secondPoint:
-            continue
-
-        flag = 1
-        i = -1
-        if not firstPoint:
-            result = [fCoordinates]
-            workVar = sCoordinates
-            i = 1
-            flag = 0
-        elif not secondPoint:
-            result = [sCoordinates]
-            workVar = fCoordinates
-            i = 1
-            flag = 0
-        else:
-            result = []
-
-        while i <= 1:
-            if flag:
-                workVar = linesArray[line][i]
-            i += 1
-            if fCoordinates[0] != sCoordinates[0]:
-                tan = (sCoordinates[1] - fCoordinates[1]) / (sCoordinates[0] - fCoordinates[0])
-                if workVar[0] <= leftSide:
-                    crosser = tan * (leftSide - workVar[0]) + workVar[1]
-                    print(botSide, crosser, topSide)
-                    if (crosser <= botSide) and (crosser >= topSide):
-                        result.append([leftSide, int(np.round(crosser))])
-                        continue
-                elif workVar[0] >= rightSide:
-                    crosser = tan * (rightSide - workVar[0]) + workVar[1]
-                    if (crosser <= botSide) and (crosser >= topSide):
-                        result.append([rightSide, int(np.round(crosser))])
-                        continue
-            if fCoordinates[1] != sCoordinates[1]:
-                if workVar[1] <= topSide:
-                    crosser = (topSide - workVar[1])/tan + workVar[0]
-                    if (crosser >= leftSide) and (crosser <= rightSide):
-                        result.append([int(np.round(crosser)), topSide])
-                        continue
-                elif workVar[1] >= botSide:
-                    crosser = (botSide - workVar[1])/tan + workVar[0]
-                    if (crosser >= leftSide) and (crosser <= rightSide):
-                        result.append([int(np.round(crosser)), botSide])
-                        continue
+        result = getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide)
         if result:
             finalArray.append(result)
     drawLines(finalArray)
