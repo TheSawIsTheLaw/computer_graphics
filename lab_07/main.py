@@ -16,7 +16,7 @@ curLine = 0
 
 curColorCutter = "#ffffff"
 curColorBackground = "#000000"
-curColorLines = "#a04020"
+curColorLines = "#ffff00"
 curColorCuted = "#f0a0ff"
 
 comboWhatToDraw = 0
@@ -290,6 +290,19 @@ def cancelClick(event):
     curColorLines = tempCol
 
 
+def drawLines(array):
+    global img, curColorLines, curColorCuted
+    temp = curColorLines
+    curColorLines = curColorBackground
+    for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
+        digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
+
+    curColorLines = curColorCuted
+    for line in array:
+        digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
+    curColorLines = temp
+
+
 def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
     firstPoint = 0b0000
     secondPoint = 0b0000
@@ -312,19 +325,6 @@ def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
         secondPoint += 0b0001
 
     return firstPoint, secondPoint
-
-
-def drawLines(array):
-    global img, curColorLines, curColorCuted
-    temp = curColorLines
-    curColorLines = curColorBackground
-    for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
-        digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
-
-    curColorLines = curColorCuted
-    for line in array:
-        digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
-    curColorLines = temp
 
 
 def simpleAlgCut(linesArray, cutterArray):
@@ -403,7 +403,6 @@ def simpleAlgCut(linesArray, cutterArray):
                         continue
         if result:
             finalArray.append(result)
-    print(finalArray)
     drawLines(finalArray)
 
 
