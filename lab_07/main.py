@@ -155,7 +155,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 def setColorButtons(rootWindow, canvasWindow):
     Button(rootWindow, text = "Цвет отсекателя: ",
            font = fontSettingLower, height = 2, bg = "#FF9C00",
-           command = lambda: chooseCutterColor(rootWindow, 250, 182)).place(x = 40, y = 180)
+           command = lambda: chooseCutterColor(rootWindow, 270, 182)).place(x = 40, y = 180)
     canvasCutterColor = Canvas(rootWindow, bg = curColorCutter,
                               borderwidth = 5, relief = RIDGE,
                               width = 60, height = 50)
