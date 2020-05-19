@@ -416,7 +416,7 @@ def makeMainWindow():
     """
     rootWindow = Tk()
     rootWindow.title("Лабораторная работа 7, Якуба Дмитрий, ИУ7-43Б")
-    rootWindow.geometry("1850x1080+60+0")
+    rootWindow.geometry("1850x1080+1980+0")
 
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
