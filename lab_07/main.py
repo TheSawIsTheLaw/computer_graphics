@@ -362,6 +362,7 @@ def getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide):
 
     flag = 1
     i = -1
+    tan = 1e30
     if not firstPoint:
         result = [fCoordinates]
         workVar = sCoordinates
