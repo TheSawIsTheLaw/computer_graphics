@@ -254,6 +254,26 @@ def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
     curLine += 1
 
 
+def addCutter(xEntryLeft, yEntryLeft, xEntryRight, yEntryRight):
+    global curColorLines
+    temp = curColorLines
+    xLeft = int(xEntryLeft.get())
+    xRight = int(xEntryRight.get())
+    yLeft = int(yEntryLeft.get())
+    yRight = int(yEntryRight.get())
+    cutterArray.append([xLeft, yLeft, curColorCutter])
+    cutterArray.append([xRight, yLeft, curColorCutter])
+    cutterArray.append([xRight, yRight, curColorCutter])
+    cutterArray.append([xLeft, yRight, curColorCutter])
+    curColorLines = curColorCutter
+    digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[1][0], cutterArray[1][1])
+    digitBresenham(img, cutterArray[1][0], cutterArray[1][1], cutterArray[2][0], cutterArray[2][1])
+    digitBresenham(img, cutterArray[2][0], cutterArray[2][1], cutterArray[3][0], cutterArray[3][1])
+    digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[3][0], cutterArray[3][1])
+    curColorLines = temp
+
+
+
 def endClick(event):
     global curLine
     global linesArray
@@ -467,7 +487,7 @@ def makeMainWindow():
     yEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntryRight.place(x = 669, y = 700)
 
-    Button(rootWindow, text = "Построить отсекатель", command = lambda: print(), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
+    Button(rootWindow, text = "Построить отсекатель", command = lambda: addCutter(xEntryLeft, yEntryLeft, xEntryRight, yEntryRight), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
 
     Label(rootWindow, text = "Координаты начала и конца отрезка", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
           fg = "white").place(x = 5, y = 800)
