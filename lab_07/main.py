@@ -226,18 +226,12 @@ def click(event):
             digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
             curLine += 1
     else:
-        temp = curColorLines
-        if len(cutterArray) == 0:
-            cutterArray.append([event.x, event.y, curColorCutter])
-        else:
-            cutterArray.append([event.x, cutterArray[0][1], curColorCutter])
-            cutterArray.append([event.x, event.y, curColorCutter])
-            cutterArray.append([cutterArray[0][0], event.y, curColorCutter])
+        cutterArray.append([event.x, event.y, curColorLines])
+        if len(cutterArray) >= 2:
+            temp = curColorLines
             curColorLines = curColorCutter
-            digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[1][0], cutterArray[1][1])
-            digitBresenham(img, cutterArray[1][0], cutterArray[1][1], cutterArray[2][0], cutterArray[2][1])
-            digitBresenham(img, cutterArray[2][0], cutterArray[2][1], cutterArray[3][0], cutterArray[3][1])
-            digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[3][0], cutterArray[3][1])
+            digitBresenham(img, cutterArray[len(cutterArray) - 2][0], cutterArray[len(cutterArray) - 2][1],
+                                cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
             curColorLines = temp
 
 
@@ -254,34 +248,14 @@ def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
     curLine += 1
 
 
-def addCutter(xEntryLeft, yEntryLeft, xEntryRight, yEntryRight):
+def endClick(event):
+    global cutterArray
     global curColorLines
     temp = curColorLines
-    xLeft = int(xEntryLeft.get())
-    xRight = int(xEntryRight.get())
-    yLeft = int(yEntryLeft.get())
-    yRight = int(yEntryRight.get())
-    cutterArray.append([xLeft, yLeft, curColorCutter])
-    cutterArray.append([xRight, yLeft, curColorCutter])
-    cutterArray.append([xRight, yRight, curColorCutter])
-    cutterArray.append([xLeft, yRight, curColorCutter])
     curColorLines = curColorCutter
-    digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[1][0], cutterArray[1][1])
-    digitBresenham(img, cutterArray[1][0], cutterArray[1][1], cutterArray[2][0], cutterArray[2][1])
-    digitBresenham(img, cutterArray[2][0], cutterArray[2][1], cutterArray[3][0], cutterArray[3][1])
-    digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[3][0], cutterArray[3][1])
+    digitBresenham(img, cutterArray[0][0], cutterArray[0][1],
+                        cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
     curColorLines = temp
-
-
-
-def endClick(event):
-    global curLine
-    global linesArray
-    digitBresenham(img, linesArray[curLine][0][0],
-                   linesArray[curLine][len(linesArray[curLine]) - 1][0],
-                   linesArray[curLine][0][1],
-                   linesArray[curLine][len(linesArray[curLine]) - 1][1])
-    curLine += 1
 
     linesArray.append(list())
 
@@ -436,7 +410,7 @@ def makeMainWindow():
             Функция Создания главного окна
     """
     rootWindow = Tk()
-    rootWindow.title("Лабораторная работа 7, Якуба Дмитрий, ИУ7-43Б")
+    rootWindow.title("Лабораторная работа 8, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.geometry("1850x1080+1980+0")
 
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
@@ -465,30 +439,19 @@ def makeMainWindow():
                  , borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
-    Label(rootWindow, text = "Координаты левого верхнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
+    Label(rootWindow, text = "Добавление точки стороны отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
 
     Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10,
                                                                                                                                                  y = 600)
-    xEntryLeft = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    xEntryLeft.place(x = 259, y = 600)
+    xEntryNewPoint = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntryNewPoint.place(x = 259, y = 600)
 
     Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420,
                                                                                                                                                  y = 600)
-    yEntryLeft = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    yEntryLeft.place(x = 669, y = 600)
+    yEntryNewPoint = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntryNewPoint.place(x = 669, y = 600)
 
-    Label(rootWindow, text = "Координаты правого нижнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
-          fg = "white").place(x = 5, y = 650)
-
-    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 700)
-    xEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    xEntryRight.place(x = 259, y = 700)
-
-    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 700)
-    yEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    yEntryRight.place(x = 669, y = 700)
-
-    Button(rootWindow, text = "Построить отсекатель", command = lambda: addCutter(xEntryLeft, yEntryLeft, xEntryRight, yEntryRight), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
+    Button(rootWindow, text = "Добавить точку отсекателя", command = lambda: print(), height = 6, width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 645)
 
     Label(rootWindow, text = "Координаты начала и конца отрезка", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
           fg = "white").place(x = 5, y = 800)
