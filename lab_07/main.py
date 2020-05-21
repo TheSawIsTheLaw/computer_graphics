@@ -257,8 +257,6 @@ def endClick(event):
                         cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
     curColorLines = temp
 
-    linesArray.append(list())
-
 
 def cancelClick(event):
     global linesArray, curLine
@@ -297,114 +295,6 @@ def drawLines(array):
     curColorLines = temp
 
 
-def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
-    firstPoint = 0b0000
-    secondPoint = 0b0000
-    if curLine[0][0] < leftSide:
-        firstPoint += 0b1000
-    if curLine[0][0] > rightSide:
-        firstPoint += 0b0100
-    if curLine[0][1] > botSide:
-        firstPoint += 0b0010
-    if curLine[0][1] < topSide:
-        firstPoint += 0b0001
-
-    if curLine[1][0] < leftSide:
-        secondPoint += 0b1000
-    if curLine[1][0] > rightSide:
-        secondPoint += 0b0100
-    if curLine[1][1] > botSide:
-        secondPoint += 0b0010
-    if curLine[1][1] < topSide:
-        secondPoint += 0b0001
-
-    return firstPoint, secondPoint
-
-
-def getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide):
-    binCodes = getBinCodes(linesArray[line], leftSide, rightSide, botSide, topSide)
-    firstPoint = binCodes[0]
-    secondPoint = binCodes[1]
-    fCoordinates = linesArray[line][0]
-    sCoordinates = linesArray[line][1]
-
-    if firstPoint == 0 and secondPoint == 0:
-        return linesArray[line]
-
-    if firstPoint & secondPoint:
-        return []
-
-    flag = 1
-    i = -1
-    tan = 1e30
-    if not firstPoint:
-        result = [fCoordinates]
-        workVar = sCoordinates
-        i = 1
-        flag = 0
-    elif not secondPoint:
-        result = [sCoordinates]
-        workVar = fCoordinates
-        i = 1
-        flag = 0
-    else:
-        result = []
-
-    while i <= 1:
-        if flag:
-            workVar = linesArray[line][i]
-        i += 1
-        if fCoordinates[0] != sCoordinates[0]:
-            tan = (sCoordinates[1] - fCoordinates[1]) / (sCoordinates[0] - fCoordinates[0])
-            if workVar[0] <= leftSide:
-                crosser = tan * (leftSide - workVar[0]) + workVar[1]
-                if (crosser <= botSide) and (crosser >= topSide):
-                    result.append([leftSide, int(np.round(crosser))])
-                    continue
-            elif workVar[0] >= rightSide:
-                crosser = tan * (rightSide - workVar[0]) + workVar[1]
-                if (crosser <= botSide) and (crosser >= topSide):
-                    result.append([rightSide, int(np.round(crosser))])
-                    continue
-        if fCoordinates[1] != sCoordinates[1]:
-            if workVar[1] <= topSide:
-                crosser = (topSide - workVar[1]) / tan + workVar[0]
-                if (crosser >= leftSide) and (crosser <= rightSide):
-                    result.append([int(np.round(crosser)), topSide])
-                    continue
-            elif workVar[1] >= botSide:
-                crosser = (botSide - workVar[1]) / tan + workVar[0]
-                if (crosser >= leftSide) and (crosser <= rightSide):
-                    result.append([int(np.round(crosser)), botSide])
-                    continue
-
-    return result
-
-
-def simpleAlgCut(linesArray, cutterArray):
-    finalArray = []
-
-    if cutterArray[0][0] < cutterArray[2][0]:
-        leftSide = cutterArray[0][0]
-        rightSide = cutterArray[2][0]
-    else:
-        rightSide = cutterArray[0][0]
-        leftSide = cutterArray[2][0]
-
-    if cutterArray[0][1] < cutterArray[2][1]:
-        topSide = cutterArray[0][1]
-        botSide = cutterArray[2][1]
-    else:
-        botSide = cutterArray[0][1]
-        topSide = cutterArray[2][1]
-
-    for line in range(len(linesArray)):
-        result = getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide)
-        if result:
-            finalArray.append(result)
-    drawLines(finalArray)
-
-
 def makeMainWindow():
     """
             Функция Создания главного окна
@@ -430,12 +320,12 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: simpleAlgCut(linesArray, cutterArray))
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
     makeAlgButton.place(x = 5, y = 350)
 
 
     Label(text = "Ввод вершин отсекателя и отрезков \nпроизводится с помощью мыши\n"
-                 "\nТакже предусмотрены поля ввода этих данных ниже\n"
+                 "\nТакже предусмотрены поля ввода этих данных ниже\n(замыкание отсекателя - пробел)"
                  , borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
