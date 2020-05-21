@@ -368,7 +368,7 @@ def makeMainWindow():
                                                                                                                                                      xEntryEnd, yEntryEnd))
     addLine.place(x = 5, y = 946)
 
-    Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(text = "Алгоритм \nКируса-Бека", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
 
     makeCascadeMenu(rootWindow, canvasWindow)
