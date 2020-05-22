@@ -351,14 +351,15 @@ def drawLines(array):
     global img, curColorLines, curColorCuted
     temp = curColorLines
     curColorLines = curColorBackground
-    #for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
-    #    digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
-
-    print("Хы")
+    for line in array:
+        digitBresenham(img, line[1][0] - 1, line[1][1] + 1, line[0][0] + 1, line[0][1] + 2)
+        digitBresenham(img, line[1][0] - 1, line[1][1] + 1, line[0][0] + 1, line[0][1] + 1)
+        digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
+        digitBresenham(img, line[1][0] - 1, line[1][1] - 1, line[0][0] + 1, line[0][1] - 1)
+        digitBresenham(img, line[1][0] - 1, line[1][1] - 1, line[0][0] + 1, line[0][1] - 2)
 
     curColorLines = curColorCuted
     for line in array:
-        print("Ну")
         digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
     curColorLines = temp
 
