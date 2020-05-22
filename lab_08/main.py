@@ -14,6 +14,8 @@ img = 0
 
 curLine = 0
 
+crutch = "SHITCODE"
+
 curColorCutter = "#ffffff"
 curColorBackground = "#000000"
 curColorLines = "#ffff00"
@@ -53,14 +55,6 @@ def digitBresenham(image, xStart, yStart, xEnd, yEnd):
 
     for i in range(deltaX + 1):
         image.put(curColorLines, (curX, curY))
-        if image.get(curX, curY + 1) == (171, 0, 255):
-            image.put(curColorBackground, (curX, curY + 1))
-        if image.get(curX, curY - 1) == (171, 0, 255):
-            image.put(curColorBackground, (curX, curY - 1))
-        if image.get(curX + 1, curY) == (171, 0, 255):
-            image.put(curColorBackground, (curX + 1, curY))
-        if image.get(curX - 1, curY) == (171, 0, 255):
-            image.put(curColorBackground, (curX - 1, curY))
 
         if flag:
             if acc >= 0:
@@ -100,17 +94,27 @@ def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
     curX = xStart
     curY = yStart
 
-    for i in range(deltaX + 1):
-        if image.get(curX, curY) == (255, 255, 0):
+    for i in range(1, deltaX + 1):
+        magicColor = (int(crutch[1:3], 16), int(crutch[3:5], 16), int(crutch[5:7], 16))
+        print(magicColor, curColorLines)
+        if image.get(curX, curY) == magicColor:
             image.put(curColorCuted, (curX, curY))
-        elif image.get(curX, curY + 1) == (255, 255, 0):
+        if image.get(curX, curY + 1) == magicColor:
             image.put(curColorCuted, (curX, curY + 1))
-        elif image.get(curX, curY - 1) == (255, 255, 0):
+        if image.get(curX, curY - 1) == magicColor:
             image.put(curColorCuted, (curX, curY - 1))
-        elif image.get(curX + 1, curY) == (255, 255, 0):
+        if image.get(curX + 1, curY) == magicColor:
             image.put(curColorCuted, (curX + 1, curY))
-        elif image.get(curX - 1, curY) == (255, 255, 0):
+        if image.get(curX - 1, curY) == magicColor:
             image.put(curColorCuted, (curX - 1, curY))
+        if image.get(curX - 1, curY - 1) == magicColor:
+            image.put(curColorCuted, (curX - 1, curY - 1))
+        if image.get(curX - 1, curY + 1) == magicColor:
+            image.put(curColorCuted, (curX - 1, curY + 1))
+        if image.get(curX + 1, curY - 1) == magicColor:
+            image.put(curColorCuted, (curX + 1, curY - 1))
+        if image.get(curX + 1, curY + 1) == magicColor:
+            image.put(curColorCuted, (curX + 1, curY + 1))
 
         if flag:
             if acc >= 0:
@@ -363,6 +367,38 @@ def normal(fPoint, sPoint, posToPoint):
     return normVec
 
 
+def cutOne(line, numOfSides):
+    directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
+    topLimit = 0
+    bottomLimit = 1
+    print(cutterArray)
+    for i in range(-2, numOfSides - 2):
+        norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
+        wVec = [line[0][0] - cutterArray[i][0], line[0][1] - cutterArray[i][1]]
+        dirScal = scalProd(directrix, norm)
+        wScal = scalProd(wVec, norm)
+        if dirScal == 0:
+            if wScal < 0:
+                break
+            else:
+                continue
+
+        parameter = - wScal / dirScal
+        if dirScal > 0:
+            topLimit = max(topLimit, parameter)
+        elif dirScal < 0:
+            bottomLimit = min(bottomLimit, parameter)
+
+        if topLimit > bottomLimit:
+            break
+
+    if topLimit <= bottomLimit:
+        return [[round(line[0][0] + directrix[0] * topLimit), round(line[0][1] + directrix[1] * topLimit)],
+                        [round(line[0][0] + directrix[0] * bottomLimit), round(line[0][1] + directrix[1] * bottomLimit)]]
+
+    return []
+
+
 def CyrusBeckAlg(linesArray, cutterArray):
     '''
     if not isCutterConvex(cutterArray):
@@ -373,42 +409,18 @@ def CyrusBeckAlg(linesArray, cutterArray):
 
     drawArr = []
     for line in linesArray:
-        # Следующее вынести бы в отдельную функцию
-        directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
-        topLimit = 0
-        bottomLimit = 1
-        print(cutterArray)
-        for i in range(-2, numOfSides - 2):
-            norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
-            wVec = [line[0][0] - cutterArray[i][0], line[0][1] - cutterArray[i][1]]
-            print("wVec = ", wVec)
-            dirScal = scalProd(directrix, norm)
-            wScal = scalProd(wVec, norm)
-            if dirScal == 0:
-                if wScal < 0:
-                    break
-                else:
-                    continue
+        cuted = cutOne(line, numOfSides)
+        if cuted:
+            drawArr.append(cuted)
 
-            parameter = - wScal / dirScal
-            if dirScal > 0:
-                topLimit = max(topLimit, parameter)
-            elif dirScal < 0:
-                bottomLimit = min(bottomLimit, parameter)
-
-            if topLimit > bottomLimit:
-                break
-
-        if topLimit <= bottomLimit:
-            drawArr.append([[round(line[0][0] + directrix[0] * topLimit), round(line[0][1] + directrix[1] * topLimit)],
-                           [round(line[0][0] + directrix[0] * bottomLimit), round(line[0][1] + directrix[1] * bottomLimit)]])
     drawLines(drawArr)
 
 
 def drawLines(array):
-    global img, curColorLines, curColorCuted
+    global img, curColorLines, curColorCuted, crutch
     temp = curColorLines
 
+    crutch = curColorLines
     curColorLines = curColorCuted
     for line in array:
         digitBresenhamForCuted(img, line[1][0], line[1][1], line[0][0], line[0][1])
