@@ -96,7 +96,6 @@ def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
 
     for i in range(1, deltaX + 1):
         magicColor = (int(crutch[1:3], 16), int(crutch[3:5], 16), int(crutch[5:7], 16))
-        print(magicColor, curColorLines)
         if image.get(curX, curY) == magicColor:
             image.put(curColorCuted, (curX, curY))
         if image.get(curX, curY + 1) == magicColor:
@@ -212,6 +211,10 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
     rootMenu.add_cascade(label = 'Справка', menu = jobMenu)
     rootMenu.add_cascade(label = "Доп. возможности", menu = plusCommands)
+
+
+def makeConvexError():
+    print("Ошибка! Алярма! Зачем невыпуклый пихать? А ну убери!")
 
 
 def setColorButtons(rootWindow, canvasWindow):
@@ -348,6 +351,25 @@ def scalProd(fVector, sVector):
     return fVector[0] * sVector[0] + fVector[1] * sVector[1]
 
 
+def vectProd(fVector, sVector):
+    return fVector[0] * sVector[1] - fVector[1] * sVector[0]
+
+
+def isConvex(pointArray):
+    if len(pointArray) < 3:
+        return False
+
+    prev = sign(vectProd([pointArray[0][0] - pointArray[-1][0], pointArray[0][1] - pointArray[-1][1]],
+        [pointArray[-1][0] - pointArray[-2][0], pointArray[-1][1] - pointArray[-2][1]]))
+    for i in range(1, len(pointArray) - 2):
+        cur = sign(vectProd([pointArray[i][0] - pointArray[i - 1][0], pointArray[i][1] - pointArray[i - 1][1]],
+        [pointArray[i - 1][0] - pointArray[i - 2][0], pointArray[i - 1][1] - pointArray[i - 2][1]]))
+        if prev != cur:
+            return False
+        prev = cur
+    return True
+
+
 def normal(fPoint, sPoint, posToPoint):
     foundVector = [sPoint[0] - fPoint[0], sPoint[1] - fPoint[1]]
     positiveForVector = [posToPoint[0] - sPoint[0], posToPoint[1] - fPoint[1]]
@@ -400,11 +422,9 @@ def cutOne(line, numOfSides):
 
 
 def CyrusBeckAlg(linesArray, cutterArray):
-    '''
-    if not isCutterConvex(cutterArray):
-        errorMessage()
+    if not isConvex(cutterArray):
+        makeConvexError()
         return
-    '''
     numOfSides = len(cutterArray)
 
     drawArr = []
@@ -414,6 +434,7 @@ def CyrusBeckAlg(linesArray, cutterArray):
             drawArr.append(cuted)
 
     drawLines(drawArr)
+    return
 
 
 def drawLines(array):
