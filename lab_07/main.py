@@ -282,6 +282,25 @@ def cancelClick(event):
     curColorLines = tempCol
 
 
+def scalProd(fVector, sVector):
+    return fVector[0] * sVector[0] + fVector[1] * sVector[1]
+
+def normal(fPoint, sPoint, posToPoint):
+    foundVector = [fPoint[0] - sPoint[0], fPoint[1] - sPoint[1]]
+    positiveForVector = [sPoint[0] - posToPoint[0], fPoint[1] - posToPoint[1]]
+
+    if foundVector[1]:
+        foundPoint = - (foundVector[0] / foundVector[1])
+        normVec = [1, foundPoint]
+    else:
+        normVec = [0, 1]
+
+    if scalProd(positiveForVector, normVec) < 0:
+        normVec[0] = -normVec[0]
+        normVec[1] = -normVec[1]
+    return normVec
+
+
 def CyrusBeckAlg(linesArray, cutterArray):
     '''
     if not isCutterConvex(cutterArray):
@@ -290,7 +309,14 @@ def CyrusBeckAlg(linesArray, cutterArray):
     '''
     numOfSides = len(cutterArray)
     for line in linesArray:
-        print(line)
+        # Следующее вынести бы в отдельную функцию
+        directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
+        bottomLimit = 0
+        topLimit = 1
+        for i in range(numOfSides - 1):
+            print(normal())
+        # не забудь добавить последнюю с нормалью, положительной к первому и последнему ребру отсекателя
+
 
 
 def drawLines(array):
