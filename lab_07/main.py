@@ -312,6 +312,8 @@ def CyrusBeckAlg(linesArray, cutterArray):
         return
     '''
     numOfSides = len(cutterArray)
+
+    drawArr = []
     for line in linesArray:
         # Следующее вынести бы в отдельную функцию
         directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
@@ -319,21 +321,45 @@ def CyrusBeckAlg(linesArray, cutterArray):
         topLimit = 1
         print(cutterArray)
         for i in range(-2, numOfSides - 2):
-            wVec = [line[0][0] - cutterArray[i][1], line[0][1] - cutterArray[i][1]]
             norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
-            wScal = scalProd(wVec, norm)
+            wVec = [line[0][0] - cutterArray[i][1], line[0][1] - cutterArray[i][1]]
             dirScal = scalProd(directrix, norm)
+            wScal = scalProd(wVec, norm)
+            if dirScal == 0:
+                if wScal < 0:
+                    break
+                else:
+                    continue
+
+            parameter = - wScal / dirScal
+            if dirScal > 0:
+                if parameter > 1:
+                    break
+                else:
+                    bottomLimit = max(bottomLimit, parameter)
+            elif dirScal < 0:
+                if parameter < 0:
+                    break
+                else:
+                    topLimit = min(topLimit, parameter)
+        if bottomLimit > topLimit:
+            drawArr.append([[round(line[0][0] + directrix[0] * topLimit), line[0][1] + directrix[1] * topLimit],
+                           [round(line[1][0] + directrix[0] * topLimit), line[1][1] + directrix[1] * topLimit]])
+    drawLines(drawArr)
 
 
 def drawLines(array):
     global img, curColorLines, curColorCuted
     temp = curColorLines
     curColorLines = curColorBackground
-    for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
-        digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
+    #for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
+    #    digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
+
+    print("Хы")
 
     curColorLines = curColorCuted
     for line in array:
+        print("Ну")
         digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
     curColorLines = temp
 
