@@ -53,6 +53,64 @@ def digitBresenham(image, xStart, yStart, xEnd, yEnd):
 
     for i in range(deltaX + 1):
         image.put(curColorLines, (curX, curY))
+        if image.get(curX, curY + 1) == (171, 0, 255):
+            image.put(curColorBackground, (curX, curY + 1))
+        if image.get(curX, curY - 1) == (171, 0, 255):
+            image.put(curColorBackground, (curX, curY - 1))
+        if image.get(curX + 1, curY) == (171, 0, 255):
+            image.put(curColorBackground, (curX + 1, curY))
+        if image.get(curX - 1, curY) == (171, 0, 255):
+            image.put(curColorBackground, (curX - 1, curY))
+
+        if flag:
+            if acc >= 0:
+                curX += stepX
+                acc -= (deltaX + deltaX)
+            curY += stepY
+            acc += deltaY + deltaY
+        else:
+            if acc >= 0:
+                curY += stepY
+                acc -= (deltaX + deltaX)
+            curX += stepX
+            acc += deltaY + deltaY
+
+
+def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
+    if xStart == xEnd and yStart == yEnd:
+        image.put(curColorLines, (xStart, yStart))
+        return
+
+    deltaX = xEnd - xStart
+    deltaY = yEnd - yStart
+
+    stepX = int(np.round(sign(deltaX)))
+    stepY = int(np.round(sign(deltaY)))
+
+    deltaX = abs(deltaX)
+    deltaY = abs(deltaY)
+
+    if deltaX < deltaY:
+        deltaX, deltaY = deltaY, deltaX
+        flag = True
+    else:
+        flag = False
+
+    acc = deltaY + deltaY - deltaX
+    curX = xStart
+    curY = yStart
+
+    for i in range(deltaX + 1):
+        if image.get(curX, curY) == (255, 255, 0):
+            image.put(curColorCuted, (curX, curY))
+        elif image.get(curX, curY + 1) == (255, 255, 0):
+            image.put(curColorCuted, (curX, curY + 1))
+        elif image.get(curX, curY - 1) == (255, 255, 0):
+            image.put(curColorCuted, (curX, curY - 1))
+        elif image.get(curX + 1, curY) == (255, 255, 0):
+            image.put(curColorCuted, (curX + 1, curY))
+        elif image.get(curX - 1, curY) == (255, 255, 0):
+            image.put(curColorCuted, (curX - 1, curY))
 
         if flag:
             if acc >= 0:
@@ -350,17 +408,10 @@ def CyrusBeckAlg(linesArray, cutterArray):
 def drawLines(array):
     global img, curColorLines, curColorCuted
     temp = curColorLines
-    curColorLines = curColorBackground
-    for line in array:
-        digitBresenham(img, line[1][0] - 1, line[1][1] + 1, line[0][0] + 1, line[0][1] + 2)
-        digitBresenham(img, line[1][0] - 1, line[1][1] + 1, line[0][0] + 1, line[0][1] + 1)
-        digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
-        digitBresenham(img, line[1][0] - 1, line[1][1] - 1, line[0][0] + 1, line[0][1] - 1)
-        digitBresenham(img, line[1][0] - 1, line[1][1] - 1, line[0][0] + 1, line[0][1] - 2)
 
     curColorLines = curColorCuted
     for line in array:
-        digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
+        digitBresenhamForCuted(img, line[1][0], line[1][1], line[0][0], line[0][1])
     curColorLines = temp
 
 
