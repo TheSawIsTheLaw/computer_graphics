@@ -291,10 +291,10 @@ def normal(fPoint, sPoint, posToPoint):
     positiveForVector = [posToPoint[0] - sPoint[0], posToPoint[1] - fPoint[1]]
 
     if foundVector[1]:
-        foundPoint = - foundVector[1] / foundVector[0]
-        normVec = [foundPoint, 1]
+        foundPoint = - foundVector[0] / foundVector[1]
+        normVec = [1, foundPoint]
     else:
-        normVec = [1, 0]
+        normVec = [0, 1]
 
     if scalProd(positiveForVector, normVec) < 0:
         normVec[0] = -normVec[0]
