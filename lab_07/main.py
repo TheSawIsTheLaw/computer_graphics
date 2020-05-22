@@ -291,10 +291,10 @@ def normal(fPoint, sPoint, posToPoint):
     positiveForVector = [posToPoint[0] - sPoint[0], posToPoint[1] - fPoint[1]]
 
     if foundVector[1]:
-        foundPoint = foundVector[0] / foundVector[1]
-        normVec = [-1, foundPoint]
+        foundPoint = - foundVector[1] / foundVector[0]
+        normVec = [foundPoint, 1]
     else:
-        normVec = [0, 1]
+        normVec = [1, 0]
 
     if scalProd(positiveForVector, normVec) < 0:
         normVec[0] = -normVec[0]
@@ -317,12 +317,13 @@ def CyrusBeckAlg(linesArray, cutterArray):
     for line in linesArray:
         # Следующее вынести бы в отдельную функцию
         directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
-        bottomLimit = 0
-        topLimit = 1
+        topLimit = 0
+        bottomLimit = 1
         print(cutterArray)
         for i in range(-2, numOfSides - 2):
             norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
-            wVec = [line[0][0] - cutterArray[i][1], line[0][1] - cutterArray[i][1]]
+            wVec = [line[0][0] - cutterArray[i][0], line[0][1] - cutterArray[i][1]]
+            print("wVec = ", wVec)
             dirScal = scalProd(directrix, norm)
             wScal = scalProd(wVec, norm)
             if dirScal == 0:
@@ -333,18 +334,16 @@ def CyrusBeckAlg(linesArray, cutterArray):
 
             parameter = - wScal / dirScal
             if dirScal > 0:
-                if parameter > 1:
-                    break
-                else:
-                    bottomLimit = max(bottomLimit, parameter)
+                topLimit = max(topLimit, parameter)
             elif dirScal < 0:
-                if parameter < 0:
-                    break
-                else:
-                    topLimit = min(topLimit, parameter)
-        if bottomLimit > topLimit:
-            drawArr.append([[round(line[0][0] + directrix[0] * topLimit), line[0][1] + directrix[1] * topLimit],
-                           [round(line[1][0] + directrix[0] * topLimit), line[1][1] + directrix[1] * topLimit]])
+                bottomLimit = min(bottomLimit, parameter)
+
+            if topLimit > bottomLimit:
+                break
+
+        if topLimit <= bottomLimit:
+            drawArr.append([[round(line[0][0] + directrix[0] * topLimit), round(line[0][1] + directrix[1] * topLimit)],
+                           [round(line[0][0] + directrix[0] * bottomLimit), round(line[0][1] + directrix[1] * bottomLimit)]])
     drawLines(drawArr)
 
 
