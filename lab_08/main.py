@@ -226,18 +226,12 @@ def click(event):
             digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
             curLine += 1
     else:
-        temp = curColorLines
-        if len(cutterArray) == 0:
-            cutterArray.append([event.x, event.y, curColorCutter])
-        else:
-            cutterArray.append([event.x, cutterArray[0][1], curColorCutter])
-            cutterArray.append([event.x, event.y, curColorCutter])
-            cutterArray.append([cutterArray[0][0], event.y, curColorCutter])
+        cutterArray.append([event.x, event.y, curColorLines])
+        if len(cutterArray) >= 2:
+            temp = curColorLines
             curColorLines = curColorCutter
-            digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[1][0], cutterArray[1][1])
-            digitBresenham(img, cutterArray[1][0], cutterArray[1][1], cutterArray[2][0], cutterArray[2][1])
-            digitBresenham(img, cutterArray[2][0], cutterArray[2][1], cutterArray[3][0], cutterArray[3][1])
-            digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[3][0], cutterArray[3][1])
+            digitBresenham(img, cutterArray[len(cutterArray) - 2][0], cutterArray[len(cutterArray) - 2][1],
+                                cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
             curColorLines = temp
 
 
@@ -254,36 +248,14 @@ def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
     curLine += 1
 
 
-def addCutter(xEntryLeft, yEntryLeft, xEntryRight, yEntryRight):
+def endClick(event):
+    global cutterArray
     global curColorLines
     temp = curColorLines
-    xLeft = int(xEntryLeft.get())
-    xRight = int(xEntryRight.get())
-    yLeft = int(yEntryLeft.get())
-    yRight = int(yEntryRight.get())
-    cutterArray.append([xLeft, yLeft, curColorCutter])
-    cutterArray.append([xRight, yLeft, curColorCutter])
-    cutterArray.append([xRight, yRight, curColorCutter])
-    cutterArray.append([xLeft, yRight, curColorCutter])
     curColorLines = curColorCutter
-    digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[1][0], cutterArray[1][1])
-    digitBresenham(img, cutterArray[1][0], cutterArray[1][1], cutterArray[2][0], cutterArray[2][1])
-    digitBresenham(img, cutterArray[2][0], cutterArray[2][1], cutterArray[3][0], cutterArray[3][1])
-    digitBresenham(img, cutterArray[0][0], cutterArray[0][1], cutterArray[3][0], cutterArray[3][1])
+    digitBresenham(img, cutterArray[0][0], cutterArray[0][1],
+                        cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
     curColorLines = temp
-
-
-
-def endClick(event):
-    global curLine
-    global linesArray
-    digitBresenham(img, linesArray[curLine][0][0],
-                   linesArray[curLine][len(linesArray[curLine]) - 1][0],
-                   linesArray[curLine][0][1],
-                   linesArray[curLine][len(linesArray[curLine]) - 1][1])
-    curLine += 1
-
-    linesArray.append(list())
 
 
 def cancelClick(event):
@@ -310,125 +282,85 @@ def cancelClick(event):
     curColorLines = tempCol
 
 
+def scalProd(fVector, sVector):
+    return fVector[0] * sVector[0] + fVector[1] * sVector[1]
+
+
+def normal(fPoint, sPoint, posToPoint):
+    foundVector = [sPoint[0] - fPoint[0], sPoint[1] - fPoint[1]]
+    positiveForVector = [posToPoint[0] - sPoint[0], posToPoint[1] - fPoint[1]]
+
+    if foundVector[1]:
+        foundPoint = - foundVector[0] / foundVector[1]
+        normVec = [1, foundPoint]
+    else:
+        normVec = [0, 1]
+
+    if scalProd(positiveForVector, normVec) < 0:
+        normVec[0] = -normVec[0]
+        normVec[1] = -normVec[1]
+
+    print("found: ", foundVector, "\nNorm: ", normVec, "\n")
+
+    return normVec
+
+
+def CyrusBeckAlg(linesArray, cutterArray):
+    '''
+    if not isCutterConvex(cutterArray):
+        errorMessage()
+        return
+    '''
+    numOfSides = len(cutterArray)
+
+    drawArr = []
+    for line in linesArray:
+        # Следующее вынести бы в отдельную функцию
+        directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
+        topLimit = 0
+        bottomLimit = 1
+        print(cutterArray)
+        for i in range(-2, numOfSides - 2):
+            norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
+            wVec = [line[0][0] - cutterArray[i][0], line[0][1] - cutterArray[i][1]]
+            print("wVec = ", wVec)
+            dirScal = scalProd(directrix, norm)
+            wScal = scalProd(wVec, norm)
+            if dirScal == 0:
+                if wScal < 0:
+                    break
+                else:
+                    continue
+
+            parameter = - wScal / dirScal
+            if dirScal > 0:
+                topLimit = max(topLimit, parameter)
+            elif dirScal < 0:
+                bottomLimit = min(bottomLimit, parameter)
+
+            if topLimit > bottomLimit:
+                break
+
+        if topLimit <= bottomLimit:
+            drawArr.append([[round(line[0][0] + directrix[0] * topLimit), round(line[0][1] + directrix[1] * topLimit)],
+                           [round(line[0][0] + directrix[0] * bottomLimit), round(line[0][1] + directrix[1] * bottomLimit)]])
+    drawLines(drawArr)
+
+
 def drawLines(array):
     global img, curColorLines, curColorCuted
     temp = curColorLines
     curColorLines = curColorBackground
-    for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
-        digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
+    #for i in range(cutterArray[0][1] + 1, cutterArray[2][1]):
+    #    digitBresenham(img, cutterArray[0][0] + 1, i, cutterArray[1][0] - 1, i)
+
+    print("Хы")
 
     curColorLines = curColorCuted
     for line in array:
+        print("Ну")
         digitBresenham(img, line[1][0], line[1][1], line[0][0], line[0][1])
     curColorLines = temp
-
-
-def getBinCodes(curLine, leftSide, rightSide, botSide, topSide):
-    firstPoint = 0b0000
-    secondPoint = 0b0000
-    if curLine[0][0] < leftSide:
-        firstPoint += 0b1000
-    if curLine[0][0] > rightSide:
-        firstPoint += 0b0100
-    if curLine[0][1] > botSide:
-        firstPoint += 0b0010
-    if curLine[0][1] < topSide:
-        firstPoint += 0b0001
-
-    if curLine[1][0] < leftSide:
-        secondPoint += 0b1000
-    if curLine[1][0] > rightSide:
-        secondPoint += 0b0100
-    if curLine[1][1] > botSide:
-        secondPoint += 0b0010
-    if curLine[1][1] < topSide:
-        secondPoint += 0b0001
-
-    return firstPoint, secondPoint
-
-
-def getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide):
-    binCodes = getBinCodes(linesArray[line], leftSide, rightSide, botSide, topSide)
-    firstPoint = binCodes[0]
-    secondPoint = binCodes[1]
-    fCoordinates = linesArray[line][0]
-    sCoordinates = linesArray[line][1]
-
-    if firstPoint == 0 and secondPoint == 0:
-        return linesArray[line]
-
-    if firstPoint & secondPoint:
-        return []
-
-    flag = 1
-    i = -1
-    tan = 1e30
-    if not firstPoint:
-        result = [fCoordinates]
-        workVar = sCoordinates
-        i = 1
-        flag = 0
-    elif not secondPoint:
-        result = [sCoordinates]
-        workVar = fCoordinates
-        i = 1
-        flag = 0
-    else:
-        result = []
-
-    while i <= 1:
-        if flag:
-            workVar = linesArray[line][i]
-        i += 1
-        if fCoordinates[0] != sCoordinates[0]:
-            tan = (sCoordinates[1] - fCoordinates[1]) / (sCoordinates[0] - fCoordinates[0])
-            if workVar[0] <= leftSide:
-                crosser = tan * (leftSide - workVar[0]) + workVar[1]
-                if (crosser <= botSide) and (crosser >= topSide):
-                    result.append([leftSide, int(np.round(crosser))])
-                    continue
-            elif workVar[0] >= rightSide:
-                crosser = tan * (rightSide - workVar[0]) + workVar[1]
-                if (crosser <= botSide) and (crosser >= topSide):
-                    result.append([rightSide, int(np.round(crosser))])
-                    continue
-        if fCoordinates[1] != sCoordinates[1]:
-            if workVar[1] <= topSide:
-                crosser = (topSide - workVar[1]) / tan + workVar[0]
-                if (crosser >= leftSide) and (crosser <= rightSide):
-                    result.append([int(np.round(crosser)), topSide])
-                    continue
-            elif workVar[1] >= botSide:
-                crosser = (botSide - workVar[1]) / tan + workVar[0]
-                if (crosser >= leftSide) and (crosser <= rightSide):
-                    result.append([int(np.round(crosser)), botSide])
-                    continue
-
-    return result
-
-
-def simpleAlgCut(linesArray, cutterArray):
-    finalArray = []
-
-    if cutterArray[0][0] < cutterArray[2][0]:
-        leftSide = cutterArray[0][0]
-        rightSide = cutterArray[2][0]
-    else:
-        rightSide = cutterArray[0][0]
-        leftSide = cutterArray[2][0]
-
-    if cutterArray[0][1] < cutterArray[2][1]:
-        topSide = cutterArray[0][1]
-        botSide = cutterArray[2][1]
-    else:
-        botSide = cutterArray[0][1]
-        topSide = cutterArray[2][1]
-
-    for line in range(len(linesArray)):
-        result = getCuttedLine(linesArray, line, leftSide, rightSide, botSide, topSide)
-        if result:
-            finalArray.append(result)
-    drawLines(finalArray)
 
 
 def makeMainWindow():
@@ -436,7 +368,7 @@ def makeMainWindow():
             Функция Создания главного окна
     """
     rootWindow = Tk()
-    rootWindow.title("Лабораторная работа 7, Якуба Дмитрий, ИУ7-43Б")
+    rootWindow.title("Лабораторная работа 8, Якуба Дмитрий, ИУ7-43Б")
     rootWindow.geometry("1850x1080+1980+0")
 
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
@@ -456,39 +388,28 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: simpleAlgCut(linesArray, cutterArray))
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: CyrusBeckAlg(linesArray, cutterArray))
     makeAlgButton.place(x = 5, y = 350)
 
 
     Label(text = "Ввод вершин отсекателя и отрезков \nпроизводится с помощью мыши\n"
-                 "\nТакже предусмотрены поля ввода этих данных ниже\n"
+                 "\nТакже предусмотрены поля ввода этих данных ниже\n(замыкание отсекателя - пробел)"
                  , borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
-    Label(rootWindow, text = "Координаты левого верхнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
+    Label(rootWindow, text = "Добавление точки стороны отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
 
     Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10,
                                                                                                                                                  y = 600)
-    xEntryLeft = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    xEntryLeft.place(x = 259, y = 600)
+    xEntryNewPoint = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    xEntryNewPoint.place(x = 259, y = 600)
 
     Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420,
                                                                                                                                                  y = 600)
-    yEntryLeft = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    yEntryLeft.place(x = 669, y = 600)
+    yEntryNewPoint = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
+    yEntryNewPoint.place(x = 669, y = 600)
 
-    Label(rootWindow, text = "Координаты правого нижнего угла отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
-          fg = "white").place(x = 5, y = 650)
-
-    Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10, y = 700)
-    xEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    xEntryRight.place(x = 259, y = 700)
-
-    Label(rootWindow, text = "Координата Y точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 420, y = 700)
-    yEntryRight = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
-    yEntryRight.place(x = 669, y = 700)
-
-    Button(rootWindow, text = "Построить отсекатель", command = lambda: addCutter(xEntryLeft, yEntryLeft, xEntryRight, yEntryRight), width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 750)
+    Button(rootWindow, text = "Добавить точку отсекателя", command = lambda: print(), height = 6, width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 645)
 
     Label(rootWindow, text = "Координаты начала и конца отрезка", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
           fg = "white").place(x = 5, y = 800)
@@ -515,7 +436,7 @@ def makeMainWindow():
                                                                                                                                                      xEntryEnd, yEntryEnd))
     addLine.place(x = 5, y = 946)
 
-    Label(text = "Простой алгоритм \nотсечения отрезков", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(text = "Алгоритм \nКируса-Бека", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
 
     makeCascadeMenu(rootWindow, canvasWindow)
