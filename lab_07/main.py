@@ -319,7 +319,10 @@ def CyrusBeckAlg(linesArray, cutterArray):
         topLimit = 1
         print(cutterArray)
         for i in range(-2, numOfSides - 2):
-            print(normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2]))
+            wVec = [line[0][0] - cutterArray[i][1], line[0][1] - cutterArray[i][1]]
+            norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
+            wScal = scalProd(wVec, norm)
+            dirScal = scalProd(directrix, norm)
 
 
 def drawLines(array):
