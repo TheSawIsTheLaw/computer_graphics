@@ -282,6 +282,17 @@ def cancelClick(event):
     curColorLines = tempCol
 
 
+def CyrusBeckAlg(linesArray, cutterArray):
+    '''
+    if not isCutterConvex(cutterArray):
+        errorMessage()
+        return
+    '''
+    numOfSides = len(cutterArray)
+    for line in linesArray:
+        print(line)
+
+
 def drawLines(array):
     global img, curColorLines, curColorCuted
     temp = curColorLines
@@ -320,7 +331,7 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: CyrusBeckAlg(linesArray, cutterArray))
     makeAlgButton.place(x = 5, y = 350)
 
 
