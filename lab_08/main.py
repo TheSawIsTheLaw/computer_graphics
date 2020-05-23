@@ -384,8 +384,6 @@ def normal(fPoint, sPoint, posToPoint):
         normVec[0] = -normVec[0]
         normVec[1] = -normVec[1]
 
-    print("found: ", foundVector, "\nNorm: ", normVec, "\n")
-
     return normVec
 
 
@@ -393,7 +391,6 @@ def cutOne(line, numOfSides):
     directrix = [line[1][0] - line[0][0], line[1][1] - line[0][1]]
     topLimit = 0
     bottomLimit = 1
-    print(cutterArray)
     for i in range(-2, numOfSides - 2):
         norm = normal(cutterArray[i], cutterArray[i + 1], cutterArray[i + 2])
         wVec = [line[0][0] - cutterArray[i][0], line[0][1] - cutterArray[i][1]]
