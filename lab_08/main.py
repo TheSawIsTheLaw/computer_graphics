@@ -313,6 +313,20 @@ def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
     curLine += 1
 
 
+def addCutterPoint(xEntry, yEntry):
+    xPoint = int(xEntry.get())
+    yPoint = int(yEntry.get())
+    global cutterArray, curColorLines
+    global img
+    cutterArray.append([xPoint, yPoint])
+    if len(cutterArray) >= 2:
+        temp = curColorLines
+        curColorLines = curColorCutter
+        digitBresenham(img, cutterArray[len(cutterArray) - 2][0], cutterArray[len(cutterArray) - 2][1],
+                       cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
+        curColorLines = temp
+
+
 def endClick(event):
     global cutterArray
     global curColorLines
