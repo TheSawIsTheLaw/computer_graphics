@@ -214,7 +214,9 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
 
 def makeConvexError():
-    print("Ошибка! Алярма! Зачем невыпуклый пихать? А ну убери!")
+    errorWindow = Tk()
+    errorWindow.title("Ошибка!")
+    Label(errorWindow, text = "Отсекатель невыпуклый!\n Алгоритм работает лишь с выпуклыми отсекателями.", font = fontSettingLower).grid()
 
 
 def setColorButtons(rootWindow, canvasWindow):
@@ -412,7 +414,7 @@ def cutOne(line, numOfSides):
         wScal = scalProd(wVec, norm)
         if dirScal == 0:
             if wScal < 0:
-                break
+                return []
             else:
                 continue
 
@@ -505,7 +507,7 @@ def makeMainWindow():
     yEntryNewPoint = Entry(rootWindow, font = fontSettingLower, width = 4, borderwidth = 10, relief = RIDGE)
     yEntryNewPoint.place(x = 669, y = 600)
 
-    Button(rootWindow, text = "Добавить точку отсекателя", command = lambda: print(), height = 6, width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 645)
+    Button(rootWindow, text = "Добавить точку отсекателя", command = lambda: addCutterPoint(xEntryNewPoint, yEntryNewPoint), height = 6, width = 60, font = fontSettingLower, bg = "#FF9C00").place(x = 5, y = 645)
 
     Label(rootWindow, text = "Координаты начала и конца отрезка", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black",
           fg = "white").place(x = 5, y = 800)
