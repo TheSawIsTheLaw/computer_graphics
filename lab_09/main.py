@@ -18,20 +18,20 @@ crutch = "SHITCODE"
 
 curColorCutter = "#ffffff"
 curColorBackground = "#000000"
-curColorLines = "#ffff00"
+curColorFigure = "#ffff00"
 curColorCuted = "#ab00ff"
 
 comboWhatToDraw = 0
 tempArr = []
 
-linesArray = []
+figureArray = []
 
 cutterArray = []
 
 
 def digitBresenham(image, xStart, yStart, xEnd, yEnd):
     if xStart == xEnd and yStart == yEnd:
-        image.put(curColorLines, (xStart, yStart))
+        image.put(curColorFigure, (xStart, yStart))
         return
 
     deltaX = xEnd - xStart
@@ -54,7 +54,7 @@ def digitBresenham(image, xStart, yStart, xEnd, yEnd):
     curY = yStart
 
     for i in range(deltaX + 1):
-        image.put(curColorLines, (curX, curY))
+        image.put(curColorFigure, (curX, curY))
 
         if flag:
             if acc >= 0:
@@ -72,7 +72,7 @@ def digitBresenham(image, xStart, yStart, xEnd, yEnd):
 
 def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
     if xStart == xEnd and yStart == yEnd:
-        image.put(curColorLines, (xStart, yStart))
+        image.put(curColorFigure, (xStart, yStart))
         return
 
     deltaX = xEnd - xStart
@@ -169,24 +169,24 @@ def chooseCutterColor(rootWindow, row, column):
     global curColorCutter
     got = colorchooser.askcolor()
     curColorCutter = got[1]
-    canvasCutterColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    canvasCutterColor = Canvas(rootWindow, bg = curColorFigure, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasCutterColor.place(x = row, y = column)
 
 
 def chooseLineColor(rootWindow, row, column):
-    global curColorLines, seedRGB
+    global curColorFigure, seedRGB
     got = colorchooser.askcolor()
     seedRGB = (int(got[0][0]), int(got[0][1]), int(got[0][2]))
-    curColorLines = got[1]
-    canvasLinesColor = Canvas(rootWindow, bg = curColorLines, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
+    curColorFigure = got[1]
+    canvasLinesColor = Canvas(rootWindow, bg = curColorFigure, borderwidth = 5, relief = RIDGE, width = 60, height = 50)
     canvasLinesColor.place(x = row, y = column)
 
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global linesArray, curLine, cutterArray, tempArr
+    global figureArray, curLine, cutterArray, tempArr
     curLine = 0
-    linesArray = []
+    figureArray = []
     cutterArray = []
     tempArr = []
     global img
@@ -238,7 +238,7 @@ def setColorButtons(rootWindow, canvasWindow):
            command = lambda: chooseBackgroundColor(rootWindow, 660,
                                                    182, canvasWindow)).place(x = 435, y = 180)
 
-    canvasLinesColor = Canvas(rootWindow, bg = curColorLines,
+    canvasLinesColor = Canvas(rootWindow, bg = curColorFigure,
                              borderwidth = 5, relief = RIDGE,
                              width = 60, height = 50)
     canvasLinesColor.place(x = 270, y = 262)
@@ -278,28 +278,25 @@ def setImageToCanvas(canvasWindow):
 
 def click(event):
     global cutterArray
-    global curColorLines
+    global curColorFigure
     global curColorCutter
     global curLine
-    global linesArray
+    global figureArray
     global img
     got = comboWhatToDraw.get()
-    if got[2] == "р":
-        global tempArr
-        tempArr.append([event.x, event.y, curColorLines])
-        if len(tempArr) == 2:
-            linesArray.append(tempArr)
-            tempArr = []
-            digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
-            curLine += 1
+    if got[6] == "е":
+        figureArray.append([event.x, event.y, curColorFigure])
+        if len(figureArray) >= 2:
+            digitBresenham(img, figureArray[len(figureArray) - 2][0], figureArray[len(figureArray) - 2][1],
+                           figureArray[len(figureArray) - 1][0], figureArray[len(figureArray) - 1][1])
     else:
-        cutterArray.append([event.x, event.y, curColorLines])
+        cutterArray.append([event.x, event.y, curColorFigure])
         if len(cutterArray) >= 2:
-            temp = curColorLines
-            curColorLines = curColorCutter
+            temp = curColorFigure
+            curColorFigure = curColorCutter
             digitBresenham(img, cutterArray[len(cutterArray) - 2][0], cutterArray[len(cutterArray) - 2][1],
                                 cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
-            curColorLines = temp
+            curColorFigure = temp
 
 
 def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
@@ -308,59 +305,41 @@ def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
     yStart = int(yStartEntry.get())
     yEnd = int(yEndEntry.get())
     global curLine
-    global linesArray
+    global figureArray
     global img
-    linesArray.append([[xStart, yStart, curColorLines], [xEnd, yEnd, curColorLines]])
-    digitBresenham(img, linesArray[curLine][0][0], linesArray[curLine][0][1], linesArray[curLine][1][0], linesArray[curLine][1][1])
+    figureArray.append([[xStart, yStart, curColorFigure], [xEnd, yEnd, curColorFigure]])
+    digitBresenham(img, figureArray[curLine][0][0], figureArray[curLine][0][1], figureArray[curLine][1][0], figureArray[curLine][1][1])
     curLine += 1
 
 
 def addCutterPoint(xEntry, yEntry):
     xPoint = int(xEntry.get())
     yPoint = int(yEntry.get())
-    global cutterArray, curColorLines
+    global cutterArray, curColorFigure
     global img
     cutterArray.append([xPoint, yPoint])
     if len(cutterArray) >= 2:
-        temp = curColorLines
-        curColorLines = curColorCutter
+        temp = curColorFigure
+        curColorFigure = curColorCutter
         digitBresenham(img, cutterArray[len(cutterArray) - 2][0], cutterArray[len(cutterArray) - 2][1],
                        cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
-        curColorLines = temp
+        curColorFigure = temp
 
 
 def endClick(event):
     global cutterArray
-    global curColorLines
-    temp = curColorLines
-    curColorLines = curColorCutter
-    digitBresenham(img, cutterArray[0][0], cutterArray[0][1],
-                        cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
-    curColorLines = temp
-
-
-def cancelClick(event):
-    global linesArray, curLine
-    if len(linesArray) == 0:
-        return
-    global curColorLines
-    global curColorBackground
-    tempCol = curColorLines
-    curColorLines = curColorBackground
-    if len(linesArray[curLine]):
-        digitBresenham(img, linesArray[curLine][len(linesArray[curLine]) - 2][0],
-                       linesArray[curLine][len(linesArray[curLine]) - 1][0],
-                       linesArray[curLine][len(linesArray[curLine]) - 2][1],
-                       linesArray[curLine][len(linesArray[curLine]) - 1][1])
-        linesArray[curLine].pop()
+    global figureArray
+    global curColorFigure
+    got = comboWhatToDraw.get()
+    if got[6] == "е":
+        digitBresenham(img, figureArray[0][0], figureArray[0][1],
+                       figureArray[len(cutterArray) - 1][0], figureArray[len(cutterArray) - 1][1])
     else:
-        linesArray.pop()
-        curLine -= 1
-        digitBresenham(img, linesArray[curLine][0][0],
-                       linesArray[curLine][len(linesArray[curLine]) - 1][0],
-                       linesArray[curLine][0][1],
-                       linesArray[curLine][len(linesArray[curLine]) - 1][1])
-    curColorLines = tempCol
+        temp = curColorFigure
+        curColorFigure = curColorCutter
+        digitBresenham(img, cutterArray[0][0], cutterArray[0][1],
+                       cutterArray[len(cutterArray) - 1][0], cutterArray[len(cutterArray) - 1][1])
+        curColorFigure = temp
 
 
 def scalProd(fVector, sVector):
@@ -403,15 +382,15 @@ def normal(fPoint, sPoint, posToPoint):
     return normVec
 
 
-def drawLines(array):
-    global img, curColorLines, curColorCuted, crutch
-    temp = curColorLines
+def drawFigure(array):
+    global img, curColorFigure, curColorCuted, crutch
+    temp = curColorFigure
 
-    crutch = curColorLines
-    curColorLines = curColorCuted
+    crutch = curColorFigure
+    curColorFigure = curColorCuted
     for line in array:
         digitBresenhamForCuted(img, line[1][0], line[1][1], line[0][0], line[0][1])
-    curColorLines = temp
+    curColorFigure = temp
 
 
 def makeMainWindow():
@@ -428,8 +407,6 @@ def makeMainWindow():
 
     canvasWindow.bind('<1>', click)
 
-    canvasWindow.bind('<2>', cancelClick)
-
     canvasWindow.bind('<3>', endClick)
 
     canvasWindow.place(x = 750, y = 0)
@@ -439,7 +416,7 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: CyrusBeckAlg(linesArray, cutterArray))
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
     makeAlgButton.place(x = 5, y = 350)
 
 
