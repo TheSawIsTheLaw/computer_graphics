@@ -382,6 +382,24 @@ def normal(fPoint, sPoint, posToPoint):
     return normVec
 
 
+#def cutForCurrentSide(side, fidEdge):
+
+
+def SutherlandHodgmanAlg(figureArray, cutterArray):
+    numOfCutterSides = len(cutterArray)
+    numOfFigureSides = len(figureArray)
+
+    for side in cutterArray:
+        resNum = 0
+        for figEdgeNum in range(len(figureArray)):
+            if figEdgeNum == 0:
+                firstPoint = cutterArray[figEdgeNum]
+                continue
+
+        if resNum == 0:
+            break
+
+
 def drawFigure(array):
     global img, curColorFigure, curColorCuted, crutch
     temp = curColorFigure
