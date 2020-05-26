@@ -385,19 +385,36 @@ def normal(fPoint, sPoint, posToPoint):
 #def cutForCurrentSide(side, fidEdge):
 
 
+def isVisibleFor(point, fPointOfSide, sPointOfSide):
+    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) >= 0:
+        return True
+    else:
+        return False
+
+
+def sideCutter(preResult, fSidePoint, sSidePoint, posToSide):
+    ret = []
+
+    firstInCond = isVisibleFor(preResult[0], fSidePoint, sSidePoint)
+    for curPoint in range(-1, len(preResult)):
+        secondInCond = isVisibleFor(preResult[curPoint], fSidePoint, sSidePoint)
+
+        if firstInCond and secondInCond:
+            ret.append(preResult[curPoint])
+        elif firstInCond:
+            pass # найти пересечение
+        elif secondInCond:
+            # Пересечения
+            ret.append(preResult[curPoint])
+
+
 def SutherlandHodgmanAlg(figureArray, cutterArray):
-    numOfCutterSides = len(cutterArray)
-    numOfFigureSides = len(figureArray)
-
-    for side in cutterArray:
-        resNum = 0
-        for figEdgeNum in range(len(figureArray)):
-            if figEdgeNum == 0:
-                firstPoint = cutterArray[figEdgeNum]
-                continue
-
-        if resNum == 0:
-            break
+    result = figureArray
+    for side in range(-2, len(cutterArray) - 2):
+        result = sideCutter(result, cutterArray[side], cutterArray[side + 1], cutterArray[side + 2])
+        if len(result) <= 2:
+            return
+    drawFigure(result)
 
 
 def drawFigure(array):
