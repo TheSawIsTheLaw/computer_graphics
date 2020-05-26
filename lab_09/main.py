@@ -333,7 +333,7 @@ def endClick(event):
     got = comboWhatToDraw.get()
     if got[6] == "е":
         digitBresenham(img, figureArray[0][0], figureArray[0][1],
-                       figureArray[len(cutterArray) - 1][0], figureArray[len(cutterArray) - 1][1])
+                       figureArray[- 1][0], figureArray[- 1][1])
     else:
         temp = curColorFigure
         curColorFigure = curColorCutter
@@ -392,39 +392,20 @@ def isVisibleFor(point, fPointOfSide, sPointOfSide):
         return False
 
 
-def sideCutter(preResult, fSidePoint, sSidePoint, posToSide):
-    ret = []
-
-    firstInCond = isVisibleFor(preResult[0], fSidePoint, sSidePoint)
-    for curPoint in range(-1, len(preResult)):
-        secondInCond = isVisibleFor(preResult[curPoint], fSidePoint, sSidePoint)
-
-        if firstInCond and secondInCond:
-            ret.append(preResult[curPoint])
-        elif firstInCond:
-            pass # найти пересечение
-        elif secondInCond:
-            # Пересечения
-            ret.append(preResult[curPoint])
-
-
 def SutherlandHodgmanAlg(figureArray, cutterArray):
-    result = figureArray
-    for side in range(-2, len(cutterArray) - 2):
-        result = sideCutter(result, cutterArray[side], cutterArray[side + 1], cutterArray[side + 2])
-        if len(result) <= 2:
-            return
-    drawFigure(result)
+   print(figureArray, cutterArray)
 
 
 def drawFigure(array):
+    if array:
+        print(array)
     global img, curColorFigure, curColorCuted, crutch
     temp = curColorFigure
 
     crutch = curColorFigure
     curColorFigure = curColorCuted
-    for line in array:
-        digitBresenhamForCuted(img, line[1][0], line[1][1], line[0][0], line[0][1])
+    for line in range(len(array)):
+        digitBresenhamForCuted(img, array[line - 1][0], array[line][0], array[line - 1][1], array[line][1])
     curColorFigure = temp
 
 
@@ -451,7 +432,7 @@ def makeMainWindow():
     setColorButtons(rootWindow, canvasWindow)
 
     makeAlgButton = Button(rootWindow, text = "Выполнить отсечение", width = 60,
-                           font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
+                           font = fontSettingLower, bg = "#FF9C00", command = lambda: SutherlandHodgmanAlg(figureArray, cutterArray))
     makeAlgButton.place(x = 5, y = 350)
 
 
