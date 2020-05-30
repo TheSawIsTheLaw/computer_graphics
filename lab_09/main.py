@@ -382,9 +382,6 @@ def normal(fPoint, sPoint, posToPoint):
     return normVec
 
 
-#def cutForCurrentSide(side, fidEdge):
-
-
 def isVisibleFor(point, fPointOfSide, sPointOfSide):
     if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) >= 0:
         return True
@@ -393,7 +390,9 @@ def isVisibleFor(point, fPointOfSide, sPointOfSide):
 
 
 def SutherlandHodgmanAlg(figureArray, cutterArray):
-   print(figureArray, cutterArray)
+    if not isConvex(figureArray):
+        makeConvexError()
+        return
 
 
 def drawFigure(array):
