@@ -75,8 +75,8 @@ def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
         image.put(curColorFigure, (xStart, yStart))
         return
 
-    deltaX = xEnd - xStart
-    deltaY = yEnd - yStart
+    deltaX = int(xEnd - xStart)
+    deltaY = int(yEnd - yStart)
 
     stepX = int(np.round(sign(deltaX)))
     stepY = int(np.round(sign(deltaY)))
@@ -91,8 +91,8 @@ def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
         flag = False
 
     acc = deltaY + deltaY - deltaX
-    curX = xStart
-    curY = yStart
+    curX = int(xStart)
+    curY = int(yStart)
 
     for i in range(1, deltaX + 1):
         magicColor = (int(crutch[1:3], 16), int(crutch[3:5], 16), int(crutch[5:7], 16))
@@ -383,21 +383,51 @@ def normal(fPoint, sPoint, posToPoint):
 
 
 def isVisibleFor(point, fPointOfSide, sPointOfSide):
-    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) >= 0:
+    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) > 0:
         return True
     else:
         return False
 
 
+def crossingOfTwoSegments(segment, side, norm):
+    directrix = [segment[1][0] - segment[0][0], segment[1][1] - segment[0][1]]
+    wVec = [side[1][0] - side[0][0], side[1][1] - side[0][1]]
+
+    dScal = scalProd(directrix, norm)
+    wScal = scalProd(wVec, norm)
+
+    parameter = - wScal / dScal
+    return [segment[0][0] + directrix[0] * parameter, segment[0][1] + directrix[1] * parameter]
+
+
 def cutEdge(result, side, posToDot):
+    print("PreRes")
+    print(result)
+    print("To side")
+    print(side)
     ret = []
     if len(result) <= 2:
-        return
+        return []
 
-    previousVisibility = isVisibleFor(result[-1], side[0], side[1])
-    for curPointNum in range(len(result):
-        currentVisibility = isVisibleFor(result[curPointNum], side[0], side[1])
-        
+    previousVisibility = isVisibleFor(result[0], side[0], side[1])
+    for curPointNum in range(1, len(result) + 1):
+        currentVisibility = isVisibleFor(result[curPointNum % len(result)], side[0], side[1])
+
+        if previousVisibility:
+            if currentVisibility:
+                ret.append(result[curPointNum % len(result)])
+            else:
+                norm = normal(side[0], side[1], posToDot)
+                ret.append(crossingOfTwoSegments([result[curPointNum - 1], result[curPointNum % len(result)]], side, norm))
+        else:
+            if currentVisibility:
+                norm = normal(side[0], side[1], posToDot)
+                ret.append(crossingOfTwoSegments([result[curPointNum - 1], result[curPointNum % len(result)]], side, norm))
+                ret.append(result[curPointNum % len(result)])
+
+        previousVisibility = currentVisibility
+
+    return ret
 
 
 def SutherlandHodgmanAlg(figureArray, cutterArray):
@@ -410,19 +440,19 @@ def SutherlandHodgmanAlg(figureArray, cutterArray):
         curSide = [cutterArray[curDot - 1], cutterArray[curDot]]
         result = cutEdge(result, curSide, cutterArray[curDot - 2])
         if len(result) <= 2:
-            return
-    return result
+            break
+
+    print(result)
+    drawFigure(result)
 
 
 def drawFigure(array):
-    if array:
-        print(array)
     global img, curColorFigure, curColorCuted, crutch
     temp = curColorFigure
     crutch = curColorFigure
     curColorFigure = curColorCuted
-    for line in range(len(array)):
-        digitBresenhamForCuted(img, array[line - 1][0], array[line][0], array[line - 1][1], array[line][1])
+    for curPoint in range(len(array)):
+        digitBresenhamForCuted(img, array[curPoint - 1][0], array[curPoint - 1][1], array[curPoint][0], array[curPoint][1])
     curColorFigure = temp
 
 
