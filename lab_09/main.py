@@ -94,26 +94,31 @@ def digitBresenhamForCuted(image, xStart, yStart, xEnd, yEnd):
     curX = int(xStart)
     curY = int(yStart)
 
+    magicColor = (int(crutch[1:3], 16), int(crutch[3:5], 16), int(crutch[5:7], 16))
+    mag2 = (int(curColorCutter[1:3], 16), int(curColorCutter[3:5], 16), int(curColorCutter[5:7], 16))
     for i in range(1, deltaX + 1):
-        magicColor = (int(crutch[1:3], 16), int(crutch[3:5], 16), int(crutch[5:7], 16))
-        if image.get(curX, curY) == magicColor:
+        if image.get(curX, curY) == magicColor or image.get(curX, curY) == mag2:
             image.put(curColorCuted, (curX, curY))
-        if image.get(curX, curY + 1) == magicColor:
-            image.put(curColorCuted, (curX, curY + 1))
-        if image.get(curX, curY - 1) == magicColor:
-            image.put(curColorCuted, (curX, curY - 1))
-        if image.get(curX + 1, curY) == magicColor:
-            image.put(curColorCuted, (curX + 1, curY))
-        if image.get(curX - 1, curY) == magicColor:
-            image.put(curColorCuted, (curX - 1, curY))
-        if image.get(curX - 1, curY - 1) == magicColor:
-            image.put(curColorCuted, (curX - 1, curY - 1))
-        if image.get(curX - 1, curY + 1) == magicColor:
-            image.put(curColorCuted, (curX - 1, curY + 1))
-        if image.get(curX + 1, curY - 1) == magicColor:
-            image.put(curColorCuted, (curX + 1, curY - 1))
-        if image.get(curX + 1, curY + 1) == magicColor:
-            image.put(curColorCuted, (curX + 1, curY + 1))
+
+        # ЭТО ***НЫЙ ПОЗОР, МЕНЯ ВЫНУДИЛИ
+        for j in range(1, 3):
+            if image.get(curX, curY + j) == magicColor or image.get(curX, curY + j) == mag2:
+                image.put(curColorCuted, (curX, curY + j))
+            if image.get(curX, curY - j) == magicColor or image.get(curX, curY - j) == mag2:
+                image.put(curColorCuted, (curX, curY - j))
+            if image.get(curX + j, curY) == magicColor or image.get(curX + j, curY) == magicColor == mag2:
+                image.put(curColorCuted, (curX + j, curY))
+            if image.get(curX - j, curY) == magicColor or image.get(curX - j, curY) == magicColor == mag2:
+                image.put(curColorCuted, (curX - j, curY))
+            if image.get(curX - j, curY - j) == magicColor or image.get(curX - j, curY - j) == magicColor == mag2:
+                image.put(curColorCuted, (curX - j, curY - j))
+            if image.get(curX - j, curY + j) == magicColor or image.get(curX - j, curY + j) == mag2:
+                image.put(curColorCuted, (curX - j, curY + j))
+            if image.get(curX + j, curY - j) == magicColor or image.get(curX + j, curY - j) == mag2:
+                image.put(curColorCuted, (curX + j, curY - j))
+            if image.get(curX + j, curY + j) == magicColor or image.get(curX + j, curY + j) == mag2:
+                image.put(curColorCuted, (curX + j, curY + j))
+
 
         if flag:
             if acc >= 0:
@@ -383,7 +388,7 @@ def normal(fPoint, sPoint, posToPoint):
 
 
 def isVisibleFor(point, fPointOfSide, sPointOfSide):
-    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) >= 0:
+    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) > 0:
         return True
     else:
         return False
@@ -406,8 +411,6 @@ def cutEdge(result, side, posToDot):
     print("To side")
     print(side)
     ret = []
-    if len(result) <= 2:
-        return []
 
     previousVisibility = isVisibleFor(result[0], side[0], side[1])
     for curPointNum in range(1, len(result) + 1):
@@ -436,11 +439,13 @@ def SutherlandHodgmanAlg(figureArray, cutterArray):
         return
 
     result = figureArray
-    for curDot in range(-1, len(cutterArray) - 1):
-        curSide = [cutterArray[curDot - 1], cutterArray[curDot]]
-        result = cutEdge(result, curSide, cutterArray[curDot - 2])
+    for curDot in range(len(cutterArray)):
+        curSide = [cutterArray[curDot], cutterArray[(curDot + 1) % len(cutterArray)]]
+        result = cutEdge(result, curSide, cutterArray[(curDot + 1) % len(cutterArray)])
+
         if len(result) <= 2:
-            break
+            return []
+
 
     print(result)
     drawFigure(result)
