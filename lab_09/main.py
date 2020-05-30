@@ -389,10 +389,29 @@ def isVisibleFor(point, fPointOfSide, sPointOfSide):
         return False
 
 
+def cutEdge(result, side, posToDot):
+    ret = []
+    if len(result) <= 2:
+        return
+
+    previousVisibility = isVisibleFor(result[-1], side[0], side[1])
+    for curPointNum in range(len(result):
+        currentVisibility = isVisibleFor(result[curPointNum], side[0], side[1])
+        
+
+
 def SutherlandHodgmanAlg(figureArray, cutterArray):
     if not isConvex(figureArray):
         makeConvexError()
         return
+
+    result = figureArray
+    for curDot in range(-1, len(cutterArray) - 1):
+        curSide = [cutterArray[curDot - 1], cutterArray[curDot]]
+        result = cutEdge(result, curSide, cutterArray[curDot - 2])
+        if len(result) <= 2:
+            return
+    return result
 
 
 def drawFigure(array):
@@ -400,7 +419,6 @@ def drawFigure(array):
         print(array)
     global img, curColorFigure, curColorCuted, crutch
     temp = curColorFigure
-
     crutch = curColorFigure
     curColorFigure = curColorCuted
     for line in range(len(array)):
