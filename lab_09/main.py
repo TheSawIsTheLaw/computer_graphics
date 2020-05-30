@@ -383,7 +383,7 @@ def normal(fPoint, sPoint, posToPoint):
 
 
 def isVisibleFor(point, fPointOfSide, sPointOfSide):
-    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) > 0:
+    if vectProd([point[0] - fPointOfSide[0], point[1] - fPointOfSide[1]], [sPointOfSide[0] - fPointOfSide[0], sPointOfSide[1] - fPointOfSide[1]]) >= 0:
         return True
     else:
         return False
@@ -391,7 +391,7 @@ def isVisibleFor(point, fPointOfSide, sPointOfSide):
 
 def crossingOfTwoSegments(segment, side, norm):
     directrix = [segment[1][0] - segment[0][0], segment[1][1] - segment[0][1]]
-    wVec = [side[1][0] - side[0][0], side[1][1] - side[0][1]]
+    wVec = [segment[0][0] - side[0][0], segment[0][1] - side[0][1]]
 
     dScal = scalProd(directrix, norm)
     wScal = scalProd(wVec, norm)
@@ -431,7 +431,7 @@ def cutEdge(result, side, posToDot):
 
 
 def SutherlandHodgmanAlg(figureArray, cutterArray):
-    if not isConvex(figureArray):
+    if not isConvex(cutterArray):
         makeConvexError()
         return
 
