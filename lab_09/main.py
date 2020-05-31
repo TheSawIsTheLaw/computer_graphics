@@ -304,17 +304,15 @@ def click(event):
             curColorFigure = temp
 
 
-def addPoint(xStartEntry, yStartEntry, xEndEntry, yEndEntry):
-    xStart = int(xStartEntry.get())
-    xEnd = int(xEndEntry.get())
-    yStart = int(yStartEntry.get())
-    yEnd = int(yEndEntry.get())
-    global curLine
+def addPoint(xEntry, yEntry):
+    xStart = int(xEntry.get())
+    yStart = int(yEntry.get())
     global figureArray
     global img
-    figureArray.append([[xStart, yStart, curColorFigure], [xEnd, yEnd, curColorFigure]])
-    digitBresenham(img, figureArray[curLine][0][0], figureArray[curLine][0][1], figureArray[curLine][1][0], figureArray[curLine][1][1])
-    curLine += 1
+    figureArray.append([xStart, yStart, curColorFigure])
+    if len(figureArray) >= 2:
+        digitBresenham(img, figureArray[len(figureArray) - 2][0], figureArray[len(figureArray) - 2][1],
+                       figureArray[len(figureArray) - 1][0], figureArray[len(figureArray) - 1][1])
 
 
 def addCutterPoint(xEntry, yEntry):
@@ -484,7 +482,7 @@ def makeMainWindow():
                  , borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 60).place(x = 5, y = 400)
 
-    Label(rootWindow, text = "Добавление точки стороны отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
+    Label(rootWindow, text = "Добавление точки отсекателя", width = 60, font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 5, y = 550)
 
     Label(rootWindow, text = "Координата X точки:", font = fontSettingLower, borderwidth = 10, relief = RIDGE, bg = "black", fg = "white").place(x = 10,
                                                                                                                                                  y = 600)
@@ -513,7 +511,7 @@ def makeMainWindow():
                                                                                                                                                  y = 900)
 
     addFigPoint = Button(rootWindow, text = "Добавить точку отсекаемого многоугольника", width = 60, height = 6,
-                         font = fontSettingLower, bg = "#FF9C00", command = lambda: print())
+                         font = fontSettingLower, bg = "#FF9C00", command = lambda: addPoint(xEntryStart, yEntryStart))
     addFigPoint.place(x = 5, y = 896)
 
     Label(text = "Алгоритм \nСазерленда-Ходжмена", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
