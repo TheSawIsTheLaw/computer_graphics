@@ -388,7 +388,7 @@ def isConvex(pointArray):
 
 def normal(fPoint, sPoint, posToPoint):
     foundVector = [sPoint[0] - fPoint[0], sPoint[1] - fPoint[1]]
-    positiveForVector = [posToPoint[0] - sPoint[0], posToPoint[1] - fPoint[1]]
+    positiveForVector = [posToPoint[0] - sPoint[0], posToPoint[1] - sPoint[1]]
 
     if foundVector[1]:
         foundPoint = - foundVector[0] / foundVector[1]
