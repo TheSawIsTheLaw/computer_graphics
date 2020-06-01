@@ -4,20 +4,15 @@ from tkinter import ttk
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
 
-delay = 0
+example = 0
+xyz = 0
 img = 0
-
-curLine = 0
 
 curColorBackground = "#000000"
 curColorFigure = "#ffff00"
 
 comboWhatToDraw = 0
-tempArr = []
-
-figureArray = []
-
-cutterArray = []
+comboRotation = 0
 
 
 def makeReference():
@@ -73,7 +68,7 @@ def setComboWhatToDraw(rootWindow):
     global comboWhatToDraw
     comboWhatToDraw = ttk.Combobox(rootWindow,
                               width = 75,
-                              textvariable = delay,
+                              textvariable = example,
                               state = 'readonly',
                               values =
                                 ('x² + y² = z²',
@@ -81,6 +76,21 @@ def setComboWhatToDraw(rootWindow):
 
     comboWhatToDraw.place(x = 280, y = 120)
     comboWhatToDraw.current(0)
+
+
+def setComboRotation(rootWindow):
+    global comboRotation
+    comboRotation = ttk.Combobox(rootWindow,
+                              width = 10,
+                              textvariable = xyz,
+                              state = 'readonly',
+                              values =
+                                ('По оси x',
+                                 'По оси y',
+                                 'По оси z'), font = fontSettingLower)
+
+    comboRotation.place(x = 5, y = 560)
+    comboRotation.current(0)
 
 
 def makeMainWindow():
@@ -134,6 +144,10 @@ def makeMainWindow():
 
     showButton = Button(rootWindow, text = "Отрисовать фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     showButton.place(x = 5, y = 430)
+
+    Label(text = "Вращение", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLabels, width = 48).place(x = 5, y = 500)
+    setComboRotation(rootWindow)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
