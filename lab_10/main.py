@@ -112,6 +112,25 @@ def makeMainWindow():
     xLimitEndEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     xLimitEndEntry.place(x = 630, y = 220)
 
+    Label(text = "Начало по y:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 15).place(x = 5, y = 270)
+    yLimitStartEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    yLimitStartEntry.place(x = 210, y = 270)
+    Label(text = "Конец по y:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 15).place(x = 430, y = 270)
+    yLimitEndEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    yLimitEndEntry.place(x = 630, y = 270)
+
+    Label(text = "Шаг", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLabels, width = 48).place(x = 5, y = 320)
+    Label(text = "Шаг по x:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 15).place(x = 5, y = 380)
+    xStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    xStepEntry.place(x = 210, y = 380)
+
+    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    showButton.place(x = 5, y = 450)
+
     makeCascadeMenu(rootWindow, canvasWindow)
 
     rootWindow.mainloop()
