@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter.ttk import Combobox
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
@@ -11,7 +12,7 @@ img = 0
 curColorBackground = "#000000"
 curColorFigure = "#ffff00"
 
-comboWhatToDraw = 0
+comboWhatToDraw = 1
 comboRotation = 0
 
 
@@ -66,7 +67,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 def setComboWhatToDraw(rootWindow):
     Label(rootWindow, text = "Уравнение поверхности:", bg = "black", fg = "white", borderwidth = 5, relief = RIDGE, font = fontSettingLower).place(x = 5, y = 112)
     global comboWhatToDraw
-    comboWhatToDraw = ttk.Combobox(rootWindow,
+    comboWhatToDraw = Combobox(rootWindow,
                               width = 75,
                               textvariable = example,
                               state = 'readonly',
@@ -80,17 +81,14 @@ def setComboWhatToDraw(rootWindow):
 
 def setComboRotation(rootWindow):
     global comboRotation
-    comboRotation = ttk.Combobox(rootWindow,
-                              width = 10,
-                              textvariable = xyz,
-                              state = 'readonly',
-                              values =
-                                ('По оси x',
-                                 'По оси y',
-                                 'По оси z'), font = fontSettingLower)
+    comboRotation = Listbox(rootWindow,
+                              width = 43, height = 3,
+                              selectmode = SINGLE, bg = 'black', fg = 'white')
+    comboRotation.insert(END, 'Вокруг оси x')
+    comboRotation.insert(END, 'Вокруг оси y')
+    comboRotation.insert(END, 'Вокруг оси z')
 
-    comboRotation.place(x = 5, y = 565)
-    comboRotation.current(0)
+    comboRotation.place(x = 5, y = 554)
 
 
 def makeMainWindow():
@@ -157,6 +155,10 @@ def makeMainWindow():
     angleEntry.place(x = 630, y = 555)
     rotateButton = Button(rootWindow, text = "Повернуть фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     rotateButton.place(x = 5, y = 605)
+
+    Label(text = "Список уравнений поверхностей\n задаётся в отдельном модуле.", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLabels, width = 48, heigh = 10).place(x = 5, y = 675)
+    setComboRotation(rootWindow)
 
     rootWindow.mainloop()
 
