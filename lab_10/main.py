@@ -69,7 +69,7 @@ def makeCascadeMenu(rootWindow, canvasWindow):
 
 
 def setComboWhatToDraw(rootWindow):
-    Label(rootWindow, text = "Уравнение поверхности:", font = fontSettingLower).place(x = 5, y = 140)
+    Label(rootWindow, text = "Уравнение поверхности:", bg = "black", fg = "white", borderwidth = 5, relief = RIDGE, font = fontSettingLower).place(x = 5, y = 112)
     global comboWhatToDraw
     comboWhatToDraw = ttk.Combobox(rootWindow,
                               width = 75,
@@ -79,14 +79,8 @@ def setComboWhatToDraw(rootWindow):
                                 ('x² + y² = z²',
                                  '...'))
 
-    comboWhatToDraw.place(x = 275, y = 145)
+    comboWhatToDraw.place(x = 280, y = 120)
     comboWhatToDraw.current(0)
-
-
-def setImageToCanvas(canvasWindow):
-    global img
-    img = PhotoImage(width = 1090, height = 1016)
-    canvasWindow.create_image((545, 508), image = img, state = "normal")
 
 
 def makeMainWindow():
@@ -99,14 +93,24 @@ def makeMainWindow():
 
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
-    setImageToCanvas(canvasWindow)
-
     canvasWindow.place(x = 750, y = 0)
 
     setComboWhatToDraw(rootWindow)
 
     Label(text = "Алгоритм Плавающего горизонта\nпостроения трёхмерных моделей", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 15)
+
+    Label(text = "Пределы", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLabels, width = 48).place(x = 5, y = 160)
+
+    Label(text = "Начало по x:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 15).place(x = 5, y = 220)
+    xLimitStartEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    xLimitStartEntry.place(x = 210, y = 220)
+    Label(text = "Конец по x:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 15).place(x = 430, y = 220)
+    xLimitEndEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    xLimitEndEntry.place(x = 630, y = 220)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
