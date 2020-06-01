@@ -133,7 +133,7 @@ def makeMainWindow():
     yStepEntry.place(x = 630, y = 380)
 
     showButton = Button(rootWindow, text = "Отрисовать фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
-    showButton.place(x = 5, y = 450)
+    showButton.place(x = 5, y = 430)
 
     makeCascadeMenu(rootWindow, canvasWindow)
 
