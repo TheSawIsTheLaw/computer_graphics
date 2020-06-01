@@ -127,6 +127,10 @@ def makeMainWindow():
           font = fontSettingLower, width = 15).place(x = 5, y = 380)
     xStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     xStepEntry.place(x = 210, y = 380)
+    Label(text = "Шаг по y:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 15).place(x = 430, y = 380)
+    yStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    yStepEntry.place(x = 630, y = 380)
 
     showButton = Button(rootWindow, text = "Отрисовать фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     showButton.place(x = 5, y = 450)
