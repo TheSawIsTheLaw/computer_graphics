@@ -89,7 +89,7 @@ def setComboRotation(rootWindow):
                                  'По оси y',
                                  'По оси z'), font = fontSettingLower)
 
-    comboRotation.place(x = 5, y = 560)
+    comboRotation.place(x = 5, y = 565)
     comboRotation.current(0)
 
 
@@ -149,7 +149,14 @@ def makeMainWindow():
           font = fontSettingLabels, width = 48).place(x = 5, y = 500)
     setComboRotation(rootWindow)
 
+    Label(text = "Угол поворота (в градусах): ", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+          font = fontSettingLower, width = 28).place(x = 270, y = 555)
+
     makeCascadeMenu(rootWindow, canvasWindow)
+    angleEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    angleEntry.place(x = 630, y = 555)
+    rotateButton = Button(rootWindow, text = "Повернуть фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    rotateButton.place(x = 5, y = 605)
 
     rootWindow.mainloop()
 
