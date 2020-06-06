@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import Combobox
+from lab_10 import example
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
 
-example = 0
+exa = 0
 xyz = 0
 img = 0
 
@@ -54,11 +55,17 @@ def showSurface(exampleCombo,
                 xStartLimitEntry, yStartLimitEntry,
                 xEndLimitEntry, yEndLimitEntry,
                 xStepEntry, yStepEntry):
-    xStartLimit = xStartLimitEntry.get()
-    yStartLimit = yStartLimitEntry.get()
-    xEndLimit = xEndLimitEntry.get()
-    yEndLimit = yEndLimitEntry.get()
+    xStartLimit = int(xStartLimitEntry.get())
+    yStartLimit = int(yStartLimitEntry.get())
+    xEndLimit = int(xEndLimitEntry.get())
+    yEndLimit = int(yEndLimitEntry.get())
 
+    xStep = int(xStepEntry.get())
+    yStep = int(yStepEntry.get())
+
+    global exa
+    if exa == 0:
+        example.expFirst(1, 1)
 
 def makeCascadeMenu(rootWindow, canvasWindow):
     """
@@ -83,7 +90,7 @@ def setComboWhatToDraw(rootWindow):
     global comboWhatToDraw
     comboWhatToDraw = Combobox(rootWindow,
                               width = 75,
-                              textvariable = example,
+                              textvariable = exa,
                               state = 'readonly',
                               values =
                                 ('x² + y² = z²',
@@ -154,7 +161,7 @@ def makeMainWindow():
     yStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     yStepEntry.place(x = 630, y = 380)
 
-    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = showSurface(comboWhatToDraw, xLimitStartEntry, yLimitStartEntry, xLimitEndEntry, yLimitEndEntry, xStepEntry, yStepEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = lambda: showSurface(comboWhatToDraw, xLimitStartEntry, yLimitStartEntry, xLimitEndEntry, yLimitEndEntry, xStepEntry, yStepEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     showButton.place(x = 5, y = 430)
 
     Label(text = "Вращение", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
