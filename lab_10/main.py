@@ -47,25 +47,26 @@ def clearImage(canvasWindow):
     canvasWindow.place(x = 750, y = 0)
 
 
-def floatingHorizonAlgorithm():
+def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep):
     return
 
 
 def showSurface(exampleCombo,
-                xStartLimitEntry, yStartLimitEntry,
-                xEndLimitEntry, yEndLimitEntry,
-                xStepEntry, yStepEntry):
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry):
     xStartLimit = int(xStartLimitEntry.get())
-    yStartLimit = int(yStartLimitEntry.get())
+    zStartLimit = int(zStartLimitEntry.get())
     xEndLimit = int(xEndLimitEntry.get())
-    yEndLimit = int(yEndLimitEntry.get())
+    zEndLimit = int(zEndLimitEntry.get())
 
     xStep = int(xStepEntry.get())
-    yStep = int(yStepEntry.get())
+    zStep = int(zStepEntry.get())
 
     global exa
     if exa == 0:
-        example.expFirst(1, 1)
+        floatingHorizonAlgorithm(example.expFirst, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep)
+
 
 def makeCascadeMenu(rootWindow, canvasWindow):
     """
@@ -112,6 +113,12 @@ def setComboRotation(rootWindow):
     comboRotation.place(x = 5, y = 554)
 
 
+def setImageToCanvas(canvasWindow):
+    global img
+    img = PhotoImage(width = 1090, height = 1016)
+    canvasWindow.create_image((545, 508), image = img, state = "normal")
+
+
 def makeMainWindow():
     """
             Функция Создания главного окна
@@ -123,6 +130,8 @@ def makeMainWindow():
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     canvasWindow.place(x = 750, y = 0)
+
+    setImageToCanvas(canvasWindow)
 
     setComboWhatToDraw(rootWindow)
 
@@ -141,14 +150,14 @@ def makeMainWindow():
     xLimitEndEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     xLimitEndEntry.place(x = 630, y = 220)
 
-    Label(text = "Начало по y:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(text = "Начало по z:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 15).place(x = 5, y = 270)
-    yLimitStartEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
-    yLimitStartEntry.place(x = 210, y = 270)
-    Label(text = "Конец по y:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    zLimitStartEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    zLimitStartEntry.place(x = 210, y = 270)
+    Label(text = "Конец по z:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 15).place(x = 430, y = 270)
-    yLimitEndEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
-    yLimitEndEntry.place(x = 630, y = 270)
+    zLimitEndEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    zLimitEndEntry.place(x = 630, y = 270)
 
     Label(text = "Шаг", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLabels, width = 48).place(x = 5, y = 320)
@@ -156,12 +165,12 @@ def makeMainWindow():
           font = fontSettingLower, width = 15).place(x = 5, y = 380)
     xStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     xStepEntry.place(x = 210, y = 380)
-    Label(text = "Шаг по y:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
+    Label(text = "Шаг по z:", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
           font = fontSettingLower, width = 15).place(x = 430, y = 380)
-    yStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
-    yStepEntry.place(x = 630, y = 380)
+    zStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
+    zStepEntry.place(x = 630, y = 380)
 
-    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = lambda: showSurface(comboWhatToDraw, xLimitStartEntry, yLimitStartEntry, xLimitEndEntry, yLimitEndEntry, xStepEntry, yStepEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = lambda: showSurface(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     showButton.place(x = 5, y = 430)
 
     Label(text = "Вращение", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
