@@ -46,6 +46,20 @@ def clearImage(canvasWindow):
     canvasWindow.place(x = 750, y = 0)
 
 
+def floatingHorizonAlgorithm():
+    return
+
+
+def showSurface(exampleCombo,
+                xStartLimitEntry, yStartLimitEntry,
+                xEndLimitEntry, yEndLimitEntry,
+                xStepEntry, yStepEntry):
+    xStartLimit = xStartLimitEntry.get()
+    yStartLimit = yStartLimitEntry.get()
+    xEndLimit = xEndLimitEntry.get()
+    yEndLimit = yEndLimitEntry.get()
+
+
 def makeCascadeMenu(rootWindow, canvasWindow):
     """
         Функция создания каскадного меню
@@ -140,7 +154,7 @@ def makeMainWindow():
     yStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     yStepEntry.place(x = 630, y = 380)
 
-    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = showSurface(comboWhatToDraw, xLimitStartEntry, yLimitStartEntry, xLimitEndEntry, yLimitEndEntry, xStepEntry, yStepEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     showButton.place(x = 5, y = 430)
 
     Label(text = "Вращение", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
