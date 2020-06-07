@@ -247,10 +247,10 @@ def setComboWhatToDraw(rootWindow):
                               textvariable = exa,
                               state = 'readonly',
                               values =
-                                ('cos(x) * sin(x)',
-                                 'sin(x) * cos(z) * cos(x * z)',
-                                 'sqrt(x * x / 3 + z * z)',
-                                 'abs(x + z)'))
+                                ('y = cos(x) * sin(x)',
+                                 'y = sin(x) * cos(z) * cos(x * z)',
+                                 'y = sqrt(x * x / 3 + z * z)',
+                                 'y = abs(x + z)'))
 
     comboWhatToDraw.place(x = 280, y = 120)
     comboWhatToDraw.current(0)
