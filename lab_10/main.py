@@ -22,7 +22,7 @@ height = 1016
 
 trans_matrix = [[int(i == j) for i in range(4)] for j in range(4)]
 
-sf = 48
+sf = 35
 
 
 def makeReference():
@@ -68,10 +68,10 @@ def xAxisRotation(exampleCombo,
                 xEndLimitEntry, zEndLimitEntry,
                 xStepEntry, zStepEntry, canvasWindow, rotateAngle):
     value = float(rotateAngle.get()) / 180 * pi
-    rotate_matrix = [ [ 1, 0, 0, 0 ],
-                       [ 0, cos(value), sin(value), 0 ],
-                       [ 0, -sin(value), cos(value), 0 ],
-                       [ 0, 0, 0, 1 ] ]
+    rotate_matrix = [[1, 0, 0, 0],
+                       [0, cos(value), sin(value), 0],
+                       [0, -sin(value), cos(value), 0],
+                       [0, 0, 0, 1]]
     rotate_trans_matrix(rotate_matrix)
     showSurface(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
@@ -84,10 +84,10 @@ def yAxisRotation(exampleCombo,
                 xEndLimitEntry, zEndLimitEntry,
                 xStepEntry, zStepEntry, canvasWindow, rotateAngle):
     value = float(rotateAngle.get()) / 180 * pi
-    rotate_matrix = [ [ cos(value), 0, -sin(value), 0 ],
-                       [ 0, 1, 0, 0 ],
-                       [ sin(value), 0, cos(value), 0 ],
-                       [ 0, 0, 0, 1 ] ]
+    rotate_matrix = [[cos(value), 0, -sin(value), 0],
+                       [0, 1, 0, 0],
+                       [sin(value), 0, cos(value), 0],
+                       [0, 0, 0, 1]]
     rotate_trans_matrix(rotate_matrix)
     showSurface(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
@@ -210,9 +210,15 @@ def showSurface(exampleCombo,
     xStep = float(xStepEntry.get())
     zStep = float(zStepEntry.get())
 
-    global exa
-    if exa == 0:
+    got = exampleCombo.current()
+    if got == 0:
         floatingHorizonAlgorithm(example.expFirst, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow)
+    elif got == 1:
+        floatingHorizonAlgorithm(example.expSecond, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow)
+    elif got == 2:
+        floatingHorizonAlgorithm(example.expThird, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow)
+    elif got == 3:
+        floatingHorizonAlgorithm(example.expFourth, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow)
 
 
 def makeCascadeMenu(rootWindow, canvasWindow):
@@ -241,8 +247,10 @@ def setComboWhatToDraw(rootWindow):
                               textvariable = exa,
                               state = 'readonly',
                               values =
-                                ('x² + y² = z²',
-                                 '...'))
+                                ('cos(x) * sin(x)',
+                                 'sin(x) * cos(z) * cos(x * z)',
+                                 'sqrt(x * x / 3 + z * z)',
+                                 'abs(x + z)'))
 
     comboWhatToDraw.place(x = 280, y = 120)
     comboWhatToDraw.current(0)
