@@ -22,7 +22,7 @@ height = 1016
 
 trans_matrix = [[int(i == j) for i in range(4)] for j in range(4)]
 
-sf = 48
+sf = 1
 
 
 def makeReference():
@@ -49,6 +49,76 @@ def makeJobWindow():
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
+
+
+def rotate_trans_matrix(rotate_matrix):
+    global trans_matrix
+    res_matrix = [[0 for i in range(4)] for j in range(4)]
+
+    for i in range(4):
+        for j in range(4):
+            for k in range(4):
+                res_matrix[i][j] += trans_matrix[i][k] * rotate_matrix[k][j]
+
+    trans_matrix = res_matrix
+
+
+def rotate_x(exampleCombo,
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry, canvasWindow, rotateAngle):
+    value = float(rotateAngle.get()) / 180 * pi
+    rotate_matrix = [ [ 1, 0, 0, 0 ],
+                       [ 0, cos(value), sin(value), 0 ],
+                       [ 0, -sin(value), cos(value), 0 ],
+                       [ 0, 0, 0, 1 ] ]
+    rotate_trans_matrix(rotate_matrix)
+    showSurface(exampleCombo,
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry, canvasWindow)
+
+
+def rotate_y(exampleCombo,
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry, canvasWindow, rotateAngle):
+    value = float(rotateAngle.get()) / 180 * pi
+    rotate_matrix = [ [ cos(value), 0, -sin(value), 0 ],
+                       [ 0, 1, 0, 0 ],
+                       [ sin(value), 0, cos(value), 0 ],
+                       [ 0, 0, 0, 1 ] ]
+    rotate_trans_matrix(rotate_matrix)
+    showSurface(exampleCombo,
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry, canvasWindow)
+
+
+def rotate_z(exampleCombo,
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry, canvasWindow, rotateAngle):
+    value = float(rotateAngle.get()) / 180 * pi
+    rotate_matrix = [ [ cos(value), sin(value), 0, 0 ],
+                       [ -sin(value), cos(value), 0, 0 ],
+                       [ 0, 0, 1, 0 ],
+                       [ 0, 0, 0, 1 ] ]
+    rotate_trans_matrix(rotate_matrix)
+    showSurface(exampleCombo,
+                xStartLimitEntry, zStartLimitEntry,
+                xEndLimitEntry, zEndLimitEntry,
+                xStepEntry, zStepEntry, canvasWindow)
+
+
+def rotate(comboRotation, comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle):
+    print(comboRotation.curselection()[0])
+    if comboRotation.curselection()[0] == 0:
+        rotate_x(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
+    elif comboRotation.curselection()[0] == 1:
+        rotate_y(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
+    elif comboRotation.curselection()[0] == 2:
+        rotate_z(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
 
 
 def trans_point(point):
@@ -113,7 +183,7 @@ def draw_horizon_part(p1, p2, hh, lh, canvasWindow):
 def draw_horizon(func, hh, lh, fr, to, step, z, canvasWindow):
     f = lambda x: func(x, z)  # f = f(x, z=const)
     prev = None
-    for x in arange(fr, to + 2 * step, step):
+    for x in arange(fr, to + step, step):
         # x, z, f(x, z=const)
         current = trans_point([x, f(x), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
         if prev:  # Если это не первая точка (то есть если есть предыдущая)
@@ -262,7 +332,7 @@ def makeMainWindow():
     makeCascadeMenu(rootWindow, canvasWindow)
     angleEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     angleEntry.place(x = 630, y = 555)
-    rotateButton = Button(rootWindow, text = "Повернуть фигуру", command = print(), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    rotateButton = Button(rootWindow, text = "Повернуть фигуру", command = lambda: rotate(comboRotation, comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, angleEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     rotateButton.place(x = 5, y = 605)
 
     Label(text = "Список уравнений поверхностей\n задаётся в отдельном модуле.", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
