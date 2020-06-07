@@ -185,8 +185,11 @@ def drawSideRibs(zStartLimit, zEndLimit, zStep, xStartLimit, xEndLimit, equation
 
 def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow):
     clearImage(canvasWindow)
-    topHorizon = [0 for _ in range(width)]
-    bottomHorizon = [height for _ in range(width)]
+    topHorizon = []
+    bottomHorizon = []
+    for _ in range(width):
+        topHorizon.append(0)
+        bottomHorizon.append(height)
 
     drawAllHorizons(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, canvasWindow, zStartLimit, zEndLimit, zStep)
 
