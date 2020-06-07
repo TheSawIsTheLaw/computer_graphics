@@ -156,15 +156,15 @@ def horizonForConstant(equation, topHorizon, bottomHorizon, xStartLimit, xEndLim
             newX, newY = previousPoint[0], previousPoint[1]
 
             for _ in range(int(pickedInc) + 1):
-                if newX < 0 or newX >= width or newY < 0 or newY >= height:    # not (0 <= newX and newX < width and 0 <= newY and newY < height):
+                if newX < 0 or newX >= width or newY < 0 or newY >= height:
                     break
                 drawableX = int(round(newX))
                 if newY > topHorizon[drawableX]:
                     topHorizon[drawableX] = newY
-                    canvasWindow.create_line(drawableX, newY, drawableX + 1, newY + 1, fill = curColorLines)
+                    canvasWindow.create_rectangle((drawableX, newY) * 2, fill = curColorLines, outline = "")
                 elif newY < bottomHorizon[drawableX]:
                     bottomHorizon[drawableX] = newY
-                    canvasWindow.create_line(drawableX, newY, drawableX + 1, newY + 1, fill = curColorLines)
+                    canvasWindow.create_rectangle((drawableX, newY) * 2, fill = curColorLines, outline = "")
                 newX += xIncrement
                 newY += yIncrement
         previousPoint = current
