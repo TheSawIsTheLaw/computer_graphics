@@ -121,7 +121,7 @@ def rotate(comboRotation, comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, x
         rotate_z(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
 
 
-def trans_point(point):
+def transform(point):
     # point = (x, y, z)
     point.append(1) # (x, y, z, 1)
     res_point = [0, 0, 0, 0]
@@ -180,15 +180,30 @@ def draw_horizon_part(p1, p2, hh, lh, canvasWindow):
         y += dy
 
 
-def draw_horizon(func, hh, lh, fr, to, step, z, canvasWindow):
+def horizonForConstant(func, hh, lh, fr, to, step, z, canvasWindow):
     f = lambda x: func(x, z)  # f = f(x, z=const)
     prev = None
     for x in arange(fr, to + step, step):
         # x, z, f(x, z=const)
-        current = trans_point([x, f(x), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
+        current = transform([x, f(x), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
         if prev:  # Если это не первая точка (то есть если есть предыдущая)
             draw_horizon_part(prev, current, hh, lh, canvasWindow)
         prev = current
+
+
+def drawAllHorizons(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, canvasWindow, zStartLimit, zEndLimit, zStep):
+    for currentZ in arange(zStartLimit, zEndLimit + zStep, zStep):
+        horizonForConstant(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, currentZ, canvasWindow)
+
+
+def drawSideRibs(zStartLimit, zEndLimit, zStep, xStartLimit, xEndLimit, equation, canvasWindow):
+    for currentZ in arange(zStartLimit, zEndLimit, zStep):
+        p1 = transform([xStartLimit, equation(xStartLimit, currentZ), currentZ])
+        p2 = transform([xStartLimit, equation(xStartLimit, currentZ + zStep), currentZ + zStep])
+        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
+        p1 = transform([xEndLimit, equation(xEndLimit, currentZ), currentZ])
+        p2 = transform([xEndLimit, equation(xEndLimit, currentZ + zStep), currentZ + zStep])
+        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
 
 
 def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow):
@@ -196,16 +211,9 @@ def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEnd
     topHorizon = [0 for _ in range(width)]
     bottomHorizon = [height for _ in range(width)]
 
-    for currentZ in arange(zStartLimit, zEndLimit + zStep, zStep):
-        draw_horizon(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, currentZ, canvasWindow)
+    drawAllHorizons(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, canvasWindow, zStartLimit, zEndLimit, zStep)
 
-    for currentZ in arange(zStartLimit, zEndLimit, zStep):
-        p1 = trans_point([xStartLimit, equation(xStartLimit, currentZ), currentZ])
-        p2 = trans_point([xStartLimit, equation(xStartLimit, currentZ + zStep), currentZ + zStep])
-        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
-        p1 = trans_point([xEndLimit, equation(xEndLimit, currentZ), currentZ])
-        p2 = trans_point([xEndLimit, equation(xEndLimit, currentZ + zStep), currentZ + zStep])
-        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
+    drawSideRibs(zStartLimit, zEndLimit, zStep, xStartLimit, xEndLimit, equation, canvasWindow)
 
 
 def showSurface(exampleCombo,
