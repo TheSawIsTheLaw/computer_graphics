@@ -63,7 +63,7 @@ def rotate_trans_matrix(rotate_matrix):
     trans_matrix = res_matrix
 
 
-def rotate_x(exampleCombo,
+def xAxisRotation(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
                 xEndLimitEntry, zEndLimitEntry,
                 xStepEntry, zStepEntry, canvasWindow, rotateAngle):
@@ -79,7 +79,7 @@ def rotate_x(exampleCombo,
                 xStepEntry, zStepEntry, canvasWindow)
 
 
-def rotate_y(exampleCombo,
+def yAxisRotation(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
                 xEndLimitEntry, zEndLimitEntry,
                 xStepEntry, zStepEntry, canvasWindow, rotateAngle):
@@ -95,15 +95,15 @@ def rotate_y(exampleCombo,
                 xStepEntry, zStepEntry, canvasWindow)
 
 
-def rotate_z(exampleCombo,
+def zAxisRotation(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
                 xEndLimitEntry, zEndLimitEntry,
                 xStepEntry, zStepEntry, canvasWindow, rotateAngle):
     value = float(rotateAngle.get()) / 180 * pi
-    rotate_matrix = [ [ cos(value), sin(value), 0, 0 ],
-                       [ -sin(value), cos(value), 0, 0 ],
-                       [ 0, 0, 1, 0 ],
-                       [ 0, 0, 0, 1 ] ]
+    rotate_matrix = [[cos(value), sin(value), 0, 0],
+                       [-sin(value), cos(value), 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]]
     rotate_trans_matrix(rotate_matrix)
     showSurface(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
@@ -112,34 +112,28 @@ def rotate_z(exampleCombo,
 
 
 def rotate(comboRotation, comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle):
-    print(comboRotation.curselection()[0])
     if comboRotation.curselection()[0] == 0:
-        rotate_x(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
+        xAxisRotation(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
     elif comboRotation.curselection()[0] == 1:
-        rotate_y(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
+        yAxisRotation(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
     elif comboRotation.curselection()[0] == 2:
-        rotate_z(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
+        zAxisRotation(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow, rotateAngle)
 
 
 def transform(point):
-    # point = (x, y, z)
-    point.append(1) # (x, y, z, 1)
+    point.append(1)
     res_point = [0, 0, 0, 0]
     for i in range(4):
         for j in range(4):
             res_point[i] += point[j] * trans_matrix[j][i]
 
     for i in range(3):
-        res_point[i] *= sf # x, y, z ==> SF * x, SF * y, SF * z
+        res_point[i] *= sf
 
     res_point[0] += height / 2
     res_point[1] += height / 2
 
     return res_point[:3]
-
-
-def draw_pixel(x, y, canvasWindow):
-    canvasWindow.create_line(x, y, x + 1, y + 1, fill=curColorLines)
 
 
 def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
@@ -159,15 +153,16 @@ def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
             x, y = prev[0], prev[1]
 
             for _ in range(int(l) + 1):
-                if not 0 <= x < width and 0 <= y < height:
+                if not (0 <= x < width and 0 <= y < height):
                     break
-                if y > hh[int(round(x))]:
-                    hh[int(round(x))] = y
-                    draw_pixel(int(round(x)), y, canvasWindow)
+                drawableX = int(round(x))
+                if y > hh[drawableX]:
+                    hh[drawableX] = y
+                    canvasWindow.create_line(drawableX, y, drawableX + 1, y + 1, fill = curColorLines)
 
-                elif y < lh[int(round(x))]:
-                    lh[int(round(x))] = y
-                    draw_pixel(int(round(x)), y, canvasWindow)
+                elif y < lh[drawableX]:
+                    lh[drawableX] = y
+                    canvasWindow.create_line(drawableX, y, drawableX + 1, y + 1, fill = curColorLines)
                 x += dx
                 y += dy
         prev = current
