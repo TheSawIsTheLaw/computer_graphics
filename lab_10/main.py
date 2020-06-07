@@ -2,19 +2,27 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import Combobox
 from lab_10 import example
+from math import *
+from numpy import arange
 
 fontSettingLabels = ("Consolas", 20)
 fontSettingLower = ("Consolas", 16)
 
 exa = 0
 xyz = 0
-img = 0
 
 curColorBackground = "#000000"
-curColorFigure = "#ffff00"
+curColorLines = "#ffff00"
 
 comboWhatToDraw = 1
 comboRotation = 0
+
+width = 1090
+height = 1016
+
+trans_matrix = [[int(i == j) for i in range(4)] for j in range(4)]
+
+sf = 48
 
 
 def makeReference():
@@ -41,31 +49,110 @@ def makeJobWindow():
 
 def clearImage(canvasWindow):
     canvasWindow.delete("all")
-    global img
-    img = PhotoImage(width = 1090, height = 1016)
-    canvasWindow.create_image((545, 508), image = img, state = "normal")
-    canvasWindow.place(x = 750, y = 0)
 
 
-def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep):
-    return
+def trans_point(point):
+    # point = (x, y, z)
+    point.append(1) # (x, y, z, 1)
+    res_point = [0, 0, 0, 0]
+    for i in range(4):
+        for j in range(4):
+            res_point[i] += point[j] * trans_matrix[j][i]
+
+    for i in range(3):
+        res_point[i] *= sf # x, y, z ==> SF * x, SF * y, SF * z
+
+    res_point[0] += height / 2
+    res_point[1] += height / 2
+
+    return res_point[:3]
+
+
+def draw_pixel(x, y, canvasWindow):
+    canvasWindow.create_line(x, y, x + 1, y + 1, fill=curColorLines)
+
+
+def is_visible(point):
+    return 0 <= point[0] < width and 0 <= point[1] < height
+
+
+def draw_point(x, y, hh, lh, canvasWindow):
+    if not is_visible([x, y]):
+        return False
+
+    if y > hh[x]:
+        hh[x] = y
+        draw_pixel(x, y, canvasWindow)
+
+    elif y < lh[x]:
+        lh[x] = y
+        draw_pixel(x, y, canvasWindow)
+
+    return True
+
+
+def draw_horizon_part(p1, p2, hh, lh, canvasWindow):
+    if p1[0] > p2[0]: # хочу, чтобы x2 > x1
+        p1, p2 = p2, p1
+
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    l = dx if dx > dy else dy
+    dx /= l
+    dy /= l
+
+    x, y = p1[0], p1[1]
+
+    for _ in range(int(l) + 1):
+        if not draw_point(int(round(x)), y, hh, lh, canvasWindow):
+            return
+        x += dx
+        y += dy
+
+
+def draw_horizon(func, hh, lh, fr, to, step, z, canvasWindow):
+    f = lambda x: func(x, z)  # f = f(x, z=const)
+    prev = None
+    for x in arange(fr, to + 2 * step, step):
+        # x, z, f(x, z=const)
+        current = trans_point([x, f(x), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
+        if prev:  # Если это не первая точка (то есть если есть предыдущая)
+            draw_horizon_part(prev, current, hh, lh, canvasWindow)
+        prev = current
+
+
+def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow):
+    clearImage(canvasWindow)
+    topHorizon = [0 for _ in range(width)]
+    bottomHorizon = [height for _ in range(width)]
+
+    for currentZ in arange(zStartLimit, zEndLimit + zStep, zStep):
+        draw_horizon(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, currentZ, canvasWindow)
+
+    for currentZ in arange(zStartLimit, zEndLimit, zStep):
+        p1 = trans_point([xStartLimit, equation(xStartLimit, currentZ), currentZ])
+        p2 = trans_point([xStartLimit, equation(xStartLimit, currentZ + zStep), currentZ + zStep])
+        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
+        p1 = trans_point([xEndLimit, equation(xEndLimit, currentZ), currentZ])
+        p2 = trans_point([xEndLimit, equation(xEndLimit, currentZ + zStep), currentZ + zStep])
+        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
 
 
 def showSurface(exampleCombo,
                 xStartLimitEntry, zStartLimitEntry,
                 xEndLimitEntry, zEndLimitEntry,
-                xStepEntry, zStepEntry):
-    xStartLimit = int(xStartLimitEntry.get())
-    zStartLimit = int(zStartLimitEntry.get())
-    xEndLimit = int(xEndLimitEntry.get())
-    zEndLimit = int(zEndLimitEntry.get())
+                xStepEntry, zStepEntry, canvasWindow):
+    xStartLimit = float(xStartLimitEntry.get())
+    zStartLimit = float(zStartLimitEntry.get())
+    xEndLimit = float(xEndLimitEntry.get())
+    zEndLimit = float(zEndLimitEntry.get())
 
-    xStep = int(xStepEntry.get())
-    zStep = int(zStepEntry.get())
+    xStep = float(xStepEntry.get())
+    zStep = float(zStepEntry.get())
 
     global exa
     if exa == 0:
-        floatingHorizonAlgorithm(example.expFirst, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep)
+        floatingHorizonAlgorithm(example.expFirst, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow)
 
 
 def makeCascadeMenu(rootWindow, canvasWindow):
@@ -113,12 +200,6 @@ def setComboRotation(rootWindow):
     comboRotation.place(x = 5, y = 554)
 
 
-def setImageToCanvas(canvasWindow):
-    global img
-    img = PhotoImage(width = 1090, height = 1016)
-    canvasWindow.create_image((545, 508), image = img, state = "normal")
-
-
 def makeMainWindow():
     """
             Функция Создания главного окна
@@ -130,8 +211,6 @@ def makeMainWindow():
     canvasWindow = Canvas(rootWindow, bg = curColorBackground, width = 1090, height = 1016, borderwidth = 5, relief = RIDGE)
 
     canvasWindow.place(x = 750, y = 0)
-
-    setImageToCanvas(canvasWindow)
 
     setComboWhatToDraw(rootWindow)
 
@@ -170,7 +249,7 @@ def makeMainWindow():
     zStepEntry = Entry(rootWindow, font = fontSettingLower, borderwidth = 10, relief = RIDGE, width = 8)
     zStepEntry.place(x = 630, y = 380)
 
-    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = lambda: showSurface(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
+    showButton = Button(rootWindow, text = "Отрисовать фигуру", command = lambda: showSurface(comboWhatToDraw, xLimitStartEntry, zLimitStartEntry, xLimitEndEntry, zLimitEndEntry, xStepEntry, zStepEntry, canvasWindow), height = 2, width = 61, font = fontSettingLower, bg = "#FF9C00")
     showButton.place(x = 5, y = 430)
 
     Label(text = "Вращение", borderwidth = 10, relief = RIDGE, bg = "black", fg = "white",
