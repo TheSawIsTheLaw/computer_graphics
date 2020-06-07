@@ -137,37 +137,33 @@ def transform(point):
 
 
 def horizonForConstant(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, currentZ, canvasWindow):
-    previousPoint = 0
-    for currentX in arange(xStartLimit, xEndLimit + xStep, xStep):
-        current = transform([currentX, equation(currentX, currentZ), currentZ])
-        if previousPoint:
-            if previousPoint[0] > current[0]:
-                previousPoint, current = current, previousPoint
+    previousPoint = transform([xStartLimit, equation(xStartLimit, currentZ), currentZ])
+    for currentX in arange(xStartLimit + xStep, xEndLimit + xStep, xStep):
+        currentPoint = transform([currentX, equation(currentX, currentZ), currentZ])
+        if previousPoint[0] > currentPoint[0]:
+            previousPoint, currentPoint = currentPoint, previousPoint
 
-            xIncrement = current[0] - previousPoint[0]
-            yIncrement = current[1] - previousPoint[1]
-            if xIncrement > yIncrement:
-                pickedInc = xIncrement
-            else:
-                pickedInc = yIncrement
-            xIncrement /= pickedInc
-            yIncrement /= pickedInc
+        xIncrement = currentPoint[0] - previousPoint[0]
+        yIncrement = currentPoint[1] - previousPoint[1]
+        if xIncrement > yIncrement:
+            pickedInc = xIncrement
+        else:
+            pickedInc = yIncrement
+        xIncrement /= pickedInc
+        yIncrement /= pickedInc
 
-            newX, newY = previousPoint[0], previousPoint[1]
+        newX, newY = previousPoint[0], previousPoint[1]
 
-            for _ in range(int(pickedInc) + 1):
-                if newX < 0 or newX >= width or newY < 0 or newY >= height:
-                    break
-                drawableX = int(round(newX))
-                if newY > topHorizon[drawableX]:
-                    topHorizon[drawableX] = newY
-                    canvasWindow.create_rectangle((drawableX, newY) * 2, fill = curColorLines, outline = "")
-                elif newY < bottomHorizon[drawableX]:
-                    bottomHorizon[drawableX] = newY
-                    canvasWindow.create_rectangle((drawableX, newY) * 2, fill = curColorLines, outline = "")
-                newX += xIncrement
-                newY += yIncrement
-        previousPoint = current
+        for _ in range(int(pickedInc) + 1):
+            if newX < 0 or newX >= width or newY < 0 or newY >= height:
+                break
+            drawableX = int(round(newX))
+            if newY > topHorizon[drawableX] or newY < bottomHorizon[drawableX]:
+                topHorizon[drawableX] = newY
+                canvasWindow.create_rectangle((drawableX, newY) * 2, fill = curColorLines, outline = "")
+            newX += xIncrement
+            newY += yIncrement
+        previousPoint = currentPoint
 
 
 def drawAllHorizons(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, canvasWindow, zStartLimit, zEndLimit, zStep):
