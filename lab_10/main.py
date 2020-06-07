@@ -142,25 +142,6 @@ def draw_pixel(x, y, canvasWindow):
     canvasWindow.create_line(x, y, x + 1, y + 1, fill=curColorLines)
 
 
-def is_visible(point):
-    return 0 <= point[0] < width and 0 <= point[1] < height
-
-
-def draw_point(x, y, hh, lh, canvasWindow):
-    if not is_visible([x, y]):
-        return False
-
-    if y > hh[x]:
-        hh[x] = y
-        draw_pixel(x, y, canvasWindow)
-
-    elif y < lh[x]:
-        lh[x] = y
-        draw_pixel(x, y, canvasWindow)
-
-    return True
-
-
 def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
     prev = 0
     for x in arange(fr, to + step, step):
@@ -178,8 +159,15 @@ def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
             x, y = prev[0], prev[1]
 
             for _ in range(int(l) + 1):
-                if not draw_point(int(round(x)), y, hh, lh, canvasWindow):
-                    return
+                if not 0 <= x < width and 0 <= y < height:
+                    break
+                if y > hh[int(round(x))]:
+                    hh[int(round(x))] = y
+                    draw_pixel(int(round(x)), y, canvasWindow)
+
+                elif y < lh[int(round(x))]:
+                    lh[int(round(x))] = y
+                    draw_pixel(int(round(x)), y, canvasWindow)
                 x += dx
                 y += dy
         prev = current
