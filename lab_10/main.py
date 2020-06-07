@@ -22,7 +22,7 @@ height = 1016
 
 trans_matrix = [[int(i == j) for i in range(4)] for j in range(4)]
 
-sf = 35
+sf = 25
 
 
 def makeReference():
