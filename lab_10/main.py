@@ -180,12 +180,10 @@ def draw_horizon_part(p1, p2, hh, lh, canvasWindow):
         y += dy
 
 
-def horizonForConstant(func, hh, lh, fr, to, step, z, canvasWindow):
-    f = lambda x: func(x, z)  # f = f(x, z=const)
-    prev = None
+def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
+    prev = 0
     for x in arange(fr, to + step, step):
-        # x, z, f(x, z=const)
-        current = transform([x, f(x), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
+        current = transform([x, equation(x, z), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
         if prev:  # Если это не первая точка (то есть если есть предыдущая)
             draw_horizon_part(prev, current, hh, lh, canvasWindow)
         prev = current
@@ -198,12 +196,12 @@ def drawAllHorizons(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit,
 
 def drawSideRibs(zStartLimit, zEndLimit, zStep, xStartLimit, xEndLimit, equation, canvasWindow):
     for currentZ in arange(zStartLimit, zEndLimit, zStep):
-        p1 = transform([xStartLimit, equation(xStartLimit, currentZ), currentZ])
-        p2 = transform([xStartLimit, equation(xStartLimit, currentZ + zStep), currentZ + zStep])
-        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
-        p1 = transform([xEndLimit, equation(xEndLimit, currentZ), currentZ])
-        p2 = transform([xEndLimit, equation(xEndLimit, currentZ + zStep), currentZ + zStep])
-        canvasWindow.create_line(p1[0], p1[1], p2[0], p2[1], fill = curColorLines)
+        startPoint = transform([xStartLimit, equation(xStartLimit, currentZ), currentZ])
+        endPoint = transform([xStartLimit, equation(xStartLimit, currentZ + zStep), currentZ + zStep])
+        canvasWindow.create_line(startPoint[0], startPoint[1], endPoint[0], endPoint[1], fill = curColorLines)
+        startPoint = transform([xEndLimit, equation(xEndLimit, currentZ), currentZ])
+        endPoint = transform([xEndLimit, equation(xEndLimit, currentZ + zStep), currentZ + zStep])
+        canvasWindow.create_line(startPoint[0], startPoint[1], endPoint[0], endPoint[1], fill = curColorLines)
 
 
 def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEndLimit, xStep, zStep, canvasWindow):
