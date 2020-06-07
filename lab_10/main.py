@@ -146,14 +146,17 @@ def horizonForConstant(equation, topHorizon, bottomHorizon, xStartLimit, xEndLim
 
             xIncrement = current[0] - previousPoint[0]
             yIncrement = current[1] - previousPoint[1]
-            l = xIncrement if xIncrement > yIncrement else yIncrement
-            xIncrement /= l
-            yIncrement /= l
+            if xIncrement > yIncrement:
+                pickedInc = xIncrement
+            else:
+                pickedInc = yIncrement
+            xIncrement /= pickedInc
+            yIncrement /= pickedInc
 
             newX, newY = previousPoint[0], previousPoint[1]
 
-            for _ in range(int(l) + 1):
-                if not (0 <= newX < width and 0 <= newY < height):
+            for _ in range(int(pickedInc) + 1):
+                if newX < 0 or newX >= width or newY < 0 or newY >= height:    # not (0 <= newX and newX < width and 0 <= newY and newY < height):
                     break
                 drawableX = int(round(newX))
                 if newY > topHorizon[drawableX]:
@@ -186,7 +189,7 @@ def floatingHorizonAlgorithm(equation, xStartLimit, zStartLimit, xEndLimit, zEnd
     clearImage(canvasWindow)
     topHorizon = []
     bottomHorizon = []
-    for _ in range(width):
+    for _ in range(width + 1):
         topHorizon.append(0)
         bottomHorizon.append(height)
 
