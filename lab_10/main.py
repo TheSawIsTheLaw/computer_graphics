@@ -22,7 +22,7 @@ height = 1016
 
 trans_matrix = [[int(i == j) for i in range(4)] for j in range(4)]
 
-sf = 1
+sf = 48
 
 
 def makeReference():
@@ -161,31 +161,27 @@ def draw_point(x, y, hh, lh, canvasWindow):
     return True
 
 
-def draw_horizon_part(p1, p2, hh, lh, canvasWindow):
-    if p1[0] > p2[0]: # хочу, чтобы x2 > x1
-        p1, p2 = p2, p1
-
-    dx = p2[0] - p1[0]
-    dy = p2[1] - p1[1]
-    l = dx if dx > dy else dy
-    dx /= l
-    dy /= l
-
-    x, y = p1[0], p1[1]
-
-    for _ in range(int(l) + 1):
-        if not draw_point(int(round(x)), y, hh, lh, canvasWindow):
-            return
-        x += dx
-        y += dy
-
-
 def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
     prev = 0
     for x in arange(fr, to + step, step):
-        current = transform([x, equation(x, z), z])  # transformed: Повернуть, масштабировать и сдвинуть в центр экрана
-        if prev:  # Если это не первая точка (то есть если есть предыдущая)
-            draw_horizon_part(prev, current, hh, lh, canvasWindow)
+        current = transform([x, equation(x, z), z])
+        if prev:
+            if prev[0] > current[0]:
+                prev, current = current, prev
+
+            dx = current[0] - prev[0]
+            dy = current[1] - prev[1]
+            l = dx if dx > dy else dy
+            dx /= l
+            dy /= l
+
+            x, y = prev[0], prev[1]
+
+            for _ in range(int(l) + 1):
+                if not draw_point(int(round(x)), y, hh, lh, canvasWindow):
+                    return
+                x += dx
+                y += dy
         prev = current
 
 
