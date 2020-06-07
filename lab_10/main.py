@@ -136,36 +136,35 @@ def transform(point):
     return res_point[:3]
 
 
-def horizonForConstant(equation, hh, lh, fr, to, step, z, canvasWindow):
-    prev = 0
-    for x in arange(fr, to + step, step):
-        current = transform([x, equation(x, z), z])
-        if prev:
-            if prev[0] > current[0]:
-                prev, current = current, prev
+def horizonForConstant(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, currentZ, canvasWindow):
+    previousPoint = 0
+    for currentX in arange(xStartLimit, xEndLimit + xStep, xStep):
+        current = transform([currentX, equation(currentX, currentZ), currentZ])
+        if previousPoint:
+            if previousPoint[0] > current[0]:
+                previousPoint, current = current, previousPoint
 
-            dx = current[0] - prev[0]
-            dy = current[1] - prev[1]
-            l = dx if dx > dy else dy
-            dx /= l
-            dy /= l
+            xIncrement = current[0] - previousPoint[0]
+            yIncrement = current[1] - previousPoint[1]
+            l = xIncrement if xIncrement > yIncrement else yIncrement
+            xIncrement /= l
+            yIncrement /= l
 
-            x, y = prev[0], prev[1]
+            newX, newY = previousPoint[0], previousPoint[1]
 
             for _ in range(int(l) + 1):
-                if not (0 <= x < width and 0 <= y < height):
+                if not (0 <= newX < width and 0 <= newY < height):
                     break
-                drawableX = int(round(x))
-                if y > hh[drawableX]:
-                    hh[drawableX] = y
-                    canvasWindow.create_line(drawableX, y, drawableX + 1, y + 1, fill = curColorLines)
-
-                elif y < lh[drawableX]:
-                    lh[drawableX] = y
-                    canvasWindow.create_line(drawableX, y, drawableX + 1, y + 1, fill = curColorLines)
-                x += dx
-                y += dy
-        prev = current
+                drawableX = int(round(newX))
+                if newY > topHorizon[drawableX]:
+                    topHorizon[drawableX] = newY
+                    canvasWindow.create_line(drawableX, newY, drawableX + 1, newY + 1, fill = curColorLines)
+                elif newY < bottomHorizon[drawableX]:
+                    bottomHorizon[drawableX] = newY
+                    canvasWindow.create_line(drawableX, newY, drawableX + 1, newY + 1, fill = curColorLines)
+                newX += xIncrement
+                newY += yIncrement
+        previousPoint = current
 
 
 def drawAllHorizons(equation, topHorizon, bottomHorizon, xStartLimit, xEndLimit, xStep, canvasWindow, zStartLimit, zEndLimit, zStep):
